@@ -16,8 +16,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +61,7 @@ fun VerifyEmail(navController: NavHostController){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldVerifyEmail(navController: NavHostController){
@@ -84,7 +87,11 @@ fun ScaffoldVerifyEmail(navController: NavHostController){
                 TextField(
                     label = { Text(text = "code") },
                     value = verificationCode,
-                    onValueChange = {verificationCode = it})
+                    onValueChange = {verificationCode = it},
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ))
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.fillMaxSize()){
@@ -95,7 +102,7 @@ fun ScaffoldVerifyEmail(navController: NavHostController){
                             .align(Alignment.TopCenter)
                             .height(50.dp),
                     ){
-                        Text(text = "Verify")
+                        Text(text = "Verify", color = Color.White)
                     }
                 }
             }

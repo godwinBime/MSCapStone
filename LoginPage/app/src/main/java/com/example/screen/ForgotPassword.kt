@@ -15,9 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +61,7 @@ fun ForgotPassword(navController: NavHostController){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
@@ -83,7 +86,11 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
                 TextField(
                     label = { Text(text = "Email") },
                     value = email,
-                    onValueChange = {email = it})
+                    onValueChange = {email = it},
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ))
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.fillMaxSize()){
@@ -95,7 +102,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
                             .height(50.dp)
                             .align(Alignment.TopCenter)
                     ){
-                        Text(text = "Send")
+                        Text(text = "Send", color = Color.White)
                     }
                 }
             }

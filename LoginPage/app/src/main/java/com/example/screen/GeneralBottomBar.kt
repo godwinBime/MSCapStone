@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -67,10 +68,14 @@ fun GeneralBottomAppBar(navController: NavHostController){
                 selected.value = Icons.Default.Home
             }) {
                 Icon(imageVector = Icons.Default.Home,
+                    modifier = Modifier.size(26.dp),
                     contentDescription = "Home",
-//                    modifier = Modifier.size(26.dp),
-                    tint = if (selected.value == Icons.Default.Home) Color.Blue else Color.Black)
-            }
+                    tint = if (selected.value == Icons.Default.Home) {
+                        Color.Blue
+                    }else{
+                        Color.Black
+                    })
+                }
             
             IconButton(onClick = {
                 selected.value = Icons.Default.Edit
@@ -105,47 +110,6 @@ fun GeneralBottomAppBar(navController: NavHostController){
             }
         }
     }
-
-    /*
-    val selectedIndex = remember{mutableStateOf(0)}
-
-    BottomNavigation(elevation = 10.dp,
-        backgroundColor = Color.White){
-        BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-        },
-            label = { Text(text = "Home")},
-            selected = (selectedIndex.value == 0),
-            onClick = {selectedIndex.value = 0})
-
-        BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-        },
-            label = { Text(text = "Add")},
-            selected = (selectedIndex.value == 1),
-            onClick = {selectedIndex.value = 1})
-
-        BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
-        },
-            label = { Text(text = "Edit")},
-            selected = (selectedIndex.value == 2),
-            onClick = {selectedIndex.value = 2})
-
-        BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Person, contentDescription = "Profile")
-        },
-            label = { Text(text = "Profile")},
-            selected = (selectedIndex.value == 3),
-            onClick = {selectedIndex.value = 3})
-
-        BottomNavigationItem(icon = {
-            Icon(imageVector = Icons.Default.Settings, contentDescription = "Setting")
-        },
-            label = { Text(text = "Setting")},
-            selected = (selectedIndex.value == 4),
-            onClick = {selectedIndex.value = 4})
-    }*/
 }
 
 

@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.Text
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,7 +33,7 @@ fun CustomTopAppBar(navController: NavHostController, title: String, showBackIco
             },
         actions = {
             IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Menu")
             }
         }
     )

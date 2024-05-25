@@ -16,9 +16,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +64,7 @@ fun NewPassword(navController: NavHostController){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldNewPasswordTopBar(navController: NavHostController){
@@ -87,7 +90,11 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController){
                     value = password,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {password = it})
+                    onValueChange = {password = it},
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ))
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
@@ -95,7 +102,11 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController){
                     value = confirmPassword,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {confirmPassword = it})
+                    onValueChange = {confirmPassword = it},
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ))
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.fillMaxSize(),){

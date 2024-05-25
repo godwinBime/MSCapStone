@@ -18,11 +18,18 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,15 +44,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
+import com.example.loginpage.R
 import com.example.loginpage.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
-import com.example.viewmodel.LoginViewModel
 
 
 class LoginActivity : ComponentActivity() {
@@ -72,20 +79,24 @@ fun Login(navController: NavHostController){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: ScrollState){
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Sign In", true) },
+        topBar = { CustomTopAppBar(navController, "Capstone", true) },
         content = {
             Column(
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier
+                    .padding(20.dp)
                     .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 var userName by rememberSaveable { mutableStateOf("") }
                 var password by rememberSaveable { mutableStateOf("") }
+                val showPassword = remember { mutableStateOf(false) }
+
                 Text(
                     text = "Welcome, Sign in",
                     style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Default)
@@ -97,15 +108,49 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                     onValueChange = {
                                     userName = it
                     },
-                    label = { Text(text = "Email") })
+                    label = { Text(text = "Email") },
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    )
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "Password") },
                     value = password,
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation =
+                    if (showPassword.value){
+                        VisualTransformation.None
+                    } else{
+                        PasswordVisualTransformation()
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = { password = it })
+                    onValueChange = { password = it },
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
+                    trailingIcon = {
+                        if (showPassword.value){
+                            IconButton(onClick = { showPassword.value = false }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = "Hide Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }else{
+                            IconButton(onClick = { showPassword.value = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = "Show Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.fillMaxSize()) {

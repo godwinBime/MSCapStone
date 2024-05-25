@@ -144,7 +144,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
 //                            .fillMaxSize()
                             .height(50.dp)
                     ){
-                        Text(text = "Sign Up")
+                        Text(text = "Sign Up", color = Color.White)
                     }
                 }
 
