@@ -91,6 +91,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController){
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     onValueChange = {password = it},
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -103,6 +104,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController){
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     onValueChange = {confirmPassword = it},
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,

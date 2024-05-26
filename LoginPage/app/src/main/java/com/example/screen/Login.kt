@@ -93,10 +93,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                var userName by rememberSaveable { mutableStateOf("") }
+                var email by rememberSaveable { mutableStateOf("") }
                 var password by rememberSaveable { mutableStateOf("") }
                 val showPassword = remember { mutableStateOf(false) }
-
                 Text(
                     text = "Welcome, Sign in",
                     style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Default)
@@ -104,15 +103,17 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
-                    value = userName,
+                    value = email,
                     onValueChange = {
-                                    userName = it
+                                    email = it
                     },
                     label = { Text(text = "Email") },
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                    )
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -131,6 +132,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     ),
+                    shape = RoundedCornerShape(20.dp),
                     trailingIcon = {
                         if (showPassword.value){
                             IconButton(onClick = { showPassword.value = false }) {

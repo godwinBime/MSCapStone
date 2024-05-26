@@ -15,7 +15,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextField
@@ -34,6 +39,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -75,6 +81,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
     var phoneNumber by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
+    val showPassword = remember { mutableStateOf(false) }
+    val confirmShowPassword = remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Create Account", true)},
@@ -95,41 +104,96 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 TextField(
                     label = { Text(text = "First Name") },
                     value = firstName,
+                    shape = RoundedCornerShape(20.dp),
                     onValueChange = {firstName = it})
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "Last Name") },
                     value = lastName,
+                    shape = RoundedCornerShape(20.dp),
                     onValueChange = {lastName = it})
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "Email") },
                     value = email,
+                    shape = RoundedCornerShape(20.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     onValueChange = {email = it})
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = {Text(text = "Phone number") },
                     value = phoneNumber,
+                    shape = RoundedCornerShape(20.dp),
                     onValueChange = {phoneNumber = it})
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "Password") },
                     value = password,
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation =
+                    if (showPassword.value){
+                        VisualTransformation.None
+                    } else{
+                        PasswordVisualTransformation()
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {password = it})
+                    onValueChange = {password = it},
+                    shape = RoundedCornerShape(20.dp),
+                    trailingIcon = {
+                        if (showPassword.value){
+                            IconButton(onClick = { showPassword.value = false }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = "Hide Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }else{
+                            IconButton(onClick = { showPassword.value = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = "Show Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
                     label = { Text(text = "Confirm Password")},
                     value = confirmPassword,
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation =
+                    if (confirmShowPassword.value){
+                        VisualTransformation.None
+                    } else{
+                        PasswordVisualTransformation()
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {confirmPassword = it})
+                    onValueChange = {confirmPassword = it},
+                    shape = RoundedCornerShape(20.dp),
+                    trailingIcon = {
+                        if (confirmShowPassword.value){
+                            IconButton(onClick = { confirmShowPassword.value = false }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = "Hide Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }else{
+                            IconButton(onClick = { confirmShowPassword.value = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = "Show Password",
+                                    tint = Color.Black
+                                )
+                            }
+                        }
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.padding(55.dp, 0.dp, 55.dp, 100.dp)){

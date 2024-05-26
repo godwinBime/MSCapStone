@@ -88,6 +88,7 @@ fun ScaffoldVerifyEmail(navController: NavHostController){
                     label = { Text(text = "code") },
                     value = verificationCode,
                     onValueChange = {verificationCode = it},
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,

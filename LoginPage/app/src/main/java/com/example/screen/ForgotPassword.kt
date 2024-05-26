@@ -87,6 +87,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
                     label = { Text(text = "Email") },
                     value = email,
                     onValueChange = {email = it},
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
