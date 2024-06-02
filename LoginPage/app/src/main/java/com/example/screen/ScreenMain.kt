@@ -45,5 +45,13 @@ fun ScreenMain(){
         composable(Routes.ChooseVerificationMethod.route){
             ChooseVerificationMethod(navController = navController)
         }
+
+        composable(Routes.AuthenticatorAppVerification.route){
+            AuthenticatorAppVerification(navController = navController)
+        }
+
+        composable(Routes.SMSVerification.route){
+            SMSVerification(navController = navController)
+        }
     }
 }

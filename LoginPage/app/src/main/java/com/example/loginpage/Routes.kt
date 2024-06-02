@@ -14,4 +14,8 @@ sealed class Routes(val route: String) {
     object AuthenticatorCode: Routes("AuthenticatorCode")
 
     object ChooseVerificationMethod: Routes("ChooseVerificationMethod")
+
+    object AuthenticatorAppVerification: Routes("AuthenticatorAppVerification")
+
+    object SMSVerification: Routes("SMSVerification")
 }
