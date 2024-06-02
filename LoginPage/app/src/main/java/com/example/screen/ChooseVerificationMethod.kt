@@ -96,7 +96,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
                     .padding(5.dp)
-                    .fillMaxHeight(0.5f)
+                    .height(100.dp)
                     .fillMaxWidth(),
                     elevation = 10.dp,
                     border = BorderStroke(1.dp, Color.Black),
@@ -104,7 +104,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                     ) {
                     Text(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
+                            .padding(38.dp),
                         text = "Authenticator App",
                         fontSize = 20.sp,
                         color = Color.Black,
@@ -116,13 +116,15 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
                     .padding(5.dp)
-                    .fillMaxHeight(0.2f)
+                    .height(100.dp)
                     .fillMaxWidth(),
                     border = BorderStroke(1.dp, Color.Black),
                     elevation = 10.dp,
                     shape = RoundedCornerShape(10.dp)
                      ) {
                     Text(
+                        modifier = Modifier
+                            .padding(38.dp),
                         text = "SMS Verification",
                         fontSize = 20.sp,
                         color = Color.Black,
@@ -134,18 +136,37 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
                     .padding(5.dp)
-                    .fillMaxHeight(0.2f)
+                    .height(100.dp)
                     .fillMaxWidth(),
                     elevation = 10.dp,
                     border = BorderStroke(1.dp, Color.Black),
                     shape = RoundedCornerShape(10.dp)) {
                     Text(
+                        modifier = Modifier
+                            .padding(38.dp),
                         text = "Email Verification",
                         fontSize = 20.sp,
                         color = Color.Black,
                         textAlign = TextAlign.Justify
                     )
                     VerificationButton(name = "Send Email", navController = navController, 2)
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+                Card(modifier = Modifier
+                    .padding(5.dp)
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)) {
+                    Text(
+                        modifier = Modifier
+                            .padding(38.dp),
+                        text = "",
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Justify
+                    )
+                    //VerificationButton(name = "Send Email", navController = navController, 2)
                 }
             }
         }
