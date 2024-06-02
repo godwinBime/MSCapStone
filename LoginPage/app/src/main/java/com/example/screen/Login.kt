@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
-import com.example.loginpage.R
 import com.example.loginpage.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -96,6 +95,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 var email by rememberSaveable { mutableStateOf("") }
                 var password by rememberSaveable { mutableStateOf("") }
                 val showPassword = remember { mutableStateOf(false) }
+                //val emailState = remember{ mutableStateOf(EmailState()) }
+
                 Text(
                     text = "Welcome, Sign in",
                     style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Default)
@@ -195,7 +196,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                         text = AnnotatedString("Sign Up here"),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(20.dp),
+                            .padding(5.dp),
                         onClick = { navController.navigate(Routes.SignUp.route) },
                         style = TextStyle(
                             fontSize = 14.sp,

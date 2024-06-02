@@ -84,7 +84,6 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
     val showPassword = remember { mutableStateOf(false) }
     val confirmShowPassword = remember { mutableStateOf(false) }
 
-
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Create Account", true)},
         content = {
@@ -199,13 +198,13 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 Box(modifier = Modifier.padding(55.dp, 0.dp, 55.dp, 100.dp)){
                     Button(
                         onClick = {
-                            navController.navigate(Routes.Home.route)
+                            navController.navigate(Routes.Login.route)
                             //navController.navigate(Routes.ChooseVerificationMethod.route)
 
                         },
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
-//                            .fillMaxSize()
+                            .fillMaxSize(0.5f)
                             .height(50.dp)
                     ){
                         Text(text = "Sign Up", color = Color.White)
