@@ -96,7 +96,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 var email by rememberSaveable { mutableStateOf("") }
                 var password by rememberSaveable { mutableStateOf("") }
                 val showPassword = remember { mutableStateOf(false) }
-                //val emailState = remember{ mutableStateOf(EmailState()) }
 
                 Text(
                     text = "Sign in with existing account",

@@ -33,6 +33,7 @@ fun Home(navController: NavHostController){
 @Composable
 fun ScaffoldHomeWithTopBar(navController: NavHostController){
     val context = LocalContext.current
+    var name = "User + 1"
     Scaffold(
         bottomBar = {
             GeneralBottomAppBar(navController)
@@ -57,7 +58,7 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController){
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Text(
-                    text = "Welcome, User",
+                    text = "Welcome, $name",
                     fontSize = 30.sp,
                     color = Color.Black
                 )
