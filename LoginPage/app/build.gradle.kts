@@ -2,9 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
-//    id("io.realm.kotlin")
-//    id("kotlin-kapt")
-//    id("dagger.hilt.android.plugin")
+    //id("com.android.application")
+   // id("com.google.gms.google-services")
 }
 
 android {
@@ -62,16 +61,6 @@ dependencies {
     //Mongo Realm
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("io.realm.kotlin:library-base:1.6.1")
-//    implementation("org.mongodb:mongodb-driver-kotlin-sync:4.10.2")
-//    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.2")
-
-    //Dagger Hilt
-//    implementation("com.google.dagger:hilt-android:2.49")
-//    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-//    implementation("androidx.hilt:hilt-compiler:1.2.0")
-//    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-
-//    kapt("com.google.dagger:hilt-compiler:2.44.2")
 
     //Desugar jdk
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
@@ -84,6 +73,7 @@ dependencies {
     //Firebase SDK
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
     implementation("com.google.firebase:firebase-bom:33.1.0")
+    //implementation("com.google.firebase:firebase-analytics")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

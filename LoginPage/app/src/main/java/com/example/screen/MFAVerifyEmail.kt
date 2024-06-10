@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -23,22 +22,19 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
-import com.example.loginpage.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
+import com.example.navigation.Routes
 
-
-class AuthenticatorCodeActivity : ComponentActivity() {
+class MFAVerifyEmail: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -56,20 +52,20 @@ class AuthenticatorCodeActivity : ComponentActivity() {
 }
 
 @Composable
-fun AuthenticatorCode(navController: NavHostController){
+fun MFAVerifyEmail(navController: NavHostController){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldAuthenticatorCode(navController)
+        ScaffoldMFAVerifyEmail(navController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldAuthenticatorCode(navController: NavHostController){
+fun ScaffoldMFAVerifyEmail(navController: NavHostController){
     var verificationCode by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Authenticate User", true) },
+        topBar = { CustomTopAppBar(navController, "MFA Email Verify", true) },
         content = {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -79,7 +75,7 @@ fun ScaffoldAuthenticatorCode(navController: NavHostController){
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "Enter the code from your authenticator app.",
+                    text = "Enter the code we emailed you.",
                     fontSize = 20.sp,
                     color = Color.Black
                 )
@@ -89,21 +85,22 @@ fun ScaffoldAuthenticatorCode(navController: NavHostController){
                     label = { Text(text = "code") },
                     value = verificationCode,
                     onValueChange = {verificationCode = it},
+                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                     ))
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Box(modifier = Modifier.padding(200.dp, 20.dp, 40.dp, 490.dp)){
+                Box(modifier = Modifier.fillMaxSize()){
                     Button(
-                        onClick = {navController.navigate(Routes.NewPassword.route)},
+                        onClick = {navController.navigate(Routes.Home.route)},
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
-//                            .fillMaxSize()
+                            .align(Alignment.TopCenter)
                             .height(50.dp),
                     ){
-                        Text(text = "Verify")
+                        Text(text = "Verify", color = Color.White)
                     }
                 }
             }

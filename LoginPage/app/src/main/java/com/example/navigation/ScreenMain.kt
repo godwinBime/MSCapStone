@@ -1,10 +1,20 @@
-package com.example.screen
+package com.example.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.loginpage.Routes
+import com.example.screen.AuthenticatorAppVerification
+import com.example.screen.ChangePasswordVerifyEmail
+import com.example.screen.ChooseVerificationMethod
+import com.example.screen.ForgotPassword
+import com.example.screen.Home
+import com.example.screen.Login
+import com.example.screen.MFAVerifyEmail
+import com.example.screen.NewPassword
+import com.example.screen.SMSVerification
+import com.example.screen.SignUp
+import com.example.screen.UpdateProfile
 
 @Composable
 fun ScreenMain(){
@@ -22,8 +32,8 @@ fun ScreenMain(){
             SignUp(navController = navController)
         }
         
-        composable(Routes.VerifyEmail.route){
-            VerifyEmail(navController = navController)
+        composable(Routes.ChangePasswordVerifyEmail.route){
+            ChangePasswordVerifyEmail(navController = navController)
         }
         
         composable(Routes.Home.route){
@@ -38,10 +48,6 @@ fun ScreenMain(){
             UpdateProfile(navController = navController)
         }
 
-        composable(Routes.AuthenticatorCode.route){
-            AuthenticatorCode(navController = navController)
-        }
-
         composable(Routes.ChooseVerificationMethod.route){
             ChooseVerificationMethod(navController = navController)
         }
@@ -52,6 +58,10 @@ fun ScreenMain(){
 
         composable(Routes.SMSVerification.route){
             SMSVerification(navController = navController)
+        }
+
+        composable(Routes.MFAVerifyEmail.route){
+            MFAVerifyEmail(navController = navController)
         }
     }
 }

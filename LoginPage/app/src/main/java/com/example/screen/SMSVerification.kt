@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
-import com.example.loginpage.Routes
+import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 

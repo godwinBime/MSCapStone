@@ -1,4 +1,4 @@
-package com.example.loginpage
+package com.example.navigation
 
 sealed class Routes(val route: String) {
     object Login: Routes("Login")
@@ -7,15 +7,15 @@ sealed class Routes(val route: String) {
     object NewPassword: Routes("NewPassword")
     object Home: Routes("Home")
 
-    object VerifyEmail: Routes("VerifyEmail")
+    object ChangePasswordVerifyEmail: Routes("ChangePasswordVerifyEmail")
 
     object UpdateProfile: Routes("UpdateProfile")
-
-    object AuthenticatorCode: Routes("AuthenticatorCode")
 
     object ChooseVerificationMethod: Routes("ChooseVerificationMethod")
 
     object AuthenticatorAppVerification: Routes("AuthenticatorAppVerification")
 
     object SMSVerification: Routes("SMSVerification")
+
+    object MFAVerifyEmail: Routes("MFAVerifyEmail")
 }

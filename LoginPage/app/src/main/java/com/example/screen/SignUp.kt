@@ -36,16 +36,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
 import androidx.compose.ui.unit.sp
-import com.example.loginpage.Routes
+import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 class SignUpActivity : ComponentActivity() {
@@ -94,9 +94,10 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(text = "Welcome, create an account",
+                Text(text = "Welcome,\nCreate an account",
                     fontSize = 25.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
                     )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -204,7 +205,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                         },
                         shape = RoundedCornerShape(50.dp),
                         modifier = Modifier
-                            .fillMaxSize(0.5f)
+                            .fillMaxSize(0.9f)
                             .height(50.dp)
                     ){
                         Text(text = "Sign Up", color = Color.White)

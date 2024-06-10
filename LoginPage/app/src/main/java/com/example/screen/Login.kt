@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -50,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
-import com.example.loginpage.Routes
+import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 
@@ -83,7 +84,7 @@ fun Login(navController: NavHostController){
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: ScrollState){
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Capstone", true) },
+        topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
         content = {
             Column(
                 modifier = Modifier
@@ -98,8 +99,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 //val emailState = remember{ mutableStateOf(EmailState()) }
 
                 Text(
-                    text = "Welcome, Sign in",
-                    style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Default)
+                    text = "Sign in with existing account",
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(fontSize = 25.sp, fontFamily = FontFamily.Default)
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
