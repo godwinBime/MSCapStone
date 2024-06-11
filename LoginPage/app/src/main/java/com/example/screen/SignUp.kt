@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.fillMaxSize
@@ -100,14 +101,16 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     fontWeight = FontWeight.Bold
                     )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier
+                    .height(20.dp))
                 TextField(
                     label = { Text(text = "First Name") },
                     value = firstName,
                     shape = RoundedCornerShape(20.dp),
                     onValueChange = {firstName = it})
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier
+                     .height(20.dp))
                 TextField(
                     label = { Text(text = "Last Name") },
                     value = lastName,

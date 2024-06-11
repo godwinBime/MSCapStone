@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
-import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
+import com.example.navigation.Routes
 
 class ChooseVerificationMethodActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,13 +80,15 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
         content = {
             Column(
                 modifier = Modifier
+                    .fillMaxHeight()
                     .verticalScroll(scrollState)
-                    .fillMaxSize(),
+                    .padding(15.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 Text(
-                    modifier = Modifier.padding(vertical = 50.dp),
+                    modifier = Modifier
+                         .padding(bottom = 70.dp),
                     text = "Choose Verification Method",
                     fontSize = 25.sp,
                     color = Color.Black,
@@ -93,7 +97,6 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
-                    .padding(5.dp)
                     .height(100.dp)
                     .fillMaxWidth(),
                     elevation = 10.dp,
@@ -113,7 +116,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
-                    .padding(5.dp)
+
                     .height(100.dp)
                     .fillMaxWidth(),
                     border = BorderStroke(1.dp, Color.Black),
@@ -133,20 +136,11 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
-                    .padding(5.dp)
                     .height(100.dp)
                     .fillMaxWidth(),
                     elevation = 10.dp,
                     border = BorderStroke(1.dp, Color.Black),
                     shape = RoundedCornerShape(10.dp)) {
-//                    IconButton(
-//                        onClick = {}) {
-//                        Icon(imageVector = Icons.Default.Email,
-//                            modifier = Modifier
-//                                .padding(end = 350.dp)
-//                                .size(50.dp),
-//                            contentDescription = "Email",)
-//                    }
                     Text(
                         modifier = Modifier
                             .padding(38.dp),
@@ -160,20 +154,9 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
-                    .padding(5.dp)
                     .height(100.dp)
-                    .fillMaxWidth(),
-                    shape = RoundedCornerShape(10.dp)) {
-                    Text(
-                        modifier = Modifier
-                            .padding(38.dp),
-                        text = "",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Justify
-                    )
-                    //VerificationButton(name = "Send Email", navController = navController, 2)
-                }
+                    .fillMaxWidth()) {
+                 }
             }
         }
     )
