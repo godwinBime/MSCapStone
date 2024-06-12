@@ -46,6 +46,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
 import androidx.compose.ui.unit.sp
+import com.example.component.CheckBoxComponent
+import com.example.component.ClickableLoginText
+import com.example.component.DividerTextComponent
+import com.example.component.HeadingTextComponent
+import com.example.component.NormalTextComponent
 import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -95,11 +100,12 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(text = "Welcome,\nCreate an account",
-                    fontSize = 25.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                    )
+//                Text(text = "Welcome,\nCreate an account",
+//                    fontSize = 25.sp,
+//                    color = Color.Black,
+//                    fontWeight = FontWeight.Bold
+//                    )
+                HeadingTextComponent(value = "Create an Account")
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
@@ -130,6 +136,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     label = {Text(text = "Phone number") },
                     value = phoneNumber,
                     shape = RoundedCornerShape(20.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onValueChange = {phoneNumber = it})
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -198,8 +205,11 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                         }
                     })
 
+                CheckBoxComponent(value = "SignUp")
+
                 Spacer(modifier = Modifier.height(20.dp))
-                Box(modifier = Modifier.padding(55.dp, 0.dp, 55.dp, 100.dp)){
+                Box(modifier = Modifier
+                    .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     Button(
                         onClick = {
                             navController.navigate(Routes.Login.route)
@@ -215,20 +225,13 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     }
                 }
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ClickableText(
-                        text = AnnotatedString("Login"),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(20.dp),
-                        onClick = { navController.navigate(Routes.Login.route) },
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily.Default,
-                            textDecoration = TextDecoration.Underline,
-                            color = Color.Black
-                        )
-                    )
+                DividerTextComponent()
+
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 40.dp),
+                    contentAlignment = Alignment.Center) {
+                    ClickableLoginText(navController)
                 }
             }
         }

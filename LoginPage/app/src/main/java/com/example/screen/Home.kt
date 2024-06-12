@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
+import com.example.component.NormalTextComponent
 
 @Composable
 fun Home(navController: NavHostController){
@@ -57,11 +58,7 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController){
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Text(
-                    text = "Welcome, $name",
-                    fontSize = 30.sp,
-                    color = Color.Black
-                )
+                NormalTextComponent(value = "Welcome, $name")
             }
         }
     )

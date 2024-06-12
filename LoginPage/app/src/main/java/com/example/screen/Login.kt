@@ -50,7 +50,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.component.ButtonComponent
+import com.example.component.CheckBoxComponent
 import com.example.component.CustomTopAppBar
+import com.example.component.DividerTextComponent
+import com.example.component.GeneralClickableTextComponent
+import com.example.component.HeadingTextComponent
+import com.example.component.NormalTextComponent
 import com.example.navigation.Routes
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -97,11 +103,12 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 var password by rememberSaveable { mutableStateOf("") }
                 val showPassword = remember { mutableStateOf(false) }
 
-                Text(
-                    text = "Sign in with existing account",
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(fontSize = 25.sp, fontFamily = FontFamily.Default)
-                )
+//                Text(
+//                    text = "Sign in with existing account",
+//                    fontWeight = FontWeight.Bold,
+//                    style = TextStyle(fontSize = 25.sp, fontFamily = FontFamily.Default)
+//                )
+                HeadingTextComponent(value = "Sign in")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextField(
@@ -155,6 +162,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                         }
                     }
                 )
+                CheckBoxComponent(value = "Login")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -176,21 +184,28 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                     }
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GeneralClickableTextComponent(value = "Forget Password?", navController = navController)
+
+                DividerTextComponent()
+
+                Spacer(modifier = Modifier.height(20.dp))
+                NormalTextComponent(value = "Sign in with:")
                 Box(modifier = Modifier.fillMaxSize()) {
-                    ClickableText(
-                        text = AnnotatedString("Forgot Password?"),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(0.dp, 0.dp, 0.dp, 40.dp),
-                        onClick = { navController.navigate(Routes.ForgotPassword.route) },
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily.Default,
-                            textDecoration = TextDecoration.Underline,
-                            color = Color.Black
-                        )
-                    )
+//                    ClickableText(
+//                        text = AnnotatedString("Forgot Password?"),
+//                        modifier = Modifier
+//                            .align(Alignment.BottomCenter)
+//                            .padding(0.dp, 0.dp, 0.dp, 40.dp),
+//                        onClick = { navController.navigate(Routes.ForgotPassword.route) },
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            fontFamily = FontFamily.Default,
+//                            textDecoration = TextDecoration.Underline,
+//                            color = Color.Black
+//                        )
+//                    )
 
                     Spacer(modifier = Modifier.height(20.dp))
                     ClickableText(

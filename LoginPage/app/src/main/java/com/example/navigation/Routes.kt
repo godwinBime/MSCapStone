@@ -18,4 +18,6 @@ sealed class Routes(val route: String) {
     object SMSVerification: Routes("SMSVerification")
 
     object MFAVerifyEmail: Routes("MFAVerifyEmail")
+
+    object TermsAndConditionsScreen: Routes("TermsAndConditionsScreen")
 }

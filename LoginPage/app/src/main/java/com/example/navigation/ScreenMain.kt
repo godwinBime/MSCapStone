@@ -14,6 +14,7 @@ import com.example.screen.MFAVerifyEmail
 import com.example.screen.NewPassword
 import com.example.screen.SMSVerification
 import com.example.screen.SignUp
+import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
 
 @Composable
@@ -62,6 +63,10 @@ fun ScreenMain(){
 
         composable(Routes.MFAVerifyEmail.route){
             MFAVerifyEmail(navController = navController)
+        }
+
+        composable(Routes.TermsAndConditionsScreen.route){
+            TermsAndConditionsScreen(navController = navController)
         }
     }
 }
