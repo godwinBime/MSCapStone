@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.CheckBoxComponent
+import com.example.component.ClickableLoginOrLogOutText
 import com.example.component.CustomTopAppBar
 import com.example.component.DividerTextComponent
 import com.example.component.GeneralClickableTextComponent
@@ -91,8 +92,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
 
                 MyPasswordFieldComponent(labelValue = password, painterResource = passwordPainterResource)
 
-                CheckBoxComponent(value = stringResource(id = R.string.terms_and_conditions))
-
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Box(modifier = Modifier
@@ -113,12 +112,15 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
 
                 NormalTextComponent(value = "Sign in with:")
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                DividerTextComponent()
 
-                    GeneralClickableTextComponent(
-                        value = "SignUp Here",
-                        navController = navController, 1)
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 40.dp),
+                    contentAlignment = Alignment.Center) {
+                    val initialText = stringResource(id = R.string.not_registered)
+                    val loginText = stringResource(id = R.string.create_account)
+                    ClickableLoginOrLogOutText(navController, initialText, loginText)
                 }
             }
         }

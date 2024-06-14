@@ -421,7 +421,7 @@ fun DividerTextComponent(){
 @Composable
 fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: String, loginText: String){
     val annotatedString = buildAnnotatedString {
-        append(initialText)
+        append(initialText + " ")
         withStyle(style = SpanStyle(color = Color.Blue)){
             pushStringAnnotation(tag = loginText, annotation = loginText)
             append(loginText)
@@ -439,7 +439,10 @@ fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: St
         annotatedString.getStringAnnotations(offset, offset)
             .firstOrNull()?.also { span ->
                 if(span.item == loginText){
-                    navController.navigate(Routes.Login.route)
+                    when(loginText){
+                        "Login" ->{ navController.navigate(Routes.Login.route)}
+                        "SignUp" ->{ navController.navigate(Routes.SignUp.route)}
+                    }
                 }
             }
     })
