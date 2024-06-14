@@ -1,6 +1,7 @@
 package com.example.component
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -21,13 +24,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -88,9 +94,12 @@ fun HeadingTextComponent(value: String){
     Spacer(modifier = Modifier.height(20.dp))
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter){
-    val textValue = remember{ mutableStateOf("")}
+//    val textValue = remember{ mutableStateOf("")}
+    val textValue = rememberSaveable{ mutableStateOf("")}
+
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -99,15 +108,20 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter){
         },
         label = {Text(text = labelValue)},
         value = textValue.value,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
         shape = RoundedCornerShape(20.dp),
-        keyboardOptions = KeyboardOptions.Default,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         onValueChange = {textValue.value = it})
 }
 
 @Composable
 fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter){
-    val passwordValue = remember{ mutableStateOf("")}
+    val passwordValue = rememberSaveable{ mutableStateOf("")}
     val showPassword = remember { mutableStateOf(false) }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -149,7 +163,7 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter){
 
 @Composable
 fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter){
-    val passwordValue = remember{ mutableStateOf("")}
+    val passwordValue = rememberSaveable{ mutableStateOf("")}
     val confirmShowPassword = remember { mutableStateOf(false) }
     TextField(
         modifier = Modifier
@@ -199,12 +213,10 @@ fun CheckBoxComponent(value: String){
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val checkState = remember {
-            mutableStateOf(false)
-        }
+        val checkState = remember { mutableStateOf(false)}
         Checkbox(
             checked = checkState.value,
-            onCheckedChange = {checkState.value != checkState.value })
+            onCheckedChange = {checkState.value  = it})
 
         ClickableTextComponent(value = value)
     }
@@ -249,17 +261,20 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
             onClick = {
-//                getToast(context = context, "Navigate to Forgot Pass")
-//                navController.navigate(Routes.ForgotPassword.route)
-                if(rank == 0) {
-                    getToast(context = context, "Nav to login")
-                    navController.navigate(Routes.Login.route)
-                } else if (rank == 1){
-                    navController.navigate(Routes.SignUp.route)
-                }else if (rank == 2){
-                    getToast(context = context, "Nav to Forgot Pass")
-                    navController.navigate(Routes.ForgotPassword.route)
-                }
+                  when (rank){
+                      0  -> {
+                          getToast(context = context, "Nav to login")
+                          navController.navigate(Routes.Login.route)
+                      }
+                      1 -> {
+                          navController.navigate(Routes.SignUp.route)
+                          getToast(context = context, "Nav to SignUp")
+                      }
+                      2 -> {
+                          getToast(context = context, "Nav to Forgot Pass")
+                          navController.navigate(Routes.ForgotPassword.route)
+                      }
+                  }
             },
             style = TextStyle(
                 fontSize = 14.sp,
@@ -274,19 +289,13 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 @Composable
 fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
     Button(onClick = {
-                     if (rank == 0){
-                         navController.navigate(Routes.ChooseVerificationMethod.route)
-                     }else if (rank == 1){
-                         navController.navigate(Routes.Login.route)
-                     }else if (rank == 2){
-                         navController.navigate(Routes.ChangePasswordVerifyEmail.route)
-                     }else if (rank == 3){
-                         navController.navigate(Routes.NewPassword.route)
-                     }else if (rank == 4){
-                         navController.navigate(Routes.NewPassword.route)
-                     }else if(rank == 5){
-                         navController.navigate(Routes.Login.route)
-                     }
+        when(rank){
+            0 -> navController.navigate(Routes.ChooseVerificationMethod.route)
+            1 -> navController.navigate(Routes.Login.route)
+            2 -> navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+            3 -> navController.navigate(Routes.NewPassword.route)
+            4 -> navController.navigate(Routes.Login.route)
+        }
     },
         modifier = Modifier
             .fillMaxSize()
@@ -296,12 +305,11 @@ fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
     ){
         Box(modifier = Modifier
             .fillMaxSize()
-            .heightIn(48.dp)
+            .heightIn(60.dp)
             .background(
                 brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
-                shape = RoundedCornerShape(50.dp),
-
-                ),
+                shape = RoundedCornerShape(50.dp)
+            ),
             contentAlignment = Alignment.Center
             ) {
             Text(
@@ -318,9 +326,68 @@ fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
 fun SubButton(navController: NavHostController, value: String, rank: Int){
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(60.dp, 0.dp, 60.dp, 610.dp)){
+        .padding(40.dp, 5.dp, 60.dp, 540.dp)){
         ButtonComponent(navController = navController, value = value, rank = rank)
 
+    }
+}
+
+@Composable
+fun ChooseMFAButton(name: String, navController: NavHostController, rank: Int){
+    Box {
+        Button(
+            onClick = {
+                when(rank){
+                    0 -> navController.navigate(Routes.AuthenticatorAppVerification.route)
+                    1 -> navController.navigate(Routes.SMSVerification.route)
+                    2 -> navController.navigate(Routes.MFAVerifyEmail.route)
+                }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White
+            ),
+            modifier = Modifier
+                .height(90.dp)
+                .align(Alignment.CenterEnd)
+        ) {
+            Box(modifier = Modifier
+                .heightIn(60.dp)
+                .width(128.dp)
+                .background(
+                    brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
+                    shape = RoundedCornerShape(50.dp)
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DesignMFASpace(navController: NavHostController, value: String, buttonType: String, rank: Int){
+    Card(modifier = Modifier
+        .height(100.dp)
+        .fillMaxWidth(),
+        elevation = 10.dp,
+        border = BorderStroke(1.dp, Color.Black),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(38.dp),
+            text = value,
+            fontSize = 20.sp,
+            color = Color.Black,
+            textAlign = TextAlign.Justify
+        )
+        ChooseMFAButton(name = buttonType, navController = navController, rank = rank)
     }
 }
 
@@ -351,7 +418,7 @@ fun DividerTextComponent(){
 }
 
 @Composable
-fun ClickableLoginText(navController: NavHostController, initialText: String, loginText: String){
+fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: String, loginText: String){
     val annotatedString = buildAnnotatedString {
         append(initialText)
         withStyle(style = SpanStyle(color = Color.Blue)){

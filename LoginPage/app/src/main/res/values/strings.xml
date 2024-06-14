@@ -9,7 +9,12 @@
     <string name="signup">SignUp</string>
     <string name="verify">Verify</string>
     <string name="send">Send</string>
-    <string name="reset_password">Reset Password</string>
+    <string name="reset_password">Forgot Password</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="code">code</string>
 </resources>

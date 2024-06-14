@@ -12,38 +12,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.CustomTopAppBar
+import com.example.component.HeadingTextComponent
+import com.example.component.MyConfirmPasswordFieldComponent
+import com.example.component.MyPasswordFieldComponent
 import com.example.component.SubButton
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
@@ -72,109 +57,41 @@ fun NewPassword(navController: NavHostController){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldNewPasswordTopBar(navController: NavHostController){
-    var password by rememberSaveable { mutableStateOf("") }
-    var confirmPassword by rememberSaveable { mutableStateOf("") }
-    val showPassword = remember { mutableStateOf(false) }
-    val confirmShowPassword = remember { mutableStateOf(false) }
+    val password = stringResource(id = R.string.password)
+    val confirmPassword = stringResource(id = R.string.confirm_password)
+    val resetPassword = stringResource(id = R.string.reset_password)
+
+    val passwordPainterResource = painterResource(id = R.drawable.password)
+
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, "New Password", true)},
         content = {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = "Enter a new password",
-                    fontSize = 20.sp,
-                    color = Color.Black)
+                HeadingTextComponent(value = "Enter a new password")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                TextField(
-                    label = { androidx.compose.material3.Text(text = "Password") },
-                    value = password,
-                    visualTransformation =
-                    if (showPassword.value){
-                        VisualTransformation.None
-                    } else{
-                        PasswordVisualTransformation()
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {password = it},
-                    shape = RoundedCornerShape(20.dp),
-                    trailingIcon = {
-                        if (showPassword.value){
-                            IconButton(onClick = { showPassword.value = false }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Visibility,
-                                    contentDescription = "Hide Password",
-                                    tint = Color.Black
-                                )
-                            }
-                        }else{
-                            IconButton(onClick = { showPassword.value = true }) {
-                                Icon(
-                                    imageVector = Icons.Filled.VisibilityOff,
-                                    contentDescription = "Show Password",
-                                    tint = Color.Black
-                                )
-                            }
-                        }
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ))
+                MyPasswordFieldComponent(labelValue = password, painterResource = passwordPainterResource)
 
                 Spacer(modifier = Modifier.height(20.dp))
-                TextField(
-                    label = { Text(text = "Confirm Password")},
-                    value = confirmPassword,
-                    visualTransformation =
-                    if (confirmShowPassword.value){
-                        VisualTransformation.None
-                    } else{
-                        PasswordVisualTransformation()
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    onValueChange = {confirmPassword = it},
-                    shape = RoundedCornerShape(20.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
-                    trailingIcon = {
-                        if (confirmShowPassword.value){
-                            IconButton(onClick = { confirmShowPassword.value = false }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Visibility,
-                                    contentDescription = "Hide Password",
-                                    tint = Color.Black
-                                )
-                            }
-                        }else{
-                            IconButton(onClick = { confirmShowPassword.value = true }) {
-                                Icon(
-                                    imageVector = Icons.Filled.VisibilityOff,
-                                    contentDescription = "Show Password",
-                                    tint = Color.Black
-                                )
-                            }
-                        }
-                    })
+                MyConfirmPasswordFieldComponent(labelValue = confirmPassword, painterResource = passwordPainterResource)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                val resetPassword = stringResource(id = R.string.reset_password)
                 Box(modifier = Modifier
-                    .padding(60.dp, 0.dp, 60.dp, 530.dp)
+                    .padding(0.dp, 0.dp, 0.dp, 450.dp)
                     .fillMaxSize(),){
-                    ButtonComponent(navController = navController, value = resetPassword, 5)
+                    ButtonComponent(navController = navController, value = resetPassword, 4)
                 }
             }
         }

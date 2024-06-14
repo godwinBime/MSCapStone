@@ -38,7 +38,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.component.ChooseMFAButton
 import com.example.component.CustomTopAppBar
+import com.example.component.DesignMFASpace
+import com.example.component.HeadingTextComponent
 import com.example.loginpage.ui.theme.LoginPageTheme
 import com.example.navigation.Routes
 
@@ -70,8 +73,6 @@ fun ChooseVerificationMethod(navController: NavHostController){
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollState: ScrollState){
-    var chooseVerificationMethod by rememberSaveable { mutableStateOf("") }
-
     Scaffold(
         bottomBar = {
             GeneralBottomAppBar(navController)
@@ -86,71 +87,21 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                Text(
-                    modifier = Modifier
-                         .padding(bottom = 70.dp),
-                    text = "Choose Verification Method",
-                    fontSize = 25.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
+                HeadingTextComponent(value = "Choose Verification Method")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Card(modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                    elevation = 10.dp,
-                    border = BorderStroke(1.dp, Color.Black),
-                    shape = RoundedCornerShape(10.dp)
-                    ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(38.dp),
-                        text = "Authenticator App",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Justify
-                    )
-                    VerificationButton(name = "Enter Code", navController = navController, 0)
-                }
+                DesignMFASpace(navController = navController,
+                    value = "Authenticator App", buttonType = "Enter Code", rank = 0)
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Card(modifier = Modifier
 
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                    border = BorderStroke(1.dp, Color.Black),
-                    elevation = 10.dp,
-                    shape = RoundedCornerShape(10.dp)
-                     ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(38.dp),
-                        text = "SMS Verification",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Justify
-                    )
-                    VerificationButton(name = "Send Text", navController = navController, 1)
-                }
+                DesignMFASpace(navController = navController, value = "SMS Verification",
+                    buttonType = "Send Text", rank = 1)
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Card(modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                    elevation = 10.dp,
-                    border = BorderStroke(1.dp, Color.Black),
-                    shape = RoundedCornerShape(10.dp)) {
-                    Text(
-                        modifier = Modifier
-                            .padding(38.dp),
-                        text = "Email Verification",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        textAlign = TextAlign.Justify
-                    )
-                    VerificationButton(name = "Send Email", navController = navController, 2)
-                }
+
+                DesignMFASpace(navController = navController, value = "Email Verification",
+                    buttonType = "Send Email", rank = 2)
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(modifier = Modifier
@@ -160,31 +111,4 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
             }
         }
     )
-}
-
-@Composable
-fun VerificationButton(name: String, navController: NavHostController, navValue: Int){
-    Box {
-        Button(
-            onClick = {
-                //TODO ask the user to input correct username and password
-                // if the provided one is incorrect
-                      if(navValue == 0){
-                          navController.navigate(Routes.AuthenticatorAppVerification.route)
-                      }else if (navValue == 1){
-                          navController.navigate(Routes.SMSVerification.route)
-                      }else if (navValue == 2){
-                          navController.navigate(Routes.MFAVerifyEmail.route)
-                      }
-            },
-            shape = RoundedCornerShape(50.dp),
-            modifier = Modifier
-                .height(50.dp)
-                .padding(40.dp, 0.dp, 40.dp, 0.dp)
-                .align(Alignment.CenterEnd)
-        ) {
-            Text(text = name,
-                color = Color.White)
-        }
-    }
 }

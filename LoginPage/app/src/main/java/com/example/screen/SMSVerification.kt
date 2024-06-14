@@ -78,7 +78,7 @@ fun ScaffoldSMSVerification(navController: NavHostController){
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "Enter the SMS code we sent to your phone.",
+                    text = "Enter the SMS code you received.",
                     fontSize = 20.sp,
                     color = Color.Black
                 )

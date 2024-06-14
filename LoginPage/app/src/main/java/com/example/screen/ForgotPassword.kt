@@ -4,33 +4,29 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
+import com.example.component.HeadingTextComponent
+import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
@@ -59,41 +55,35 @@ fun ForgotPassword(navController: NavHostController){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
-    var email by rememberSaveable { mutableStateOf("") }
+    val email = stringResource(id = R.string.email)
+    val send = stringResource(id = R.string.send)
+
+    val emailPainterResource = painterResource(id = R.drawable.email)
+
     Scaffold(
         topBar = { CustomTopAppBar(navController, stringResource(id = R.string.reset_password), true)},
 
         content = {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxHeight()
+                    .padding(20.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(text = "Enter your email to get started.",
-                    fontSize = 20.sp,
-                    color = Color.Black
-                )
 
-                Spacer(modifier = Modifier.height(20.dp))
-                TextField(
-                    label = { Text(text = "Email") },
-                    value = email,
-                    onValueChange = {email = it},
-                    shape = RoundedCornerShape(20.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ))
+                HeadingTextComponent(value = "Enter your email")
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                val send = stringResource(id = R.string.send)
+                MyTextFieldComponent(labelValue = email, painterResource = emailPainterResource)
+
+                Spacer(modifier = Modifier
+                    .height(20.dp))
+
                 SubButton(navController = navController, value = send, 2)
             }
         }
