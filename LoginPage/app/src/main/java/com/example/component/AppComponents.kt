@@ -295,6 +295,7 @@ fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
             2 -> navController.navigate(Routes.ChangePasswordVerifyEmail.route)
             3 -> navController.navigate(Routes.NewPassword.route)
             4 -> navController.navigate(Routes.Login.route)
+            5 -> navController.navigate(Routes.Home.route)
         }
     },
         modifier = Modifier

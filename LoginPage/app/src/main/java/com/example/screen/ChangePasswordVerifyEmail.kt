@@ -59,7 +59,7 @@ fun ChangePasswordVerifyEmail(navController: NavHostController){
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldChangePassword(navController: NavHostController){
-    val verificationCode by rememberSaveable { mutableStateOf("") }
+    val verificationCode = stringResource(id = R.string.code)
 
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)
 
