@@ -14,14 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,16 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.CheckBoxComponent
@@ -57,7 +50,7 @@ import com.example.component.DividerTextComponent
 import com.example.component.GeneralClickableTextComponent
 import com.example.component.HeadingTextComponent
 import com.example.component.NormalTextComponent
-import com.example.navigation.Routes
+import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 
@@ -162,65 +155,33 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                         }
                     }
                 )
-                CheckBoxComponent(value = "Login")
+                CheckBoxComponent(value = stringResource(id = R.string.terms_and_conditions))
 
                 Spacer(modifier = Modifier.height(20.dp))
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Button(
-                        onClick = {
-                            //TODO ask the user to input correct username and password
-                            // if the provided one is incorrect
-
-                            navController.navigate(Routes.ChooseVerificationMethod.route)
-                                  },
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .padding(40.dp, 0.dp, 40.dp, 0.dp)
-                            .align(Alignment.TopCenter)
-                    ) {
-                        Text(text = "Login",
-                            color = Color.White)
-                    }
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                    ButtonComponent(navController, value = stringResource(id = R.string.login), 0)
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                GeneralClickableTextComponent(value = "Forget Password?", navController = navController)
+                GeneralClickableTextComponent(
+                    value = "Forget Password?",
+                    navController = navController, 2)
 
                 DividerTextComponent()
 
                 Spacer(modifier = Modifier.height(20.dp))
-                NormalTextComponent(value = "Sign in with:")
-                Box(modifier = Modifier.fillMaxSize()) {
-//                    ClickableText(
-//                        text = AnnotatedString("Forgot Password?"),
-//                        modifier = Modifier
-//                            .align(Alignment.BottomCenter)
-//                            .padding(0.dp, 0.dp, 0.dp, 40.dp),
-//                        onClick = { navController.navigate(Routes.ForgotPassword.route) },
-//                        style = TextStyle(
-//                            fontSize = 14.sp,
-//                            fontFamily = FontFamily.Default,
-//                            textDecoration = TextDecoration.Underline,
-//                            color = Color.Black
-//                        )
-//                    )
 
+                NormalTextComponent(value = "Sign in with:")
+
+                Box(modifier = Modifier.fillMaxSize()) {
                     Spacer(modifier = Modifier.height(20.dp))
-                    ClickableText(
-                        text = AnnotatedString("Sign Up here"),
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(5.dp),
-                        onClick = { navController.navigate(Routes.SignUp.route) },
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily.Default,
-                            textDecoration = TextDecoration.Underline,
-                            color = Color.Black
-                        )
-                    )
+
+                    GeneralClickableTextComponent(
+                        value = "SignUp Here",
+                        navController = navController, 1)
                 }
             }
         }

@@ -240,7 +240,7 @@ fun ClickableTextComponent(value: String){
 }
 
 @Composable
-fun GeneralClickableTextComponent(value: String, navController: NavHostController){
+fun GeneralClickableTextComponent(value: String, navController: NavHostController, rank: Int){
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -249,17 +249,17 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
             onClick = {
-                getToast(context = context, "Navigate to Forgot Pass")
-                navController.navigate(Routes.ForgotPassword.route)
-//                if(value == "Login") {
-//                    getToast(context = context, "Nav to login")
-//                    navController.navigate(Routes.Login.route)
-//                } else if (value == "SignUp"){
-//                    navController.navigate(Routes.SignUp.route)
-//                }else if (value == "Forgot Password?"){
-//                    getToast(context = context, "Nav to Forgot Pass")
-//                    navController.navigate(Routes.ForgotPassword.route)
-//                }
+//                getToast(context = context, "Navigate to Forgot Pass")
+//                navController.navigate(Routes.ForgotPassword.route)
+                if(rank == 0) {
+                    getToast(context = context, "Nav to login")
+                    navController.navigate(Routes.Login.route)
+                } else if (rank == 1){
+                    navController.navigate(Routes.SignUp.route)
+                }else if (rank == 2){
+                    getToast(context = context, "Nav to Forgot Pass")
+                    navController.navigate(Routes.ForgotPassword.route)
+                }
             },
             style = TextStyle(
                 fontSize = 14.sp,
@@ -272,8 +272,22 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 }
 
 @Composable
-fun ButtonComponent(value: String){
-    Button(onClick = { /*TODO*/ },
+fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
+    Button(onClick = {
+                     if (rank == 0){
+                         navController.navigate(Routes.ChooseVerificationMethod.route)
+                     }else if (rank == 1){
+                         navController.navigate(Routes.Login.route)
+                     }else if (rank == 2){
+                         navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+                     }else if (rank == 3){
+                         navController.navigate(Routes.NewPassword.route)
+                     }else if (rank == 4){
+                         navController.navigate(Routes.NewPassword.route)
+                     }else if(rank == 5){
+                         navController.navigate(Routes.Login.route)
+                     }
+    },
         modifier = Modifier
             .fillMaxSize()
             .heightIn(48.dp),
@@ -284,7 +298,7 @@ fun ButtonComponent(value: String){
             .fillMaxSize()
             .heightIn(48.dp)
             .background(
-                brush = Brush.horizontalGradient(listOf(Color.Blue, Color.Gray, Color.Black)),
+                brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
                 shape = RoundedCornerShape(50.dp),
 
                 ),
@@ -293,9 +307,20 @@ fun ButtonComponent(value: String){
             Text(
                 text = value,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
+    }
+}
+
+@Composable
+fun SubButton(navController: NavHostController, value: String, rank: Int){
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(60.dp, 0.dp, 60.dp, 610.dp)){
+        ButtonComponent(navController = navController, value = value, rank = rank)
+
     }
 }
 
@@ -326,12 +351,9 @@ fun DividerTextComponent(){
 }
 
 @Composable
-fun ClickableLoginText(navController: NavHostController){
-    val initialTest = "Already have an account? "
-    val loginText = "Login"
-
+fun ClickableLoginText(navController: NavHostController, initialText: String, loginText: String){
     val annotatedString = buildAnnotatedString {
-        append(initialTest)
+        append(initialText)
         withStyle(style = SpanStyle(color = Color.Blue)){
             pushStringAnnotation(tag = loginText, annotation = loginText)
             append(loginText)

@@ -5,13 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
@@ -19,7 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,24 +35,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.CustomTopAppBar
-import androidx.compose.ui.unit.sp
+import com.example.component.ButtonComponent
 import com.example.component.CheckBoxComponent
 import com.example.component.ClickableLoginText
+import com.example.component.CustomTopAppBar
 import com.example.component.DividerTextComponent
 import com.example.component.HeadingTextComponent
-import com.example.component.NormalTextComponent
-import com.example.navigation.Routes
+import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 class SignUpActivity : ComponentActivity() {
@@ -100,11 +96,6 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-//                Text(text = "Welcome,\nCreate an account",
-//                    fontSize = 25.sp,
-//                    color = Color.Black,
-//                    fontWeight = FontWeight.Bold
-//                    )
                 HeadingTextComponent(value = "Create an Account")
 
                 Spacer(modifier = Modifier
@@ -210,19 +201,8 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
-                    Button(
-                        onClick = {
-                            navController.navigate(Routes.Login.route)
-                            //navController.navigate(Routes.ChooseVerificationMethod.route)
-
-                        },
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .fillMaxSize(0.9f)
-                            .height(50.dp)
-                    ){
-                        Text(text = "Sign Up", color = Color.White)
-                    }
+                    ButtonComponent(navController,
+                        value = stringResource(id = R.string.signup), 1)
                 }
 
                 DividerTextComponent()
@@ -231,7 +211,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     .fillMaxSize()
                     .padding(bottom = 40.dp),
                     contentAlignment = Alignment.Center) {
-                    ClickableLoginText(navController)
+                    val initialText = stringResource(id = R.string.already_have_account)
+                    val loginText = stringResource(id = R.string.login)
+                    ClickableLoginText(navController, initialText, loginText)
                 }
             }
         }

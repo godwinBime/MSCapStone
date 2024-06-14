@@ -4,5 +4,12 @@
     <string name="create_account">Create Account</string>
     <string name="terms_and_conditions">By continuing, you accept our privacy policy and terms of use</string>
     <string name="terms_and_conditions_header">Terms of Use</string>
-    <string name="already_have_account">Already have an account? Login</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="signup">SignUp</string>
+    <string name="verify">Verify</string>
+    <string name="send">Send</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
 </resources>
