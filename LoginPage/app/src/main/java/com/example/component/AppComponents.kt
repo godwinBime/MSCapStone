@@ -57,6 +57,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.navigation.Routes
 import com.example.screen.getToast
 
@@ -298,15 +300,35 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 }
 
 @Composable
-fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
+fun ButtonComponent(navController: NavHostController,
+                    value: String, rank: Int,
+                    onButtonClicked: () -> Unit){
     Button(onClick = {
         when(rank){
-            0 -> navController.navigate(Routes.ChooseVerificationMethod.route)
-            1 -> navController.navigate(Routes.Login.route)
-            2 -> navController.navigate(Routes.ChangePasswordVerifyEmail.route)
-            3 -> navController.navigate(Routes.NewPassword.route)
-            4 -> navController.navigate(Routes.Login.route)
-            5 -> navController.navigate(Routes.Home.route)
+            0 ->{
+                onButtonClicked.invoke()
+                navController.navigate(Routes.ChooseVerificationMethod.route)
+            }
+            1 -> {
+                onButtonClicked.invoke()
+                navController.navigate(Routes.Login.route)
+            }
+            2 -> {
+                onButtonClicked.invoke()
+                navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+            }
+            3 -> {
+                onButtonClicked.invoke()
+                navController.navigate(Routes.NewPassword.route)
+            }
+            4 -> {
+                onButtonClicked.invoke()
+                navController.navigate(Routes.Login.route)
+            }
+            5 -> {
+                onButtonClicked.invoke()
+                navController.navigate(Routes.Home.route)
+            }
         }
     },
         modifier = Modifier
@@ -335,11 +357,16 @@ fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
 }
 
 @Composable
-fun SubButton(navController: NavHostController, value: String, rank: Int){
+fun SubButton(navController: NavHostController, value: String, rank: Int,
+              loginViewModel: LoginViewModel){
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(40.dp, 40.dp, 60.dp, 520.dp)){
-        ButtonComponent(navController = navController, value = value, rank = rank)
+        ButtonComponent(navController = navController,
+            value = value, rank = rank,
+            onButtonClicked = {
+                loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+            })
     }
 }
 
@@ -349,9 +376,15 @@ fun ChooseMFAButton(name: String, navController: NavHostController, rank: Int){
         Button(
             onClick = {
                 when(rank){
-                    0 -> navController.navigate(Routes.AuthenticatorAppVerification.route)
-                    1 -> navController.navigate(Routes.SMSVerification.route)
-                    2 -> navController.navigate(Routes.MFAVerifyEmail.route)
+                    0 -> {
+                        navController.navigate(Routes.AuthenticatorAppVerification.route)
+                    }
+                    1 -> {
+                        navController.navigate(Routes.SMSVerification.route)
+                    }
+                    2 -> {
+                        navController.navigate(Routes.MFAVerifyEmail.route)
+                    }
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -450,8 +483,12 @@ fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: St
             .firstOrNull()?.also { span ->
                 if(span.item == loginText){
                     when(rank){
-                        0 -> navController.navigate(Routes.Login.route)
-                        1 -> navController.navigate(Routes.SignUp.route)
+                        0 -> {
+                            navController.navigate(Routes.Login.route)
+                        }
+                        1 -> {
+                            navController.navigate(Routes.SignUp.route)
+                        }
                     }
                 }
             }

@@ -109,7 +109,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-                    ButtonComponent(navController, value = stringResource(id = R.string.login), 0)
+                    ButtonComponent(navController,
+                        value = stringResource(id = R.string.login), 0,
+                        onButtonClicked = {
+                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                        })
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))

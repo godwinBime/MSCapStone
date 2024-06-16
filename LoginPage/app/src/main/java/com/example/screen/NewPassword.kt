@@ -100,7 +100,11 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, loginViewModel: 
                 Box(modifier = Modifier
                     .padding(0.dp, 5.dp, 0.dp, 445.dp)
                     .fillMaxSize(),){
-                    ButtonComponent(navController = navController, value = resetPassword, 4)
+                    ButtonComponent(navController = navController,
+                        value = resetPassword, 4,
+                        onButtonClicked = {
+                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                        })
                 }
             }
         }

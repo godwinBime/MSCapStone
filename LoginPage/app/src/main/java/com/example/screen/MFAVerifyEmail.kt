@@ -29,6 +29,7 @@ import com.example.data.LoginViewModel
 import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
+import kotlin.math.log
 
 class MFAVerifyEmail: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,7 +85,9 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController, loginViewModel: Log
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                SubButton(navController = navController, value = verify, rank = 5)
+                SubButton(navController = navController,
+                    value = verify, rank = 5,
+                    loginViewModel = loginViewModel)
             }
         }
     )

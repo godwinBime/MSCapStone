@@ -83,7 +83,9 @@ fun ScaffoldSMSVerification(navController: NavHostController, loginViewModel: Lo
                     })
 
                 Spacer(modifier = Modifier.height(20.dp))
-                SubButton(navController = navController, value = verify, rank = 5)
+                SubButton(navController = navController,
+                    value = verify, rank = 5,
+                    loginViewModel = loginViewModel)
             }
         }
     )

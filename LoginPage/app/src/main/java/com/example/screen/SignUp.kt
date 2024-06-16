@@ -145,7 +145,10 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,
-                        value = stringResource(id = R.string.signup), 1)
+                        value = stringResource(id = R.string.signup), 1,
+                        onButtonClicked = {
+                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                        })
                 }
 
                 DividerTextComponent()

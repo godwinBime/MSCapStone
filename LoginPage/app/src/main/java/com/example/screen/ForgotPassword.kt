@@ -29,6 +29,7 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -83,13 +84,15 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, loginView
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-
+                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
                     })
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
 
-                SubButton(navController = navController, value = send, 2)
+                SubButton(navController = navController,
+                    value = send, 2,
+                    loginViewModel = loginViewModel)
             }
         }
     )

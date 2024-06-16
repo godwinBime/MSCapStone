@@ -88,7 +88,9 @@ fun ScaffoldChangePassword(navController: NavHostController, loginViewModel: Log
                 Spacer(modifier = Modifier
                     .height(20.dp))
                 val verify = stringResource(id = R.string.verify)
-                SubButton(navController = navController, value = verify, 3)
+                SubButton(navController = navController,
+                    value = verify, 3,
+                    loginViewModel = loginViewModel)
             }
         }
     )
