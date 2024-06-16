@@ -47,6 +47,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -64,11 +65,11 @@ fun NormalTextComponent(value: String){
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 80.dp),
+            .heightIn(min = 50.dp),
         text = value,
         style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal
         ),
         color = Color.Black,
@@ -96,7 +97,8 @@ fun HeadingTextComponent(value: String){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTextFieldComponent(labelValue: String, painterResource: Painter){
+fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
+                         onTextChanged:(String) -> Unit){
 //    val textValue = remember{ mutableStateOf("")}
     val textValue = rememberSaveable{ mutableStateOf("")}
 
@@ -113,12 +115,16 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter){
             unfocusedIndicatorColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(20.dp),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        onValueChange = {textValue.value = it})
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next),
+        onValueChange = {
+            textValue.value = it
+            onTextChanged(it)})
 }
 
 @Composable
-fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter){
+fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
+                             onTextChanged: (String) -> Unit){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val showPassword = remember { mutableStateOf(false) }
 
@@ -137,8 +143,11 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter){
             } else{
                 PasswordVisualTransformation()
             },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        onValueChange = {passwordValue.value = it},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+            /*imeAction = ImeAction.Next*/),
+        onValueChange = {
+            passwordValue.value = it
+            onTextChanged(it)},
         trailingIcon = {
             if (showPassword.value){
                 IconButton(onClick = { showPassword.value = false }) {
@@ -162,7 +171,8 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter){
 }
 
 @Composable
-fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter){
+fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter,
+                                    onTextChanged: (String) -> Unit){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val confirmShowPassword = remember { mutableStateOf(false) }
     TextField(
@@ -180,8 +190,11 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
             } else{
                 PasswordVisualTransformation()
             },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        onValueChange = {passwordValue.value = it},
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done),
+        onValueChange = {
+            passwordValue.value = it
+            onTextChanged(it)},
         trailingIcon = {
             if (confirmShowPassword.value){
                 IconButton(onClick = { confirmShowPassword.value = false }) {
@@ -205,7 +218,7 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
 }
 
 @Composable
-fun CheckBoxComponent(value: String){
+fun CheckBoxComponent(value: String, navController: NavHostController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -218,12 +231,12 @@ fun CheckBoxComponent(value: String){
             checked = checkState.value,
             onCheckedChange = {checkState.value  = it})
 
-        ClickableTextComponent(value = value)
+        ClickableTextComponent(value = value, navController = navController)
     }
 }
 
 @Composable
-fun ClickableTextComponent(value: String){
+fun ClickableTextComponent(value: String, navController: NavHostController){
     val initialText = "By continuing, you accept our "
     val privacyPolicyText = "Privacy policy "
     val andText = "and "
@@ -235,9 +248,7 @@ fun ClickableTextComponent(value: String){
             pushStringAnnotation(tag = privacyPolicyText, annotation = privacyPolicyText)
             append(privacyPolicyText)
         }
-
         append(andText)
-
         withStyle(style = SpanStyle(color = Color.Blue)){
             pushStringAnnotation(tag = termsAndConditionsText, annotation = termsAndConditionsText)
             append(termsAndConditionsText)
@@ -246,7 +257,7 @@ fun ClickableTextComponent(value: String){
     ClickableText(text = annotatedString, onClick = {
         offset -> annotatedString.getStringAnnotations(offset, offset)
         .firstOrNull()?.also { span ->
-            Log.d("ClickableTextComponent: ", "msg: {$span}")
+            navController.navigate(Routes.TermsAndConditionsScreen.route)
         }
     })
 }
@@ -327,9 +338,8 @@ fun ButtonComponent(navController: NavHostController, value: String, rank: Int){
 fun SubButton(navController: NavHostController, value: String, rank: Int){
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(40.dp, 5.dp, 60.dp, 540.dp)){
+        .padding(40.dp, 40.dp, 60.dp, 520.dp)){
         ButtonComponent(navController = navController, value = value, rank = rank)
-
     }
 }
 
@@ -419,9 +429,9 @@ fun DividerTextComponent(){
 }
 
 @Composable
-fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: String, loginText: String){
+fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: String, loginText: String, rank: Int){
     val annotatedString = buildAnnotatedString {
-        append(initialText + " ")
+        append("$initialText ")
         withStyle(style = SpanStyle(color = Color.Blue)){
             pushStringAnnotation(tag = loginText, annotation = loginText)
             append(loginText)
@@ -439,9 +449,9 @@ fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: St
         annotatedString.getStringAnnotations(offset, offset)
             .firstOrNull()?.also { span ->
                 if(span.item == loginText){
-                    when(loginText){
-                        "Login" ->{ navController.navigate(Routes.Login.route)}
-                        "SignUp" ->{ navController.navigate(Routes.SignUp.route)}
+                    when(rank){
+                        0 -> navController.navigate(Routes.Login.route)
+                        1 -> navController.navigate(Routes.SignUp.route)
                     }
                 }
             }

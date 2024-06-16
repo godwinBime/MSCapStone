@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -55,11 +56,12 @@ fun GeneralBottomAppBar(navController: NavHostController){
     val context = LocalContext.current.applicationContext
     val selected = remember{mutableStateOf(Icons.Default.Home)}
     BottomAppBar(
-        containerColor = Color.White,
-        modifier = Modifier
+        containerColor = Color.LightGray,
+            modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topEnd = 5.dp, topStart = 5.dp))) {
-        Row(modifier = Modifier.fillMaxWidth(),
+            .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))) {
+        Row(modifier = Modifier
+            .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround) {
 

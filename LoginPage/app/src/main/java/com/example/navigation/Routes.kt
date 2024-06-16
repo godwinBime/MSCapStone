@@ -20,4 +20,6 @@ sealed class Routes(val route: String) {
     object MFAVerifyEmail: Routes("MFAVerifyEmail")
 
     object TermsAndConditionsScreen: Routes("TermsAndConditionsScreen")
+
+    object PrivacyPolicy: Routes("PrivacyPolicy")
 }

@@ -74,9 +74,6 @@ fun ChooseVerificationMethod(navController: NavHostController){
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollState: ScrollState){
     Scaffold(
-        bottomBar = {
-            GeneralBottomAppBar(navController)
-        },
         topBar = { CustomTopAppBar(navController, "MFA", true) },
         content = {
             Column(
@@ -93,19 +90,20 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController, scrollSta
                 DesignMFASpace(navController = navController,
                     value = "Authenticator App", buttonType = "Enter Code", rank = 0)
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 DesignMFASpace(navController = navController, value = "SMS Verification",
                     buttonType = "Send Text", rank = 1)
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 DesignMFASpace(navController = navController, value = "Email Verification",
                     buttonType = "Send Email", rank = 2)
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier
+                    .height(90.dp))
                 Card(modifier = Modifier
-                    .height(100.dp)
+//                    .height(90.dp)
                     .fillMaxWidth()) {
                  }
             }

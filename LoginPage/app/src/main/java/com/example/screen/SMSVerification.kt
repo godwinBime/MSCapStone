@@ -25,6 +25,8 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -47,15 +49,15 @@ class SMSVerification : ComponentActivity() {
 }
 
 @Composable
-fun SMSVerification(navController: NavHostController){
+fun SMSVerification(navController: NavHostController, loginViewModel: LoginViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldSMSVerification(navController)
+        ScaffoldSMSVerification(navController, loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSMSVerification(navController: NavHostController){
+fun ScaffoldSMSVerification(navController: NavHostController, loginViewModel: LoginViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -74,7 +76,11 @@ fun ScaffoldSMSVerification(navController: NavHostController){
                 HeadingTextComponent(value = "Enter SMS code")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyTextFieldComponent(labelValue = verificationCode, painterResource = codePainterResource)
+                MyTextFieldComponent(labelValue = verificationCode,
+                    painterResource = codePainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 SubButton(navController = navController, value = verify, rank = 5)

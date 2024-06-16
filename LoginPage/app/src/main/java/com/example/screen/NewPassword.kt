@@ -30,6 +30,8 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.SubButton
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -51,15 +53,15 @@ class NewPasswordActivity : ComponentActivity() {
 }
 
 @Composable
-fun NewPassword(navController: NavHostController){
+fun NewPassword(navController: NavHostController, loginViewModel: LoginViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldNewPasswordTopBar(navController)
+        ScaffoldNewPasswordTopBar(navController, loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldNewPasswordTopBar(navController: NavHostController){
+fun ScaffoldNewPasswordTopBar(navController: NavHostController, loginViewModel: LoginViewModel){
     val password = stringResource(id = R.string.password)
     val confirmPassword = stringResource(id = R.string.confirm_password)
     val resetPassword = stringResource(id = R.string.reset_password)
@@ -81,15 +83,22 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController){
                 HeadingTextComponent(value = "Enter a new password")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyPasswordFieldComponent(labelValue = password, painterResource = passwordPainterResource)
+                MyPasswordFieldComponent(labelValue = password,
+                    painterResource = passwordPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyConfirmPasswordFieldComponent(labelValue = confirmPassword, painterResource = passwordPainterResource)
-
+                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
+                    painterResource = passwordPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
+                    })
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Box(modifier = Modifier
-                    .padding(0.dp, 0.dp, 0.dp, 450.dp)
+                    .padding(0.dp, 5.dp, 0.dp, 445.dp)
                     .fillMaxSize(),){
                     ButtonComponent(navController = navController, value = resetPassword, 4)
                 }

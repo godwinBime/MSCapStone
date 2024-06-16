@@ -29,6 +29,8 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -50,15 +52,15 @@ class ChangePasswordVerifyEmailActivity : ComponentActivity() {
 }
 
 @Composable
-fun ChangePasswordVerifyEmail(navController: NavHostController){
+fun ChangePasswordVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldChangePassword(navController)
+        ScaffoldChangePassword(navController, loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldChangePassword(navController: NavHostController){
+fun ScaffoldChangePassword(navController: NavHostController, loginViewModel: LoginViewModel){
     val verificationCode = stringResource(id = R.string.code)
 
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)
@@ -77,7 +79,11 @@ fun ScaffoldChangePassword(navController: NavHostController){
                 HeadingTextComponent(value = "Enter Verification Code")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyTextFieldComponent(labelValue = verificationCode, painterResource = painterVerificationCode)
+                MyTextFieldComponent(labelValue = verificationCode,
+                    painterResource = painterVerificationCode,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                    })
 
                 Spacer(modifier = Modifier
                     .height(20.dp))

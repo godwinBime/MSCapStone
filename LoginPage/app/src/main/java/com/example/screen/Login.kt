@@ -35,6 +35,8 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -56,16 +58,17 @@ class LoginActivity : ComponentActivity() {
     }
 }
 @Composable
-fun Login(navController: NavHostController){
+fun Login(navController: NavHostController, loginViewModel: LoginViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldLoginWithTopBar(navController = navController, scrollState)
+        ScaffoldLoginWithTopBar(navController = navController, scrollState, loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: ScrollState){
+fun ScaffoldLoginWithTopBar(navController: NavHostController,
+                            scrollState: ScrollState, loginViewModel: LoginViewModel){
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
         content = {
@@ -77,6 +80,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                NormalTextComponent(value = stringResource(id = R.string.welcome))
                 HeadingTextComponent(value = "Sign in")
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -84,13 +88,21 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                 val email = stringResource(id = R.string.email)
                 val emailPainterResource = painterResource(id = R.drawable.email)
 
-                MyTextFieldComponent(labelValue = email, painterResource = emailPainterResource)
+                MyTextFieldComponent(labelValue = email,
+                    painterResource = emailPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 val password = stringResource(id = R.string.password)
                 val passwordPainterResource = painterResource(id = R.drawable.password)
 
-                MyPasswordFieldComponent(labelValue = password, painterResource = passwordPainterResource)
+                MyPasswordFieldComponent(labelValue = password,
+                    painterResource = passwordPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -120,7 +132,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController, scrollState: Scrol
                     contentAlignment = Alignment.Center) {
                     val initialText = stringResource(id = R.string.not_registered)
                     val loginText = stringResource(id = R.string.create_account)
-                    ClickableLoginOrLogOutText(navController, initialText, loginText)
+                    ClickableLoginOrLogOutText(navController, initialText, loginText, rank = 1)
                 }
             }
         }

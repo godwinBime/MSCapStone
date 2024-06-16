@@ -28,6 +28,7 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
+import com.example.data.LoginViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -49,15 +50,15 @@ class ForgotPasswordActivity : ComponentActivity() {
 }
 
 @Composable
-fun ForgotPassword(navController: NavHostController){
+fun ForgotPassword(navController: NavHostController, loginViewModel: LoginViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldWithTopBarForgotPassword(navController)
+        ScaffoldWithTopBarForgotPassword(navController, loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
+fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, loginViewModel: LoginViewModel){
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
 
@@ -79,7 +80,11 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController){
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = email, painterResource = emailPainterResource)
+                MyTextFieldComponent(labelValue = email,
+                    painterResource = emailPainterResource,
+                    onTextChanged = {
+
+                    })
 
                 Spacer(modifier = Modifier
                     .height(20.dp))

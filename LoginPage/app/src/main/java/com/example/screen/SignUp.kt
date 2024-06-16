@@ -33,6 +33,8 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -53,16 +55,17 @@ class SignUpActivity : ComponentActivity() {
     }
 }
 @Composable
-fun SignUp(navController: NavHostController){
+fun SignUp(navController: NavHostController, loginViewModel: LoginViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldSignUpWithTopBar(navController, scrollState)
+        ScaffoldSignUpWithTopBar(navController, scrollState, loginViewModel = loginViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: ScrollState){
+fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: ScrollState,
+                             loginViewModel: LoginViewModel){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)
@@ -92,27 +95,51 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
-                MyTextFieldComponent(labelValue = firstName, painterResource = personPainterResource)
+                MyTextFieldComponent(labelValue = firstName,
+                    painterResource = personPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.FirstNameChanged(it))
+                    })
 
                 Spacer(modifier = Modifier
                      .height(20.dp))
-                MyTextFieldComponent(labelValue = lastName, painterResource = personPainterResource)
+                MyTextFieldComponent(labelValue = lastName,
+                    painterResource = personPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.LastNameChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                MyTextFieldComponent(labelValue = email, painterResource = emailPainterResource)
+                MyTextFieldComponent(labelValue = email,
+                    painterResource = emailPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                    })
 
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyTextFieldComponent(labelValue = phoneNumber, painterResource = phoneNumberPainterResource)
+                MyTextFieldComponent(labelValue = phoneNumber,
+                    painterResource = phoneNumberPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.PhoneNumberChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyPasswordFieldComponent(labelValue = password, painterResource = passwordPainterResource)
+                MyPasswordFieldComponent(labelValue = password,
+                    painterResource = passwordPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                    })
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyConfirmPasswordFieldComponent(labelValue = confirmPassword, painterResource = confirmPasswordPainterResource)
+                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
+                    painterResource = confirmPasswordPainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
+                    })
 
-                CheckBoxComponent(value = "SignUp")
+                CheckBoxComponent(value = "SignUp", navController = navController)
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier
@@ -129,7 +156,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     contentAlignment = Alignment.Center) {
                     val initialText = stringResource(id = R.string.already_have_account)
                     val loginText = stringResource(id = R.string.login)
-                    ClickableLoginOrLogOutText(navController, initialText, loginText)
+                    ClickableLoginOrLogOutText(navController, initialText, loginText, rank = 0)
                 }
             }
         }

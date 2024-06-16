@@ -11,37 +11,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
+import com.example.data.LoginViewModel
+import com.example.data.UIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
-import com.example.navigation.Routes
 
 class MFAVerifyEmail: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,16 +48,15 @@ class MFAVerifyEmail: ComponentActivity() {
 }
 
 @Composable
-fun MFAVerifyEmail(navController: NavHostController){
+fun MFAVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldMFAVerifyEmail(navController)
+        ScaffoldMFAVerifyEmail(navController, loginViewModel)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldMFAVerifyEmail(navController: NavHostController){
+fun ScaffoldMFAVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -90,7 +76,12 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController){
                 HeadingTextComponent(value = "Enter Verification code")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyTextFieldComponent(labelValue = verificationCode, painterResource = codePainterResource)
+                MyTextFieldComponent(labelValue = verificationCode,
+                    painterResource = codePainterResource,
+                    onTextChanged = {
+                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 SubButton(navController = navController, value = verify, rank = 5)
