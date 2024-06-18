@@ -15,10 +15,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,8 +25,8 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -52,15 +48,15 @@ class ChangePasswordVerifyEmailActivity : ComponentActivity() {
 }
 
 @Composable
-fun ChangePasswordVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ChangePasswordVerifyEmail(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldChangePassword(navController, loginViewModel)
+        ScaffoldChangePassword(navController, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldChangePassword(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ScaffoldChangePassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val verificationCode = stringResource(id = R.string.code)
 
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)
@@ -82,15 +78,15 @@ fun ScaffoldChangePassword(navController: NavHostController, loginViewModel: Log
                 MyTextFieldComponent(labelValue = verificationCode,
                     painterResource = painterVerificationCode,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
                     })
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
-                    value = verify, 3,
-                    loginViewModel = loginViewModel)
+                    value = verify,  rank = 3,
+                    signUpPageViewModel = signUpPageViewModel)
             }
         }
     )

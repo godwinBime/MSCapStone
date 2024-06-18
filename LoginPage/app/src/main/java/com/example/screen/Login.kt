@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
-import com.example.component.CheckBoxComponent
 import com.example.component.ClickableLoginOrLogOutText
 import com.example.component.CustomTopAppBar
 import com.example.component.DividerTextComponent
@@ -35,8 +34,8 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -58,17 +57,17 @@ class LoginActivity : ComponentActivity() {
     }
 }
 @Composable
-fun Login(navController: NavHostController, loginViewModel: LoginViewModel){
+fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldLoginWithTopBar(navController = navController, scrollState, loginViewModel)
+        ScaffoldLoginWithTopBar(navController = navController, scrollState, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
-                            scrollState: ScrollState, loginViewModel: LoginViewModel){
+                            scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel){
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
         content = {
@@ -91,7 +90,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
                     })
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -101,7 +100,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
                     })
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -112,7 +111,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     ButtonComponent(navController,
                         value = stringResource(id = R.string.login), 0,
                         onButtonClicked = {
-                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
                         })
                 }
 

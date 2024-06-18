@@ -25,11 +25,10 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
-
 
 class SMSVerification : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,15 +48,15 @@ class SMSVerification : ComponentActivity() {
 }
 
 @Composable
-fun SMSVerification(navController: NavHostController, loginViewModel: LoginViewModel){
+fun SMSVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldSMSVerification(navController, loginViewModel)
+        ScaffoldSMSVerification(navController, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSMSVerification(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ScaffoldSMSVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -79,13 +78,13 @@ fun ScaffoldSMSVerification(navController: NavHostController, loginViewModel: Lo
                 MyTextFieldComponent(labelValue = verificationCode,
                     painterResource = codePainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
                     })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 SubButton(navController = navController,
                     value = verify, rank = 5,
-                    loginViewModel = loginViewModel)
+                    signUpPageViewModel = signUpPageViewModel)
             }
         }
     )

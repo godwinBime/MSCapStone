@@ -1,6 +1,5 @@
 package com.example.component
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -57,8 +56,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageUIEvent
+import com.example.data.SignUpPageViewModel
 import com.example.navigation.Routes
 import com.example.screen.getToast
 
@@ -100,16 +99,13 @@ fun HeadingTextComponent(value: String){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
-                         onTextChanged:(String) -> Unit){
-//    val textValue = remember{ mutableStateOf("")}
+                         onTextChanged:(String) -> Unit,
+                         errorStatus: Boolean = false){
     val textValue = rememberSaveable{ mutableStateOf("")}
 
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
-        leadingIcon = {
-            Icon(painter = painterResource, contentDescription = "" )
-        },
         label = {Text(text = labelValue)},
         value = textValue.value,
         colors = TextFieldDefaults.textFieldColors(
@@ -121,12 +117,18 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             imeAction = ImeAction.Next),
         onValueChange = {
             textValue.value = it
-            onTextChanged(it)})
+            onTextChanged(it)},
+        leadingIcon = {
+            Icon(painter = painterResource, contentDescription = "" )
+        },
+        isError =! errorStatus
+    )
 }
 
 @Composable
 fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
-                             onTextChanged: (String) -> Unit){
+                             onTextChanged: (String) -> Unit,
+                             errorStatus: Boolean = false){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val showPassword = remember { mutableStateOf(false) }
 
@@ -168,13 +170,15 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
                     )
                 }
             }
-        }
+        },
+        isError =! errorStatus
     )
 }
 
 @Composable
 fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter,
-                                    onTextChanged: (String) -> Unit){
+                                    onTextChanged: (String) -> Unit,
+                                    errorStatus: Boolean = false){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val confirmShowPassword = remember { mutableStateOf(false) }
     TextField(
@@ -215,7 +219,8 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
                     )
                 }
             }
-        }
+        },
+        isError =! errorStatus
     )
 }
 
@@ -358,31 +363,35 @@ fun ButtonComponent(navController: NavHostController,
 
 @Composable
 fun SubButton(navController: NavHostController, value: String, rank: Int,
-              loginViewModel: LoginViewModel){
+              signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(40.dp, 40.dp, 60.dp, 520.dp)){
         ButtonComponent(navController = navController,
             value = value, rank = rank,
             onButtonClicked = {
-                loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
             })
     }
 }
 
 @Composable
-fun ChooseMFAButton(name: String, navController: NavHostController, rank: Int){
+fun ChooseMFAButton(name: String, navController: NavHostController,
+                    rank: Int, onButtonClicked: () -> Unit){
     Box {
         Button(
             onClick = {
                 when(rank){
                     0 -> {
+                        onButtonClicked.invoke()
                         navController.navigate(Routes.AuthenticatorAppVerification.route)
                     }
                     1 -> {
+                        onButtonClicked.invoke()
                         navController.navigate(Routes.SMSVerification.route)
                     }
                     2 -> {
+                        onButtonClicked.invoke()
                         navController.navigate(Routes.MFAVerifyEmail.route)
                     }
                 }
@@ -415,7 +424,10 @@ fun ChooseMFAButton(name: String, navController: NavHostController, rank: Int){
 }
 
 @Composable
-fun DesignMFASpace(navController: NavHostController, value: String, buttonType: String, rank: Int){
+fun DesignMFASpace(navController: NavHostController,
+                   value: String, buttonType: String, rank: Int,
+                   signUpPageViewModel: SignUpPageViewModel
+){
     Card(modifier = Modifier
         .height(100.dp)
         .fillMaxWidth(),
@@ -431,7 +443,13 @@ fun DesignMFASpace(navController: NavHostController, value: String, buttonType: 
             color = Color.Black,
             textAlign = TextAlign.Justify
         )
-        ChooseMFAButton(name = buttonType, navController = navController, rank = rank)
+        ChooseMFAButton(name = buttonType,
+            navController = navController, rank = rank,
+            onButtonClicked = {
+                signUpPageViewModel.onSignUpEvent(
+                    signUpEvent = SignUpPageUIEvent.RegisterButtonClicked)
+            }
+        )
     }
 }
 
@@ -462,7 +480,8 @@ fun DividerTextComponent(){
 }
 
 @Composable
-fun ClickableLoginOrLogOutText(navController: NavHostController, initialText: String, loginText: String, rank: Int){
+fun ClickableLoginOrLogOutText(navController: NavHostController,
+                               initialText: String, loginText: String, rank: Int){
     val annotatedString = buildAnnotatedString {
         append("$initialText ")
         withStyle(style = SpanStyle(color = Color.Blue)){

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,8 +26,8 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -51,15 +49,15 @@ class ForgotPasswordActivity : ComponentActivity() {
 }
 
 @Composable
-fun ForgotPassword(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldWithTopBarForgotPassword(navController, loginViewModel)
+        ScaffoldWithTopBarForgotPassword(navController, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
 
@@ -84,7 +82,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, loginView
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
                     })
 
                 Spacer(modifier = Modifier
@@ -92,7 +90,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, loginView
 
                 SubButton(navController = navController,
                     value = send, 2,
-                    loginViewModel = loginViewModel)
+                    signUpPageViewModel = signUpPageViewModel)
             }
         }
     )

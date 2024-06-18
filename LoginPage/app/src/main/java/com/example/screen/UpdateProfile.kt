@@ -13,7 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
 class UpdateProfileActivity : ComponentActivity() {
@@ -42,4 +44,10 @@ fun UpdateProfile(navController: NavHostController){
 @Composable
 fun ScaffoldUpdateProfileTopBar(navController: NavHostController){
     var userName by rememberSaveable { mutableStateOf("") }
+    val lastName = stringResource(id = R.string.last_name)
+    val email = stringResource(id = R.string.email)
+    val phoneNumber = stringResource(id = R.string.phone_number)
+    val oldPassword = stringResource(id = R.string.old_password)
+    val newPassword = stringResource(id = R.string.new_password)
+    val confirmNewPassword = stringResource(id = R.string.confirm_new_password)
 }

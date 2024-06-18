@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,13 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,9 +26,8 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
-import com.example.component.SubButton
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -53,15 +49,15 @@ class NewPasswordActivity : ComponentActivity() {
 }
 
 @Composable
-fun NewPassword(navController: NavHostController, loginViewModel: LoginViewModel){
+fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldNewPasswordTopBar(navController, loginViewModel)
+        ScaffoldNewPasswordTopBar(navController, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldNewPasswordTopBar(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val password = stringResource(id = R.string.password)
     val confirmPassword = stringResource(id = R.string.confirm_password)
     val resetPassword = stringResource(id = R.string.reset_password)
@@ -86,14 +82,14 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, loginViewModel: 
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
                     })
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.ConfirmPasswordChanged(it))
                     })
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -103,7 +99,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, loginViewModel: 
                     ButtonComponent(navController = navController,
                         value = resetPassword, 4,
                         onButtonClicked = {
-                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
                         })
                 }
             }

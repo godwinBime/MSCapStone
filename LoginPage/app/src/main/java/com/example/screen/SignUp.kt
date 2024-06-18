@@ -33,8 +33,8 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
 
@@ -55,17 +55,17 @@ class SignUpActivity : ComponentActivity() {
     }
 }
 @Composable
-fun SignUp(navController: NavHostController, loginViewModel: LoginViewModel){
+fun SignUp(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldSignUpWithTopBar(navController, scrollState, loginViewModel = loginViewModel)
+        ScaffoldSignUpWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: ScrollState,
-                             loginViewModel: LoginViewModel){
+                             signUpPageViewModel: SignUpPageViewModel){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)
@@ -98,46 +98,56 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 MyTextFieldComponent(labelValue = firstName,
                     painterResource = personPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.FirstNameChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.FirstNameChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError)
 
                 Spacer(modifier = Modifier
                      .height(20.dp))
                 MyTextFieldComponent(labelValue = lastName,
                     painterResource = personPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.LastNameChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.LastNameChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.EmailChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
+                )
 
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,
                     painterResource = phoneNumberPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.PhoneNumberChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PhoneNumberChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.PasswordChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
                     painterResource = confirmPasswordPainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.ConfirmPasswordChanged(it))
-                    })
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.ConfirmPasswordChanged(it))
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+                )
 
                 CheckBoxComponent(value = "SignUp", navController = navController)
 
@@ -147,7 +157,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     ButtonComponent(navController,
                         value = stringResource(id = R.string.signup), 1,
                         onButtonClicked = {
-                            loginViewModel.onEvent(UIEvent.RegisterButtonClicked)
+                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
                         })
                 }
 

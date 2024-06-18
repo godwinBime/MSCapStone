@@ -25,11 +25,10 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.LoginViewModel
-import com.example.data.UIEvent
+import com.example.data.SignUpPageViewModel
+import com.example.data.SignUpPageUIEvent
 import com.example.loginpage.R
 import com.example.loginpage.ui.theme.LoginPageTheme
-import kotlin.math.log
 
 class MFAVerifyEmail: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,15 +48,16 @@ class MFAVerifyEmail: ComponentActivity() {
 }
 
 @Composable
-fun MFAVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
+fun MFAVerifyEmail(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldMFAVerifyEmail(navController, loginViewModel)
+        ScaffoldMFAVerifyEmail(navController, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldMFAVerifyEmail(navController: NavHostController, loginViewModel: LoginViewModel){
+fun ScaffoldMFAVerifyEmail(navController: NavHostController,
+                           signUpPageViewModel: SignUpPageViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -80,14 +80,14 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController, loginViewModel: Log
                 MyTextFieldComponent(labelValue = verificationCode,
                     painterResource = codePainterResource,
                     onTextChanged = {
-                        loginViewModel.onEvent(UIEvent.VerificationCodeChanged(it))
+                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
                     }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 SubButton(navController = navController,
                     value = verify, rank = 5,
-                    loginViewModel = loginViewModel)
+                    signUpPageViewModel = signUpPageViewModel)
             }
         }
     )
