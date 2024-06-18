@@ -9,18 +9,26 @@ class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
 
+    var firstNameValidationsPassed = mutableStateOf(false)
+    var lastNameValidationsPassed = mutableStateOf(false)
+    var emailValidationsPassed = mutableStateOf(false)
+    var phoneNumberValidationsPassed = mutableStateOf(false)
+    var passwordValidationsPassed = mutableStateOf(false)
+    var confirmPasswordValidationsPassed = mutableStateOf(false)
+    var verificationCodeValidationsPassed = mutableStateOf(false)
+
     fun onSignUpEvent(signUpEvent: SignUpPageUIEvent){
 //        validateSignUpDataWithRules()
         when(signUpEvent){
             is SignUpPageUIEvent.FirstNameChanged -> {
-                validateFirstName()
+                validateFirstNameDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     firstName = signUpEvent.firstName
                 )
                 printSignUpState("firstName")
             }
             is SignUpPageUIEvent.LastNameChanged -> {
-                validateLastName()
+                validateLastNameDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     lastName = signUpEvent.lastName
                 )
@@ -28,7 +36,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.EmailChanged -> {
-                validateEmail()
+                validateEmailDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     email = signUpEvent.email
                 )
@@ -36,7 +44,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.PhoneNumberChanged -> {
-                validatePhoneNumber()
+                validatePhoneNumberDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     phoneNumber = signUpEvent.phoneNumber
                 )
@@ -44,7 +52,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.PasswordChanged -> {
-                validatePassword()
+                validatePasswordDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     password = signUpEvent.password
                 )
@@ -52,7 +60,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.ConfirmPasswordChanged -> {
-                validateConfirmPassword()
+                validateConfirmPasswordDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     confirmPassword = signUpEvent.confirmPassword
                 )
@@ -60,7 +68,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.VerificationCodeChanged -> {
-                validateVerificationCode()
+                validateVerificationCodeDataWithRules()
                 signUpPageUIState.value = signUpPageUIState.value.copy(
                     verificationCode = signUpEvent.verificationCode
                 )
@@ -73,16 +81,18 @@ class SignUpPageViewModel: ViewModel() {
         }
     }
 
-    private fun validateFirstName(){
+    private fun validateFirstNameDataWithRules(){
         val firstNameResult = SignUpPageValidator.validateFirstName(
             firstName = signUpPageUIState.value.firstName
         )
         Log.d(TAG, "FN = $firstNameResult")
         signUpPageUIState.value = signUpPageUIState.value.copy(
             firstNameError = firstNameResult.signUpStatus)
+
+        firstNameValidationsPassed.value = firstNameResult.signUpStatus
     }
 
-    private fun validateLastName(){
+    private fun validateLastNameDataWithRules(){
         val lastNameResult = SignUpPageValidator.validateLastName(
             lastName = signUpPageUIState.value.lastName
         )
@@ -90,9 +100,10 @@ class SignUpPageViewModel: ViewModel() {
         signUpPageUIState.value = signUpPageUIState.value.copy(
             lastNameError = lastNameResult.signUpStatus
         )
+        lastNameValidationsPassed.value = lastNameResult.signUpStatus
     }
 
-    private fun validateEmail(){
+    private fun validateEmailDataWithRules(){
         val emailResult = SignUpPageValidator.validateEmail(
             email = signUpPageUIState.value.email
         )
@@ -100,9 +111,10 @@ class SignUpPageViewModel: ViewModel() {
         signUpPageUIState.value = signUpPageUIState.value.copy(
             emailError = emailResult.signUpStatus
         )
+        emailValidationsPassed.value = emailResult.signUpStatus
     }
 
-    private fun validatePhoneNumber(){
+    private fun validatePhoneNumberDataWithRules(){
         val phoneNumberResult = SignUpPageValidator.validatePhoneNumber(
             phoneNumber = signUpPageUIState.value.phoneNumber
         )
@@ -110,9 +122,10 @@ class SignUpPageViewModel: ViewModel() {
         signUpPageUIState.value = signUpPageUIState.value.copy(
             phoneNumberError = phoneNumberResult.signUpStatus
         )
+        phoneNumberValidationsPassed.value = phoneNumberResult.signUpStatus
     }
 
-    private fun validatePassword(){
+    private fun validatePasswordDataWithRules(){
         val passwordResult = SignUpPageValidator.validatePassword(
             password = signUpPageUIState.value.password
         )
@@ -120,9 +133,10 @@ class SignUpPageViewModel: ViewModel() {
         signUpPageUIState.value = signUpPageUIState.value.copy(
             passwordError = passwordResult.signUpStatus
         )
+        passwordValidationsPassed.value = passwordResult.signUpStatus
     }
 
-    private fun validateConfirmPassword(){
+    private fun validateConfirmPasswordDataWithRules(){
         val confirmPasswordResult = SignUpPageValidator.validateConfirmPassword(
             confirmPassword = signUpPageUIState.value.confirmPassword
         )
@@ -130,65 +144,20 @@ class SignUpPageViewModel: ViewModel() {
         signUpPageUIState.value = signUpPageUIState.value.copy(
             confirmPasswordError = confirmPasswordResult.signUpStatus
         )
+
+        confirmPasswordValidationsPassed.value = confirmPasswordResult.signUpStatus
     }
 
-    private fun validateVerificationCode(){
-        val validateVerificationCodeResult = SignUpPageValidator.validateVerificationCode(
+    private fun validateVerificationCodeDataWithRules(){
+        val verificationCodeResult = SignUpPageValidator.validateVerificationCode(
             verificationCode = signUpPageUIState.value.verificationCode
         )
-        Log.d(TAG, "Verification Code = $validateVerificationCodeResult")
+        Log.d(TAG, "Verification Code = $verificationCodeResult")
         signUpPageUIState.value = signUpPageUIState.value.copy(
-            verificationCodeError = validateVerificationCodeResult.signUpStatus
+            verificationCodeError = verificationCodeResult.signUpStatus
         )
+        verificationCodeValidationsPassed.value = verificationCodeResult.signUpStatus
     }
-
-//    private fun validateSignUpDataWithRules(){
-//        val firstNameResult = SignUpPageValidator.validateFirstName(
-//            firstName = signUpPageUIState.value.firstName
-//        )
-//
-//        val lastNameResult = SignUpPageValidator.validateLastName(
-//            lastName = signUpPageUIState.value.lastName
-//        )
-//
-//        val emailResult = SignUpPageValidator.validateEmail(
-//            email = signUpPageUIState.value.email
-//        )
-//
-//        val phoneNumberResult = SignUpPageValidator.validatePhoneNumber(
-//            phoneNumber = signUpPageUIState.value.phoneNumber
-//        )
-//
-//        val passwordResult = SignUpPageValidator.validatePassword(
-//            password = signUpPageUIState.value.password
-//        )
-//
-//        val confirmPasswordResult = SignUpPageValidator.validateConfirmPassword(
-//            confirmPassword = signUpPageUIState.value.confirmPassword
-//        )
-//
-//        val verificationResult = SignUpPageValidator.validateVerificationCode(
-//            verificationCode = signUpPageUIState.value.verificationCode
-//        )
-//
-//        Log.d(TAG, "FN = ${firstNameResult}")
-//        Log.d(TAG, "LN = ${lastNameResult}")
-//        Log.d(TAG, "Email = ${emailResult}")
-//        Log.d(TAG, "PN = ${phoneNumberResult}")
-//        Log.d(TAG, "PW = ${passwordResult}")
-//        Log.d(TAG, "ConfPW = ${confirmPasswordResult}")
-//        Log.d(TAG, "VerifyCode = ${verificationResult}")
-//
-//        signUpPageUIState.value = signUpPageUIState.value.copy(
-//            firstNameError = firstNameResult.signUpStatus,
-//            lastNameError = lastNameResult.signUpStatus,
-//            emailError = emailResult.signUpStatus,
-//            phoneNumberError = phoneNumberResult.signUpStatus,
-//            passwordError = passwordResult.signUpStatus,
-//            confirmPasswordError = confirmPasswordResult.signUpStatus,
-//            verificationCodeError = verificationResult.signUpStatus
-//        )
-//    }
 
     private fun printSignUpState(value: String){
         Log.d(TAG, "Inside_${value}_printState")

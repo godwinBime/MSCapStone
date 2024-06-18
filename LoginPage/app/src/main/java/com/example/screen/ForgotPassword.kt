@@ -90,7 +90,9 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
 
                 SubButton(navController = navController,
                     value = send, 2,
-                    signUpPageViewModel = signUpPageViewModel)
+                    signUpPageViewModel = signUpPageViewModel,
+                    isEnable = signUpPageViewModel.emailValidationsPassed.value
+                )
             }
         }
     )

@@ -86,7 +86,9 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signU
                 Spacer(modifier = Modifier.height(20.dp))
                 SubButton(navController = navController,
                     value = verify, rank = 5,
-                    signUpPageViewModel = signUpPageViewModel)
+                    signUpPageViewModel = signUpPageViewModel,
+                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
+                )
             }
         }
     )

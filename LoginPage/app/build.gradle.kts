@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
     //id("com.android.application")
-   // id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,23 +56,19 @@ android {
 dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.compose.material:material:1.6.5")
-
-    //Mongo Realm
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("io.realm.kotlin:library-base:1.6.1")
+    implementation("androidx.compose.material:material:1.6.8")
 
     //Desugar jdk
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    //coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
     //Firebase SDK
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
-    implementation("com.google.firebase:firebase-bom:33.1.0")
+    implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     //implementation("com.google.firebase:firebase-analytics")
 
     implementation(libs.androidx.core.ktx)

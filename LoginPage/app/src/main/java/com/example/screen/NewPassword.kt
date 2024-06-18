@@ -100,7 +100,9 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
                         value = resetPassword, 4,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
-                        })
+                        },
+                        isEnable = signUpPageViewModel.passwordValidationsPassed.value && signUpPageViewModel.confirmPasswordValidationsPassed.value
+                    )
                 }
             }
         }

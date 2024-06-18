@@ -307,7 +307,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 @Composable
 fun ButtonComponent(navController: NavHostController,
                     value: String, rank: Int,
-                    onButtonClicked: () -> Unit){
+                    onButtonClicked: () -> Unit, isEnable: Boolean = false){
     Button(onClick = {
         when(rank){
             0 ->{
@@ -340,6 +340,7 @@ fun ButtonComponent(navController: NavHostController,
             .fillMaxSize()
             .heightIn(48.dp),
             contentPadding = PaddingValues(),
+        enabled = isEnable,
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ){
         Box(modifier = Modifier
@@ -363,7 +364,7 @@ fun ButtonComponent(navController: NavHostController,
 
 @Composable
 fun SubButton(navController: NavHostController, value: String, rank: Int,
-              signUpPageViewModel: SignUpPageViewModel){
+              signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(40.dp, 40.dp, 60.dp, 520.dp)){
@@ -371,7 +372,8 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
             value = value, rank = rank,
             onButtonClicked = {
                 signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
-            })
+            },
+            isEnable = isEnable)
     }
 }
 

@@ -79,6 +79,11 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
     val passwordPainterResource = painterResource(id = R.drawable.password)
     val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
 
+    val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
+            signUpPageViewModel.lastNameValidationsPassed.value &&
+            signUpPageViewModel.emailValidationsPassed.value &&
+            signUpPageViewModel.passwordValidationsPassed.value &&
+            signUpPageViewModel.confirmPasswordValidationsPassed.value
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Create Account", true)},
@@ -158,7 +163,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                         value = stringResource(id = R.string.signup), 1,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
-                        })
+                        },
+                        isEnable = isEnabled
+                    )
                 }
 
                 DividerTextComponent()

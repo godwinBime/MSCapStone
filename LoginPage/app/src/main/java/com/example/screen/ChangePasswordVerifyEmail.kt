@@ -86,7 +86,9 @@ fun ScaffoldChangePassword(navController: NavHostController, signUpPageViewModel
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
                     value = verify,  rank = 3,
-                    signUpPageViewModel = signUpPageViewModel)
+                    signUpPageViewModel = signUpPageViewModel,
+                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
+                    )
             }
         }
     )

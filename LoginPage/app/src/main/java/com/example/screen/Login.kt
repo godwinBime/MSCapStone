@@ -91,7 +91,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     painterResource = emailPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 val password = stringResource(id = R.string.password)
@@ -101,7 +103,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                    )
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -112,7 +116,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                         value = stringResource(id = R.string.login), 0,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
-                        })
+                        },
+                        isEnable = signUpPageViewModel.emailValidationsPassed.value && signUpPageViewModel.passwordValidationsPassed.value
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
