@@ -81,7 +81,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                     painterResource = codePainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
-                    }
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

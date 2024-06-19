@@ -79,7 +79,9 @@ fun ScaffoldChangePassword(navController: NavHostController, signUpPageViewModel
                     painterResource = painterVerificationCode,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
+                    )
 
                 Spacer(modifier = Modifier
                     .height(20.dp))

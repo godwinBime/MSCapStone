@@ -83,7 +83,9 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
                     painterResource = emailPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
+                    )
 
                 Spacer(modifier = Modifier
                     .height(20.dp))

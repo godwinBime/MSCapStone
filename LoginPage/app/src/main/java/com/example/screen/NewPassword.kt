@@ -83,14 +83,18 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
                     painterResource = passwordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                    )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.ConfirmPasswordChanged(it))
-                    })
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+                    )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Box(modifier = Modifier
