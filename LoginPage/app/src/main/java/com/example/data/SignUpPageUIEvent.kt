@@ -8,5 +8,8 @@ sealed class SignUpPageUIEvent {
     data class PasswordChanged(val password: String): SignUpPageUIEvent()
     data class ConfirmPasswordChanged(val confirmPassword: String): SignUpPageUIEvent()
     data class VerificationCodeChanged(val verificationCode: String): SignUpPageUIEvent()
+    data class PrivacyPolicyCheckboxClicked(val privacyPolicyStatus: Boolean): SignUpPageUIEvent()
     object RegisterButtonClicked: SignUpPageUIEvent()
+    object RegisterButtonClickedAfterFirebaseAuth: SignUpPageUIEvent()
+    object LoginButtonClicked: SignUpPageUIEvent()
 }

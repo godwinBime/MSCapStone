@@ -16,10 +16,6 @@ import com.example.component.CustomTopAppBar
 import com.example.component.NormalTextComponent
 import com.example.loginpage.R
 
-class PrivacyPolicyActivity {
-}
-
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PrivacyPolicy(navController: NavHostController){

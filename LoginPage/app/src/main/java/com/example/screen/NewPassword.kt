@@ -1,19 +1,15 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,27 +22,11 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
-import com.example.data.SignUpPageViewModel
+import com.example.component.SignOutButtonComponent
+import com.example.component.SubButton
 import com.example.data.SignUpPageUIEvent
+import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.theme.LoginPageTheme
-
-class NewPasswordActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LoginPageTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // TODO: Undecided
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
@@ -71,7 +51,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
             Column(
                 modifier = Modifier
                     .padding(20.dp)
-                    .fillMaxSize(),
+                    .fillMaxHeight(.8f)
+                    ,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
@@ -82,32 +63,34 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PasswordChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                     )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
-                    painterResource = passwordPainterResource,
-                    onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.ConfirmPasswordChanged(it))
-                    },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
-                    )
+//                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
+//                    painterResource = passwordPainterResource,
+//                    onTextChanged = {
+//                        signUpPageViewModel.onSignUpEvent(
+//                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
+//                            navController = navController)
+//                    },
+//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+//                )
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Box(modifier = Modifier
-                    .padding(0.dp, 5.dp, 0.dp, 445.dp)
-                    .fillMaxSize(),){
-                    ButtonComponent(navController = navController,
-                        value = resetPassword, 4,
-                        onButtonClicked = {
-                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
-                        },
-                        isEnable = signUpPageViewModel.passwordValidationsPassed.value && signUpPageViewModel.confirmPasswordValidationsPassed.value
-                    )
-                }
+                SubButton(
+                    navController = navController,
+                    value = resetPassword,
+                    rank = 4,
+                    signUpPageViewModel = signUpPageViewModel,
+                    isEnable = signUpPageViewModel.passwordValidationsPassed.value
+                /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/
+                )
             }
         }
     )

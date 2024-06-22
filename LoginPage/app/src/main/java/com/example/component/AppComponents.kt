@@ -225,7 +225,8 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
 }
 
 @Composable
-fun CheckBoxComponent(value: String, navController: NavHostController){
+fun CheckBoxComponent(value: String, navController: NavHostController,
+                      onCheckBoxChecked: (Boolean) -> Unit){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,7 +237,8 @@ fun CheckBoxComponent(value: String, navController: NavHostController){
         val checkState = remember { mutableStateOf(false)}
         Checkbox(
             checked = checkState.value,
-            onCheckedChange = {checkState.value  = it})
+            onCheckedChange = {checkState.value  = it
+            onCheckBoxChecked.invoke(it)})
 
         ClickableTextComponent(value = value, navController = navController)
     }
@@ -285,12 +287,19 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Login.route)
                       }
                       1 -> {
-                          navController.navigate(Routes.SignUp.route)
                           getToast(context = context, "Nav to SignUp")
+                          navController.navigate(Routes.SignUp.route)
                       }
                       2 -> {
                           getToast(context = context, "Nav to Forgot Pass")
                           navController.navigate(Routes.ForgotPassword.route)
+                      }
+                      3 -> {
+                          navController.navigate(Routes.Home.route)
+                      }
+                      4 -> {
+                          getToast(context = context, "Nav to Update Profile")
+                          navController.navigate(Routes.UpdateProfile.route)
                       }
                   }
             },
@@ -298,7 +307,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                 fontSize = 14.sp,
                 fontFamily = FontFamily.Default,
                 textDecoration = TextDecoration.Underline,
-                color = Color.Black
+                color = Color.Blue
             )
         )
     }
@@ -312,11 +321,11 @@ fun ButtonComponent(navController: NavHostController,
         when(rank){
             0 ->{
                 onButtonClicked.invoke()
-                navController.navigate(Routes.ChooseVerificationMethod.route)
+//                navController.navigate(Routes.ChooseVerificationMethod.route)
             }
             1 -> {
                 onButtonClicked.invoke()
-                navController.navigate(Routes.Login.route)
+//                navController.navigate(Routes.Login.route)
             }
             2 -> {
                 onButtonClicked.invoke()
@@ -363,15 +372,39 @@ fun ButtonComponent(navController: NavHostController,
 }
 
 @Composable
+fun SignOutButtonComponent(navController: NavHostController, value: String, rank: Int,
+                           signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
+    Card(modifier = Modifier
+        .height(90.dp)
+        .fillMaxWidth(.9f)
+        .background(Color.Red)){
+        ButtonComponent(
+            navController = navController,
+            value = value,
+            rank = rank,
+            onButtonClicked = {
+                signUpPageViewModel.logOut(navController = navController)
+            },
+            isEnable = isEnable
+        )
+    }
+}
+
+
+@Composable
 fun SubButton(navController: NavHostController, value: String, rank: Int,
               signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(40.dp, 40.dp, 60.dp, 520.dp)){
+    Card(modifier = Modifier
+        .height(90.dp)
+        .fillMaxWidth(.9f)
+        .background(Color.Red))        {
         ButtonComponent(navController = navController,
             value = value, rank = rank,
             onButtonClicked = {
-                signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
+                signUpPageViewModel.onSignUpEvent(
+                    SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
+                    navController = navController
+                )
             },
             isEnable = isEnable)
     }
@@ -449,7 +482,9 @@ fun DesignMFASpace(navController: NavHostController,
             navController = navController, rank = rank,
             onButtonClicked = {
                 signUpPageViewModel.onSignUpEvent(
-                    signUpEvent = SignUpPageUIEvent.RegisterButtonClicked)
+                    signUpEvent = SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
+                    navController = navController
+                )
             }
         )
     }

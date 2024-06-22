@@ -1,9 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,24 +23,6 @@ import com.example.component.SubButton
 import com.example.data.SignUpPageUIEvent
 import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.theme.LoginPageTheme
-
-class AuthenticatorAppVerificationActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LoginPageTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // TODO: Undecided
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun AuthenticatorAppVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
@@ -80,7 +57,10 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signU
                 MyTextFieldComponent(labelValue = verificationCode,
                     painterResource = codePainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.VerificationCodeChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.VerificationCodeChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
                     )

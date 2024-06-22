@@ -40,7 +40,7 @@ fun ScreenMain(){
         }
         
         composable(Routes.Home.route){
-            Home(navController = navController)
+            Home(navController = navController, signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.NewPassword.route){
@@ -48,7 +48,7 @@ fun ScreenMain(){
         }
 
         composable(Routes.UpdateProfile.route){
-            UpdateProfile(navController = navController)
+            UpdateProfile(navController = navController, signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.ChooseVerificationMethod.route){

@@ -1,9 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,33 +30,20 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
-import com.example.data.SignUpPageViewModel
 import com.example.data.SignUpPageUIEvent
+import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.theme.LoginPageTheme
 
-
-class LoginActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LoginPageTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // TODO: Undecided
-                }
-            }
-        }
-    }
-}
 @Composable
 fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val scrollState = rememberScrollState()
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier
+        .fillMaxSize(),
+        contentAlignment = Alignment.Center){
         ScaffoldLoginWithTopBar(navController = navController, scrollState, signUpPageViewModel)
+        if (signUpPageViewModel.signINSignUpInProgress.value) {
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -86,11 +69,15 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
 
                 val email = stringResource(id = R.string.email)
                 val emailPainterResource = painterResource(id = R.drawable.email)
+                val isEnabled = signUpPageViewModel.emailValidationsPassed.value
+                        && signUpPageViewModel.passwordValidationsPassed.value
 
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.EmailChanged(it),
+                            navController = navController)
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
                 )
@@ -102,12 +89,15 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PasswordChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
-                    )
+                )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
                 Box(modifier = Modifier
                     .fillMaxSize()
@@ -115,17 +105,27 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     ButtonComponent(navController,
                         value = stringResource(id = R.string.login), 0,
                         onButtonClicked = {
-                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
+                            signUpPageViewModel.onSignUpEvent(
+                                SignUpPageUIEvent.LoginButtonClicked,
+                                navController = navController)
                         },
-                        isEnable = signUpPageViewModel.emailValidationsPassed.value && signUpPageViewModel.passwordValidationsPassed.value
+                        isEnable = isEnabled
                     )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 GeneralClickableTextComponent(
+                    value = stringResource(id = R.string.update_profile),
+                    navController = navController, 4)
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GeneralClickableTextComponent(
                     value = "Forget Password?",
                     navController = navController, 2)
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 DividerTextComponent()
 
@@ -134,6 +134,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 NormalTextComponent(value = "Sign in with:")
 
                 DividerTextComponent()
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Box(modifier = Modifier
                     .fillMaxSize()

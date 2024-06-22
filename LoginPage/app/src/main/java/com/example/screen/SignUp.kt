@@ -1,9 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,32 +29,20 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
-import com.example.data.SignUpPageViewModel
 import com.example.data.SignUpPageUIEvent
+import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.theme.LoginPageTheme
 
-class SignUpActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LoginPageTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // TODO: Undecided
-                }
-            }
-        }
-    }
-}
 @Composable
 fun SignUp(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val scrollState = rememberScrollState()
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier
+        .fillMaxSize(),
+        contentAlignment = Alignment.Center){
         ScaffoldSignUpWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel)
+        if (signUpPageViewModel.signINSignUpInProgress.value) {
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -82,8 +66,10 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
             signUpPageViewModel.emailValidationsPassed.value &&
+            signUpPageViewModel.phoneNumberValidationsPassed.value &&
             signUpPageViewModel.passwordValidationsPassed.value &&
-            signUpPageViewModel.confirmPasswordValidationsPassed.value
+            //signUpPageViewModel.confirmPasswordValidationsPassed.value &&
+            signUpPageViewModel.privacyPolicyValidationPassed.value
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, "Create Account", true)},
@@ -103,7 +89,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 MyTextFieldComponent(labelValue = firstName,
                     painterResource = personPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.FirstNameChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.FirstNameChanged(it),
+                            navController = navController)
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError)
 
@@ -112,7 +100,10 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 MyTextFieldComponent(labelValue = lastName,
                     painterResource = personPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.LastNameChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.LastNameChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError)
 
@@ -121,40 +112,58 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.EmailChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
-                )
-
-
-                Spacer(modifier = Modifier.height(20.dp))
-                MyTextFieldComponent(labelValue = phoneNumber,
-                    painterResource = phoneNumberPainterResource,
-                    onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PhoneNumberChanged(it))
-                    },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyPasswordFieldComponent(labelValue = password,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.PasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PasswordChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                 )
 
+//                Spacer(modifier = Modifier.height(20.dp))
+//                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
+//                    painterResource = confirmPasswordPainterResource,
+//                    onTextChanged = {
+//                        signUpPageViewModel.onSignUpEvent(
+//                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
+//                            navController = navController
+//                        )
+//                    },
+//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+//                )
+
                 Spacer(modifier = Modifier.height(20.dp))
-                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
-                    painterResource = confirmPasswordPainterResource,
+                MyTextFieldComponent(labelValue = phoneNumber,
+                    painterResource = phoneNumberPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.ConfirmPasswordChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PhoneNumberChanged(it),
+                            navController = navController
+                        )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
                 )
 
-                CheckBoxComponent(value = "SignUp", navController = navController)
+                CheckBoxComponent(value = "SignUp", navController = navController,
+                    onCheckBoxChecked = {
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PrivacyPolicyCheckboxClicked(it),
+                            navController = navController
+                        )
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier
@@ -162,7 +171,10 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     ButtonComponent(navController,
                         value = stringResource(id = R.string.signup), 1,
                         onButtonClicked = {
-                            signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.RegisterButtonClicked)
+                            signUpPageViewModel.onSignUpEvent(
+                                SignUpPageUIEvent.RegisterButtonClicked,
+                                navController = navController
+                            )
                         },
                         isEnable = isEnabled
                     )

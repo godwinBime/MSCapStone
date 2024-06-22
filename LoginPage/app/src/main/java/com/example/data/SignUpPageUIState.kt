@@ -20,5 +20,8 @@ data class SignUpPageUIState (
     var confirmPasswordError: Boolean = false,
 
     var verificationCode: String = "",
-    var verificationCodeError: Boolean = false
+    var verificationCodeError: Boolean = false,
+
+    var privacyPolicyAccepted: Boolean = false,
+    var privacyPolicyError: Boolean = false
 )

@@ -1,9 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,27 +21,9 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.SignUpPageViewModel
 import com.example.data.SignUpPageUIEvent
+import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.theme.LoginPageTheme
-
-class ForgotPasswordActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            LoginPageTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // TODO: Undecided
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun ForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
@@ -60,7 +37,6 @@ fun ForgotPassword(navController: NavHostController, signUpPageViewModel: SignUp
 fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
-
     val emailPainterResource = painterResource(id = R.drawable.email)
 
     Scaffold(
@@ -69,7 +45,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
         content = {
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
+                    .fillMaxHeight(.8f)
                     .padding(20.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -82,10 +58,13 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(SignUpPageUIEvent.EmailChanged(it))
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.EmailChanged(it),
+                            navController = navController
+                        )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
-                    )
+                )
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
