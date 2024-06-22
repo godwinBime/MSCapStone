@@ -11,27 +11,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.component.ButtonComponent
 import com.example.component.CustomTopAppBar
 import com.example.component.NormalTextComponent
-import com.example.component.SignOutButtonComponent
-import com.example.component.SubButton
-import com.example.data.SignUpPageUIEvent
 import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
 
@@ -49,6 +42,8 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController,
                            signUpPageViewModel: SignUpPageViewModel, scrollState: ScrollState){
     val context = LocalContext.current
     val name = "User + 1"
+    val home = stringResource(id = R.string.home)
+
     Scaffold(
         bottomBar = {
             GeneralBottomAppBar(navController)
@@ -65,7 +60,12 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController,
                 )
             }
         },
-        topBar = { CustomTopAppBar(navController, "Home", true)},
+        topBar = { CustomTopAppBar(navController, home, true,
+            logoutButtonClicked = {
+                signUpPageViewModel.logOut(navController = navController)
+            }
+        )
+        },
         content = {
             Column(
                 modifier = Modifier
@@ -78,13 +78,6 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController,
                 NormalTextComponent(value = "Welcome, $name")
 
                 Spacer(modifier = Modifier.height(80.dp))
-                SignOutButtonComponent(
-                    navController = navController,
-                    value = stringResource(id = R.string.sign_out),
-                    rank = 1,
-                    signUpPageViewModel = signUpPageViewModel,
-                    isEnable = true
-                )
             }
         }
     )

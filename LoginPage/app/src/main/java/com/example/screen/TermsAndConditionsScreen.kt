@@ -24,7 +24,7 @@ import com.example.loginpage.R
 fun TermsAndConditionsScreen(navController: NavHostController){
     val title = stringResource(id = R.string.terms_and_conditions_header)
     Scaffold(
-        topBar = { CustomTopAppBar(navController = navController, title = title, showBackIcon = true)},
+//        topBar = { CustomTopAppBar(navController = navController, title = title, showBackIcon = true)},
         content = {
             Column(
                 modifier = Modifier

@@ -21,7 +21,7 @@ import com.example.loginpage.R
 fun PrivacyPolicy(navController: NavHostController){
     val title = stringResource(id = R.string.privacy_policy)
     Scaffold(
-        topBar = { CustomTopAppBar(navController = navController, title = title, showBackIcon = true) },
+//        topBar = { CustomTopAppBar(navController = navController, title = title, showBackIcon = true) },
         content = {
             Column(
                 modifier = Modifier

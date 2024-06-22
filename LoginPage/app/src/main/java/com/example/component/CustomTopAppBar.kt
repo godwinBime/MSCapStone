@@ -6,15 +6,19 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
+import com.example.loginpage.R
 
 @Composable
-fun CustomTopAppBar(navController: NavHostController, title: String, showBackIcon: Boolean){
+fun CustomTopAppBar(navController: NavHostController,
+                    title: String, showBackIcon: Boolean,
+                    logoutButtonClicked: () -> Unit){
     TopAppBar(
         backgroundColor = Color.LightGray,
         title = { Text(
@@ -33,8 +37,13 @@ fun CustomTopAppBar(navController: NavHostController, title: String, showBackIco
                 null
             },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "Menu")
+            IconButton(onClick = {
+                logoutButtonClicked()
+            }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = stringResource(id = R.string.sign_out),
+                    tint = Color.Black)
             }
         }
     )

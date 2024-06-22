@@ -52,7 +52,7 @@ fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewM
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel){
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
+//        topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
         content = {
             Column(
                 modifier = Modifier
@@ -113,11 +113,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-
-                GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.update_profile),
-                    navController = navController, 4)
+//                Spacer(modifier = Modifier.height(20.dp))
+//
+//                GeneralClickableTextComponent(
+//                    value = stringResource(id = R.string.home),
+//                    navController = navController, 3)
 
                 Spacer(modifier = Modifier.height(20.dp))
 

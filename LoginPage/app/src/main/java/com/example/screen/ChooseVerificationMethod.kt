@@ -40,7 +40,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
                                      signUpPageViewModel: SignUpPageViewModel){
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "MFA", true) },
+//        topBar = { CustomTopAppBar(navController, "MFA", true) },
         content = {
             Column(
                 modifier = Modifier

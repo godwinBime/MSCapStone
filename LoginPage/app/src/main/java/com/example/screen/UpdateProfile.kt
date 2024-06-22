@@ -76,7 +76,11 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
     val updateButton = stringResource(id = R.string.update_button)
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, updateProfileTitle, true)},
+        topBar = { CustomTopAppBar(navController, updateProfileTitle, true,
+            logoutButtonClicked = {
+                signUpPageViewModel.logOut(navController = navController)
+            }
+        )},
         content = {
             Column(
                 modifier = Modifier

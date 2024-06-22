@@ -41,7 +41,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "MFA Email Verify", true) },
+//        topBar = { CustomTopAppBar(navController, "MFA Email Verify", true) },
         content = {
             Column(
                 modifier = Modifier

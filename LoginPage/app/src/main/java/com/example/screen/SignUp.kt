@@ -71,8 +71,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
             //signUpPageViewModel.confirmPasswordValidationsPassed.value &&
             signUpPageViewModel.privacyPolicyValidationPassed.value
 
+    val createAccount = stringResource(id = R.string.create_account)
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Create Account", true)},
+//        topBar = { CustomTopAppBar(navController, createAccount, true)},
         content = {
             Column(
                 modifier = Modifier

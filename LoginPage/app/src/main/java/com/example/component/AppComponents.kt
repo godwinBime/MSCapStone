@@ -372,12 +372,12 @@ fun ButtonComponent(navController: NavHostController,
 }
 
 @Composable
-fun SignOutButtonComponent(navController: NavHostController, value: String, rank: Int,
+fun GeneralButtonComponent(navController: NavHostController, value: String, rank: Int,
                            signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
     Card(modifier = Modifier
         .height(90.dp)
-        .fillMaxWidth(.9f)
-        .background(Color.Red)){
+        .fillMaxWidth(.9f),
+        elevation = 0.dp){
         ButtonComponent(
             navController = navController,
             value = value,
@@ -396,8 +396,9 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
               signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
     Card(modifier = Modifier
         .height(90.dp)
-        .fillMaxWidth(.9f)
-        .background(Color.Red))        {
+        .fillMaxWidth(.9f),
+        elevation = 0.dp
+    ){
         ButtonComponent(navController = navController,
             value = value, rank = rank,
             onButtonClicked = {
@@ -413,7 +414,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
                     rank: Int, onButtonClicked: () -> Unit){
-    Box {
+    Box() {
         Button(
             onClick = {
                 when(rank){

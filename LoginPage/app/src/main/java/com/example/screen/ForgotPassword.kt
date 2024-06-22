@@ -40,7 +40,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
     val emailPainterResource = painterResource(id = R.drawable.email)
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, stringResource(id = R.string.reset_password), true)},
+//        topBar = { CustomTopAppBar(navController, stringResource(id = R.string.reset_password), true)},
 
         content = {
             Column(

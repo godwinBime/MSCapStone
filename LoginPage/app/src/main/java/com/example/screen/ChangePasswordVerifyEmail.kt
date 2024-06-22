@@ -40,7 +40,7 @@ fun ScaffoldChangePassword(navController: NavHostController, signUpPageViewModel
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Verify Email", true)},
+//        topBar = { CustomTopAppBar(navController, "Verify Email", true)},
         content = {
             Column(
                 modifier = Modifier

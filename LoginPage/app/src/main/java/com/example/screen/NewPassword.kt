@@ -17,12 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.ButtonComponent
 import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
-import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
-import com.example.component.SignOutButtonComponent
 import com.example.component.SubButton
 import com.example.data.SignUpPageUIEvent
 import com.example.data.SignUpPageViewModel
@@ -46,7 +43,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
 
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "New Password", true)},
+//        topBar = { CustomTopAppBar(navController, "New Password", true)},
         content = {
             Column(
                 modifier = Modifier

@@ -40,7 +40,7 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signU
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
 
     Scaffold(
-        topBar = { CustomTopAppBar(navController, "Auth App Verify", true) },
+//        topBar = { CustomTopAppBar(navController, "Auth App Verify", true) },
         content = {
             Column(
                 modifier = Modifier
