@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.component.GeneralClickableTextComponent
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
@@ -67,13 +68,19 @@ fun ScaffoldChangePassword(navController: NavHostController, signUpPageViewModel
                 )
 
                 Spacer(modifier = Modifier
-                    .height(20.dp))
+                    .height(50.dp))
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
                     value = verify,  rank = 3,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
-                    )
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GeneralClickableTextComponent(
+                    value = stringResource(id = R.string.resend_code),
+                    navController = navController, 7)
             }
         }
     )

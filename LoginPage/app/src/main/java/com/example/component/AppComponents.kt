@@ -274,7 +274,8 @@ fun ClickableTextComponent(value: String, navController: NavHostController){
 @Composable
 fun GeneralClickableTextComponent(value: String, navController: NavHostController, rank: Int){
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .background(Color.Transparent)) {
         ClickableText(
             text = AnnotatedString(value),
             modifier = Modifier
@@ -300,6 +301,9 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       4 -> {
                           getToast(context = context, "Nav to Update Profile")
                           navController.navigate(Routes.UpdateProfile.route)
+                      }
+                      5 -> {
+                          navController.navigate(Routes.ChangePasswordVerifyEmail.route)
                       }
                   }
             },
@@ -337,7 +341,7 @@ fun ButtonComponent(navController: NavHostController,
             }
             4 -> {
                 onButtonClicked.invoke()
-                navController.navigate(Routes.Login.route)
+                navController.navigate(Routes.Home.route)
             }
             5 -> {
                 onButtonClicked.invoke()
@@ -400,7 +404,8 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
         elevation = 0.dp
     ){
         ButtonComponent(navController = navController,
-            value = value, rank = rank,
+            value = value,
+            rank = rank,
             onButtonClicked = {
                 signUpPageViewModel.onSignUpEvent(
                     SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,

@@ -55,7 +55,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(20.dp))
-                HeadingTextComponent(value = "Enter a new password")
+                HeadingTextComponent(value = "Enter new password")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyPasswordFieldComponent(labelValue = password,

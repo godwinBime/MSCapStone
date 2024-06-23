@@ -183,7 +183,11 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                     )
                 }
 
+                Spacer(modifier = Modifier.height(20.dp))
+
                 DividerTextComponent()
+
+                Spacer(modifier = Modifier.height(40.dp))
 
                 Box(modifier = Modifier
                     .fillMaxSize()
