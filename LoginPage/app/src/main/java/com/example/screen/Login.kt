@@ -30,6 +30,7 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
+import com.example.component.TopAppBarBeforeLogin
 import com.example.data.SignUpPageUIEvent
 import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
@@ -52,7 +53,7 @@ fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewM
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel){
     Scaffold(
-//        topBar = { CustomTopAppBar(navController, "Capstone-2024", true) },
+        topBar = { TopAppBarBeforeLogin(navController, "Capstone-2024", true) },
         content = {
             Column(
                 modifier = Modifier

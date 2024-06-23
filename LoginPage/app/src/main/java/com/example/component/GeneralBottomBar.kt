@@ -1,4 +1,4 @@
-package com.example.screen
+package com.example.component
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,8 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.loginpage.R
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -37,8 +39,8 @@ fun GeneralBottomAppBar(navController: NavHostController){
     BottomAppBar(
         containerColor = Color.LightGray,
             modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))) {
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))) {
         Row(modifier = Modifier
             .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -50,7 +52,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
             }) {
                 Icon(imageVector = Icons.Default.Home,
                     modifier = Modifier.size(26.dp),
-                    contentDescription = "Home",
+                    contentDescription = stringResource(id = R.string.home),
                     tint = if (selected.value == Icons.Default.Home) {
                         Color.Blue
                     }else{
@@ -60,7 +62,8 @@ fun GeneralBottomAppBar(navController: NavHostController){
             
             IconButton(onClick = {
                 selected.value = Icons.Default.Edit
-                getToast(context, toastName = "Edit Nav button clicked!")}) {
+                getToast(context, toastName = "Edit Nav button clicked!")
+            }) {
                 Icon(imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",
                     tint = if (selected.value == Icons.Default.Edit) Color.Blue else Color.Black)
@@ -76,7 +79,8 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Person
-                getToast(context, toastName = "Person Nav button clicked!")}) {
+                getToast(context, toastName = "Person Nav button clicked!")
+            }) {
                 Icon(imageVector = Icons.Default.Person,
                     contentDescription = "Person",
                     tint = if (selected.value == Icons.Default.Person) Color.Blue else Color.Black)
@@ -84,7 +88,8 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Settings
-                getToast(context, toastName = "Setting Nav button clicked!")}) {
+                getToast(context, toastName = "Setting Nav button clicked!")
+            }) {
                 Icon(imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
                     tint = if (selected.value == Icons.Default.Settings) Color.Blue else Color.Black)

@@ -24,7 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.CustomTopAppBar
+import com.example.component.GeneralBottomAppBar
 import com.example.component.NormalTextComponent
+import com.example.component.getToast
 import com.example.data.SignUpPageViewModel
 import com.example.loginpage.R
 
@@ -62,6 +64,7 @@ fun ScaffoldHomeWithTopBar(navController: NavHostController,
         },
         topBar = { CustomTopAppBar(navController, home, true,
             logoutButtonClicked = {
+                getToast(context, "Logging out...")
                 signUpPageViewModel.logOut(navController = navController)
             }
         )

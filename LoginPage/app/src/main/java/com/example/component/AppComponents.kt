@@ -59,7 +59,6 @@ import androidx.navigation.NavHostController
 import com.example.data.SignUpPageUIEvent
 import com.example.data.SignUpPageViewModel
 import com.example.navigation.Routes
-import com.example.screen.getToast
 
 @Composable
 fun NormalTextComponent(value: String){

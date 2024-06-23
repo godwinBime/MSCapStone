@@ -69,7 +69,8 @@ fun ScreenMain(){
         }
 
         composable(Routes.TermsAndConditionsScreen.route){
-            TermsAndConditionsScreen(navController = navController)
+            TermsAndConditionsScreen(navController = navController,
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.PrivacyPolicy.route){
