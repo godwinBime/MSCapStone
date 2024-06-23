@@ -56,8 +56,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.data.home.HomeViewModel
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.navigation.Routes
 
 @Composable
@@ -372,7 +373,7 @@ fun ButtonComponent(navController: NavHostController,
 
 @Composable
 fun GeneralButtonComponent(navController: NavHostController, value: String, rank: Int,
-                           signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false){
+                           homeViewModel: HomeViewModel, isEnable: Boolean = false){
     Card(modifier = Modifier
         .height(90.dp)
         .fillMaxWidth(.9f),
@@ -382,7 +383,7 @@ fun GeneralButtonComponent(navController: NavHostController, value: String, rank
             value = value,
             rank = rank,
             onButtonClicked = {
-                signUpPageViewModel.logOut(navController = navController)
+                homeViewModel.logOut(navController = navController)
             },
             isEnable = isEnable
         )

@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.data.signup
 
 data class SignUpPageUIState (
     var firstName: String = "",

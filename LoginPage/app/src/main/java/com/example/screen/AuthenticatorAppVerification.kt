@@ -16,12 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.component.TopAppBarBeforeLogin
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
@@ -40,7 +40,8 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signU
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
 
     Scaffold(
-//        topBar = { CustomTopAppBar(navController, "Auth App Verify", true) },
+        topBar = { TopAppBarBeforeLogin(navController, "Auth App Verify",
+            true, action = "Goto the Authenticator app and retrieve the code.") },
         content = {
             Column(
                 modifier = Modifier

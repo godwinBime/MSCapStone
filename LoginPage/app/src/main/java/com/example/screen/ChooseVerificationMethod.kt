@@ -20,14 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.CustomTopAppBar
 import com.example.component.DesignMFASpace
 import com.example.component.HeadingTextComponent
-import com.example.data.SignUpPageViewModel
+import com.example.component.TopAppBarBeforeLogin
+import com.example.data.signup.SignUpPageViewModel
 
 @Composable
 fun ChooseVerificationMethod(navController: NavHostController,
-                             signUpPageViewModel: SignUpPageViewModel){
+                             signUpPageViewModel: SignUpPageViewModel
+){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
         ScaffoldChooseVerificationMethod(navController = navController, scrollState, signUpPageViewModel)
@@ -38,9 +39,11 @@ fun ChooseVerificationMethod(navController: NavHostController,
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
-                                     signUpPageViewModel: SignUpPageViewModel){
+                                     signUpPageViewModel: SignUpPageViewModel
+){
     Scaffold(
-//        topBar = { CustomTopAppBar(navController, "MFA", true) },
+        topBar = { TopAppBarBeforeLogin(navController, "MFA",
+            true, action = "Choose Verification Method then proceed.") },
         content = {
             Column(
                 modifier = Modifier

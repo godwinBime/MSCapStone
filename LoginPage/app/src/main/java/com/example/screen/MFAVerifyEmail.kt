@@ -16,12 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.component.TopAppBarBeforeLogin
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
@@ -34,14 +34,16 @@ fun MFAVerifyEmail(navController: NavHostController, signUpPageViewModel: SignUp
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
-                           signUpPageViewModel: SignUpPageViewModel){
+                           signUpPageViewModel: SignUpPageViewModel
+){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
 
     Scaffold(
-//        topBar = { CustomTopAppBar(navController, "MFA Email Verify", true) },
+        topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
+            true, action = "Enter Verification code sent to your email.") },
         content = {
             Column(
                 modifier = Modifier

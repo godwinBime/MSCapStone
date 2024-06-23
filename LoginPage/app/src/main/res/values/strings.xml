@@ -29,4 +29,6 @@
     <string name="home">Home</string>
     <string name="menu">Menu</string>
     <string name="help">Help</string>
+    <string name="navigation_header">Navigation Header</string>
+    <string name="master_title">Capstone-2024</string>
 </resources>

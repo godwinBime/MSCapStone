@@ -47,7 +47,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
             horizontalArrangement = Arrangement.SpaceAround) {
 
             IconButton(onClick = {
-                getToast(context, toastName = "Home Nav button clicked!")
+                getToast(context, action = "Home Nav button clicked!")
                 selected.value = Icons.Default.Home
             }) {
                 Icon(imageVector = Icons.Default.Home,
@@ -62,7 +62,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
             
             IconButton(onClick = {
                 selected.value = Icons.Default.Edit
-                getToast(context, toastName = "Edit Nav button clicked!")
+                getToast(context, action = "Edit Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",
@@ -71,7 +71,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Delete
-                getToast(context, toastName = "Delete Nav button clicked!") }) {
+                getToast(context, action = "Delete Nav button clicked!") }) {
                 Icon(imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = if (selected.value == Icons.Default.Delete) Color.Blue else Color.Black)
@@ -79,7 +79,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Person
-                getToast(context, toastName = "Person Nav button clicked!")
+                getToast(context, action = "Person Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Person,
                     contentDescription = "Person",
@@ -88,7 +88,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Settings
-                getToast(context, toastName = "Setting Nav button clicked!")
+                getToast(context, action = "Setting Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
@@ -98,6 +98,6 @@ fun GeneralBottomAppBar(navController: NavHostController){
     }
 }
 
-fun getToast(context: Context, toastName: String) {
-    Toast.makeText(context, toastName, Toast.LENGTH_SHORT).show()
+fun getToast(context: Context, action: String) {
+    Toast.makeText(context, action, Toast.LENGTH_SHORT).show()
 }

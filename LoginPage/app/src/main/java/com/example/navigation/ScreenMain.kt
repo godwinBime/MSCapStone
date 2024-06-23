@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.data.SignUpPageViewModel
+import com.example.data.home.HomeViewModel
+import com.example.data.signup.SignUpPageViewModel
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
 import com.example.screen.ChooseVerificationMethod
@@ -40,7 +41,8 @@ fun ScreenMain(){
         }
         
         composable(Routes.Home.route){
-            Home(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            Home(navController = navController, homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.NewPassword.route){
@@ -48,12 +50,14 @@ fun ScreenMain(){
         }
 
         composable(Routes.UpdateProfile.route){
-            UpdateProfile(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            UpdateProfile(navController = navController, signUpPageViewModel = SignUpPageViewModel(),
+                homeViewModel = HomeViewModel())
         }
 
         composable(Routes.ChooseVerificationMethod.route){
             ChooseVerificationMethod(navController = navController, 
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel()
+            )
         }
 
         composable(Routes.AuthenticatorAppVerification.route){
@@ -70,7 +74,8 @@ fun ScreenMain(){
 
         composable(Routes.TermsAndConditionsScreen.route){
             TermsAndConditionsScreen(navController = navController,
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel()
+            )
         }
 
         composable(Routes.PrivacyPolicy.route){

@@ -21,26 +21,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
-import com.example.component.CheckBoxComponent
-import com.example.component.ClickableLoginOrLogOutText
 import com.example.component.CustomTopAppBar
-import com.example.component.DividerTextComponent
 import com.example.component.HeadingTextComponent
-import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.data.home.HomeViewModel
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.navigation.Routes
 
 @Composable
-fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
+                  homeViewModel: HomeViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldUpdateProfileWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel)
+        ScaffoldUpdateProfileWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel,
+            homeViewModel = homeViewModel)
         if (signUpPageViewModel.signINSignUpInProgress.value) {
             CircularProgressIndicator()
         }
@@ -50,7 +48,7 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollState: ScrollState,
-                             signUpPageViewModel: SignUpPageViewModel){
+                             signUpPageViewModel: SignUpPageViewModel, homeViewModel: HomeViewModel){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)
@@ -78,7 +76,7 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
     Scaffold(
         topBar = { CustomTopAppBar(navController, updateProfileTitle, true,
             logoutButtonClicked = {
-                signUpPageViewModel.logOut(navController = navController)
+                homeViewModel.logOut(navController = navController)
             }
         )},
         content = {

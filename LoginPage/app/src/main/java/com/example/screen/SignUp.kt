@@ -23,14 +23,13 @@ import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.CheckBoxComponent
 import com.example.component.ClickableLoginOrLogOutText
-import com.example.component.CustomTopAppBar
 import com.example.component.DividerTextComponent
 import com.example.component.HeadingTextComponent
-import com.example.component.MyConfirmPasswordFieldComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.component.TopAppBarBeforeLogin
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
@@ -49,7 +48,8 @@ fun SignUp(navController: NavHostController, signUpPageViewModel: SignUpPageView
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: ScrollState,
-                             signUpPageViewModel: SignUpPageViewModel){
+                             signUpPageViewModel: SignUpPageViewModel
+){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)
@@ -73,7 +73,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
 
     val createAccount = stringResource(id = R.string.create_account)
     Scaffold(
-//        topBar = { CustomTopAppBar(navController, createAccount, true)},
+        topBar = { TopAppBarBeforeLogin(navController, createAccount,
+            true, action = "Fill the fields above to get registered."
+        ) },
         content = {
             Column(
                 modifier = Modifier

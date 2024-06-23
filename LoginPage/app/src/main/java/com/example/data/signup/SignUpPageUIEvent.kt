@@ -1,4 +1,4 @@
-package com.example.data
+package com.example.data.signup
 
 sealed class SignUpPageUIEvent {
     data class FirstNameChanged(val firstName:String): SignUpPageUIEvent()

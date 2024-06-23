@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.ClickableLoginOrLogOutText
-import com.example.component.CustomTopAppBar
 import com.example.component.DividerTextComponent
 import com.example.component.GeneralClickableTextComponent
 import com.example.component.HeadingTextComponent
@@ -31,8 +30,8 @@ import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.SignUpPageUIEvent
-import com.example.data.SignUpPageViewModel
+import com.example.data.signup.SignUpPageUIEvent
+import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
@@ -51,9 +50,11 @@ fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewM
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
-                            scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel){
+                            scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel
+){
     Scaffold(
-        topBar = { TopAppBarBeforeLogin(navController, "Capstone-2024", true) },
+        topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.master_title),
+            true, action = "Fill the email and password above to login.") },
         content = {
             Column(
                 modifier = Modifier
@@ -114,11 +115,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     )
                 }
 
-//                Spacer(modifier = Modifier.height(20.dp))
-//
-//                GeneralClickableTextComponent(
-//                    value = stringResource(id = R.string.home),
-//                    navController = navController, 3)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GeneralClickableTextComponent(
+                    value = stringResource(id = R.string.home),
+                    navController = navController, 3)
 
                 Spacer(modifier = Modifier.height(20.dp))
 

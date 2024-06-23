@@ -1,9 +1,7 @@
-package com.example.data
+package com.example.data.signup
 
 import android.util.Log
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
@@ -265,21 +263,5 @@ class SignUpPageViewModel: ViewModel() {
                 Log.d(TAG, "SignUp Exception = ${it.message}")
                 Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")
             }
-    }
-
-    fun logOut(navController: NavHostController){
-        val firebaseAuth = FirebaseAuth
-            .getInstance()
-        firebaseAuth.signOut()
-
-        val authStateListener = AuthStateListener{
-            if (it.currentUser == null){
-                navController.navigate(Routes.Login.route)
-                Log.d(TAG, "Inside sign out success state")
-            }else{
-                Log.d(TAG, "Inside sign out is not complete state...")
-            }
-        }
-        firebaseAuth.addAuthStateListener(authStateListener)
     }
 }
