@@ -115,11 +115,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-
-                GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.home),
-                    navController = navController, 3)
+//                Spacer(modifier = Modifier.height(20.dp))
+//
+//                GeneralClickableTextComponent(
+//                    value = stringResource(id = R.string.home),
+//                    navController = navController, 3)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
