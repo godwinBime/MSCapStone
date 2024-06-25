@@ -9,6 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.data.home.HomeViewModel
 import com.example.loginpage.ui.theme.LoginPageTheme
 import com.example.navigation.ScreenMain
 
@@ -22,17 +24,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ScreenMain()
+                    ScreenMain(homeViewModel = HomeViewModel())
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview(){
-    LoginPageTheme {
-        ScreenMain()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview(){
+//    LoginPageTheme {
+//        ScreenMain(homeViewModel = HomeViewModel())
+//    }
+//}

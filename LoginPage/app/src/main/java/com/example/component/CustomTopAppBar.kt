@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.data.NavigationItem
 import com.example.loginpage.R
+import com.example.navigation.Routes
 
 @Composable
 fun CustomTopAppBar(navController: NavHostController,
@@ -90,7 +91,11 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
             overflow = TextOverflow.Ellipsis)},
         navigationIcon = if (showBackIcon && navController.previousBackStackEntry != null){
             {
-                IconButton(onClick = { navController.navigateUp() }) {
+                IconButton(onClick = {
+//                    navController.navigateUp()
+                    getToast(context, "Please Login to continue.")
+                    navController.navigate(Routes.Login.route)
+                }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back")
                 }
@@ -150,14 +155,16 @@ fun HomeScreenTopAppBar(navController: NavHostController, title: String,
 }
 
 @Composable
-fun HomeScreenDrawerHeader(){
-    val title = stringResource(id = R.string.master_title)
+fun HomeScreenDrawerHeader(value: String?){
     Box(modifier = Modifier
         .background(Color.LightGray)
         .fillMaxWidth()
         .padding(30.dp),
         ){
-        NavigationDrawerText(title = title, textUnit = 25.sp)
+        NavigationDrawerText(
+            title = value?: stringResource(id = R.string.master_title),
+            textUnit = 25.sp
+        )
     }
 }
 

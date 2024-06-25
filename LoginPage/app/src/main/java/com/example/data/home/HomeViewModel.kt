@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.NavigationItem
@@ -14,6 +15,10 @@ import com.google.firebase.auth.FirebaseAuth
 
 class HomeViewModel: ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
+
+    val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
+
+    val emailId: MutableLiveData<String> = MutableLiveData()
 
     val navigationItemList = listOf<NavigationItem>(
         NavigationItem(title = "Home",
@@ -52,5 +57,24 @@ class HomeViewModel: ViewModel() {
             }
         }
         firebaseAuth.addAuthStateListener(authStateListener)
+    }
+
+    fun checkForActiveSession(){
+        if (FirebaseAuth.getInstance().currentUser != null){
+            Log.d(TAG, "Valid Session")
+            isUserLoggedIn.value = true
+        }else{
+            Log.d(TAG, "User is not logged in")
+            isUserLoggedIn.value = false
+        }
+    }
+
+    fun getUserData(){
+        FirebaseAuth.getInstance().currentUser?.also { //returns user if it is not null
+            it.email?.also {
+                email ->
+                    emailId.value = email
+            }
+        }
     }
 }

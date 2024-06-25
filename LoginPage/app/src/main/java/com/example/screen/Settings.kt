@@ -41,13 +41,13 @@ import com.example.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
-fun Home(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
+fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
          signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldHomeScreenWithTopBar(navController, homeViewModel, scrollState)
+        ScaffoldSettingsScreenWithTopBar(navController, homeViewModel, scrollState)
         if (signUpPageViewModel.signINSignUpInProgress.value){
             CircularProgressIndicator()
         }
@@ -56,11 +56,11 @@ fun Home(navController: NavHostController, homeViewModel: HomeViewModel = viewMo
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
-                           homeViewModel: HomeViewModel, scrollState: ScrollState){
+fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
+                                 homeViewModel: HomeViewModel, scrollState: ScrollState){
     val context = LocalContext.current
-    val name = "User + 1"
-    val home = stringResource(id = R.string.home)
+    val name = "\nSettings + 1"
+    val home = stringResource(id = R.string.settings)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -83,7 +83,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 )
             }
         },
-        topBar = { HomeScreenTopAppBar(navController, home, action = "Home Screen",
+        topBar = { HomeScreenTopAppBar(navController, home, action = "Settings Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
@@ -93,7 +93,8 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {
-            HomeScreenDrawerHeader(homeViewModel.emailId.value)
+            HomeScreenDrawerHeader(stringResource(id = R.string.settings))
+//            HomeScreenDrawerHeader(homeViewModel.emailId.value)
             NavigationDrawerBody(navigationDrawerItems = homeViewModel.navigationItemList,
                 onNavigationItemClicked = {
                     when(it.title){

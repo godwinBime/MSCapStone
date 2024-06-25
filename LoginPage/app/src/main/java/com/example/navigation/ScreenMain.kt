@@ -1,9 +1,13 @@
 package com.example.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.component.getToast
 import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageViewModel
 import com.example.screen.AuthenticatorAppVerification
@@ -16,14 +20,24 @@ import com.example.screen.MFAVerifyEmail
 import com.example.screen.NewPassword
 import com.example.screen.PrivacyPolicy
 import com.example.screen.SMSVerification
+import com.example.screen.Settings
 import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
 
 @Composable
-fun ScreenMain(){
+fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
+    val context = LocalContext.current
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.Login.route) {
+    var startDestination = Routes.Login.route
+    homeViewModel.checkForActiveSession()
+
+    if (homeViewModel.isUserLoggedIn.value == true){
+        getToast(context, "Active user detected", Toast.LENGTH_LONG)
+        startDestination = Routes.Home.route
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.Login.route){
             Login(navController = navController, signUpPageViewModel = SignUpPageViewModel())
         }
@@ -80,6 +94,11 @@ fun ScreenMain(){
 
         composable(Routes.PrivacyPolicy.route){
             PrivacyPolicy(navController = navController)
+        }
+
+        composable(Routes.Settings.route){
+            Settings(navController = navController, homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
     }
 }
