@@ -21,20 +21,25 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun SMSVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun SMSVerification(navController: NavHostController,
+                    homeViewModel: HomeViewModel,
+                    signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldSMSVerification(navController, signUpPageViewModel)
+        ScaffoldSMSVerification(navController, homeViewModel, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSMSVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun ScaffoldSMSVerification(navController: NavHostController,
+                            homeViewModel: HomeViewModel,
+                            signUpPageViewModel: SignUpPageViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -67,7 +72,8 @@ fun ScaffoldSMSVerification(navController: NavHostController, signUpPageViewMode
 
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
-                    value = verify, rank = 5,
+                    homeViewModel = homeViewModel,
+                    value = verify, rank = 4,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
                 )
@@ -76,7 +82,7 @@ fun ScaffoldSMSVerification(navController: NavHostController, signUpPageViewMode
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
-                    navController = navController, 7)
+                    navController = navController, 5)
             }
         }
     )

@@ -21,20 +21,27 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun AuthenticatorAppVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun AuthenticatorAppVerification(navController: NavHostController,
+                                 homeViewModel: HomeViewModel,
+                                 signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldAuthenticatorAppVerification(navController, signUpPageViewModel)
+        ScaffoldAuthenticatorAppVerification(navController,
+            homeViewModel,
+            signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun ScaffoldAuthenticatorAppVerification(navController: NavHostController,
+                                         homeViewModel: HomeViewModel,
+                                         signUpPageViewModel: SignUpPageViewModel){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -69,7 +76,8 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController, signU
 
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
-                    value = verify, rank = 5,
+                    value = verify, rank = 4,
+                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
                 )

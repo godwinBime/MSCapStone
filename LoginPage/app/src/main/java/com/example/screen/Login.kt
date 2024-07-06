@@ -5,11 +5,13 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -20,28 +22,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.component.ButtonComponent
 import com.example.component.ClickableLoginOrLogOutText
 import com.example.component.DividerTextComponent
 import com.example.component.GeneralClickableTextComponent
+import com.example.component.GoogleSignInScreen
 import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.NormalTextComponent
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.google.GoogleSignInViewModel
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun Login(navController: NavHostController,
+          homeViewModel: HomeViewModel,
+          googleSignInViewModel: GoogleSignInViewModel,
+          signUpPageViewModel: SignUpPageViewModel = hiltViewModel()){
+
     val scrollState = rememberScrollState()
+    val googleSignInState = googleSignInViewModel.googleState.value
+
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldLoginWithTopBar(navController = navController, scrollState, signUpPageViewModel)
-        if (signUpPageViewModel.signINSignUpInProgress.value) {
+        ScaffoldLoginWithTopBar(navController = navController,
+            homeViewModel = homeViewModel,
+            googleSignInViewModel = googleSignInViewModel,
+            scrollState, signUpPageViewModel)
+        if (signUpPageViewModel.signINSignUpInProgress.value ||
+            googleSignInState.loading) {
             CircularProgressIndicator()
         }
     }
@@ -50,8 +66,14 @@ fun Login(navController: NavHostController, signUpPageViewModel: SignUpPageViewM
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
+                            homeViewModel: HomeViewModel,
+                            googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
                             scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel
 ){
+//    val googlePaintResource = painterResource(id = R.mipmap.ic_google)
+//    val gitHubPaintResource = painterResource(id = R.mipmap.ic_github)
+//    val facebookPaintResource = painterResource(id = R.mipmap.facebook_round)
+
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.master_title),
             true, action = "Fill the email and password above to login.") },
@@ -105,7 +127,9 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     .fillMaxSize()
                     .padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                     ButtonComponent(navController,
-                        value = stringResource(id = R.string.login), 0,
+                        value = stringResource(id = R.string.login),
+                        rank = 0,
+                        homeViewModel = homeViewModel,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(
                                 SignUpPageUIEvent.LoginButtonClicked,
@@ -115,11 +139,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     )
                 }
 
-//                Spacer(modifier = Modifier.height(20.dp))
-//
-//                GeneralClickableTextComponent(
-//                    value = stringResource(id = R.string.home),
-//                    navController = navController, 3)
+                Spacer(modifier = Modifier.height(20.dp))
+
+                GeneralClickableTextComponent(
+                    value = stringResource(id = R.string.login_and_security),
+                    navController = navController, 6)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -134,6 +158,23 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(20.dp))
 
                 NormalTextComponent(value = "Sign in with:")
+
+                Row() {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    GoogleSignInScreen(googleSignInViewModel = googleSignInViewModel,
+                        homeViewModel = homeViewModel,
+                        value = stringResource(id = R.string.google),
+                        navController = navController)
+
+//                    Spacer(modifier = Modifier.width(50.dp))
+//                    RowButtonComponent(value = stringResource(id = R.string.facebook))
+
+//                    Spacer(modifier = Modifier.width(10.dp))
+//                    GoogleSignInScreen(googleSignInViewModel = googleSignInViewModel,
+//                        value = stringResource(id = R.string.github),
+//                        navController = navController)
+                    Spacer(modifier = Modifier.width(5.dp))
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 

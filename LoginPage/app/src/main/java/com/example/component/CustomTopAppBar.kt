@@ -97,7 +97,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                     navController.navigate(Routes.Login.route)
                 }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back")
+                        contentDescription = null)
                 }
             }
         }else{

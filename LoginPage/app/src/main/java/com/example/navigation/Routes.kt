@@ -24,4 +24,6 @@ sealed class Routes(val route: String) {
     object PrivacyPolicy: Routes("PrivacyPolicy")
 
     object Settings: Routes("Settings")
+
+    object LoginAndSecurity: Routes("LoginAndSecurity")
 }

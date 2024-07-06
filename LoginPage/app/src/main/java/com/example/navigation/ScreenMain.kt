@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.component.getToast
+import com.example.data.google.GoogleSignInViewModel
 import com.example.data.home.HomeViewModel
+import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.signup.SignUpPageViewModel
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
@@ -16,6 +18,7 @@ import com.example.screen.ChooseVerificationMethod
 import com.example.screen.ForgotPassword
 import com.example.screen.Home
 import com.example.screen.Login
+import com.example.screen.LoginAndSecurity
 import com.example.screen.MFAVerifyEmail
 import com.example.screen.NewPassword
 import com.example.screen.PrivacyPolicy
@@ -24,6 +27,7 @@ import com.example.screen.Settings
 import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
@@ -39,33 +43,46 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.Login.route){
-            Login(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            Login(navController = navController,
+                homeViewModel =  HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance()))
+            )
         }
 
         composable(Routes.ForgotPassword.route){
-            ForgotPassword(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            ForgotPassword(navController = navController,
+                homeViewModel = HomeViewModel(), signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.SignUp.route){
-            SignUp(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            SignUp(navController = navController,
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
         
         composable(Routes.ChangePasswordVerifyEmail.route){
-            ChangePasswordVerifyEmail(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            ChangePasswordVerifyEmail(navController = navController,
+                homeViewModel = HomeViewModel(), signUpPageViewModel = SignUpPageViewModel())
         }
         
         composable(Routes.Home.route){
             Home(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel()
+            )
         }
 
         composable(Routes.NewPassword.route){
-            NewPassword(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            NewPassword(navController = navController, signUpPageViewModel = SignUpPageViewModel(),
+                homeViewModel = HomeViewModel()
+            )
         }
 
         composable(Routes.UpdateProfile.route){
             UpdateProfile(navController = navController, signUpPageViewModel = SignUpPageViewModel(),
-                homeViewModel = HomeViewModel())
+                homeViewModel = HomeViewModel()
+            )
         }
 
         composable(Routes.ChooseVerificationMethod.route){
@@ -75,15 +92,21 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
         }
 
         composable(Routes.AuthenticatorAppVerification.route){
-            AuthenticatorAppVerification(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            AuthenticatorAppVerification(navController = navController,
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.SMSVerification.route){
-            SMSVerification(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            SMSVerification(navController = navController,
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.MFAVerifyEmail.route){
-            MFAVerifyEmail(navController = navController, signUpPageViewModel = SignUpPageViewModel())
+            MFAVerifyEmail(navController = navController,
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.TermsAndConditionsScreen.route){
@@ -98,7 +121,15 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
 
         composable(Routes.Settings.route){
             Settings(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel()
+            )
+        }
+
+        composable(Routes.LoginAndSecurity.route){
+            LoginAndSecurity(
+                navController = navController, homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel()
+            )
         }
     }
 }

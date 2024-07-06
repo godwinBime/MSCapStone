@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,23 +34,24 @@ import com.example.component.GeneralBottomAppBar
 import com.example.component.HomeScreenDrawerHeader
 import com.example.component.HomeScreenTopAppBar
 import com.example.component.NavigationDrawerBody
-import com.example.component.NormalTextComponent
+import com.example.component.RadioButtonSpace
 import com.example.component.getToast
 import com.example.data.google.GoogleSignInViewModel
 import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
-         signUpPageViewModel: SignUpPageViewModel = viewModel()){
+fun LoginAndSecurity(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
+             signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldSettingsScreenWithTopBar(navController, homeViewModel, scrollState)
+        ScaffoldLoginAndSecurityScreenWithTopBar(navController, homeViewModel, scrollState)
         if (signUpPageViewModel.signINSignUpInProgress.value){
             CircularProgressIndicator()
         }
@@ -58,11 +60,10 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
-                                 homeViewModel: HomeViewModel, scrollState: ScrollState){
+fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
+                                     homeViewModel: HomeViewModel, scrollState: ScrollState){
     val context = LocalContext.current
-    val name = "\nSettings + 1"
-    val home = stringResource(id = R.string.settings)
+    val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -85,7 +86,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 )
             }
         },
-        topBar = { HomeScreenTopAppBar(navController, home, action = "Settings Screen",
+        topBar = { HomeScreenTopAppBar(navController, home, action = "LoginAndSecurity Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
@@ -98,20 +99,21 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(id = R.string.settings)
+                headerTitle = stringResource(id = R.string.login_and_security)
             )
         },
         content = {
             Column(
                 modifier = Modifier
+//                    .background(Color.Gray)
                     .verticalScroll(scrollState)
+                    .padding(20.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                NormalTextComponent(value = "Welcome, $name")
-
+                RadioButtonSpace(value = stringResource(id = R.string.extend_login_session))
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }

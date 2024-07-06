@@ -25,6 +25,7 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
+import com.example.data.google.GoogleSignInViewModel
 import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
@@ -166,7 +167,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,
-                        value = updateButton, 5,
+                        value = updateButton, 4,
+                        homeViewModel = homeViewModel,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(
                                 SignUpPageUIEvent.RegisterButtonClicked,

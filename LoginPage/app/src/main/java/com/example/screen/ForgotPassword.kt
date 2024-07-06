@@ -21,20 +21,24 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun ForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun ForgotPassword(navController: NavHostController,
+                   homeViewModel: HomeViewModel, signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldWithTopBarForgotPassword(navController, signUpPageViewModel)
+        ScaffoldWithTopBarForgotPassword(navController,
+            homeViewModel, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
+                                     homeViewModel: HomeViewModel, signUpPageViewModel: SignUpPageViewModel){
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
     val emailPainterResource = painterResource(id = R.drawable.email)
@@ -72,6 +76,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController, signUpPag
 
                 SubButton(navController = navController,
                     value = send, 2,
+                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.emailValidationsPassed.value
                 )

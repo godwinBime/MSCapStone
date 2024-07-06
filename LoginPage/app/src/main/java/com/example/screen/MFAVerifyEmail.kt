@@ -21,20 +21,24 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun MFAVerifyEmail(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun MFAVerifyEmail(navController: NavHostController,
+                   homeViewModel: HomeViewModel,
+                   signUpPageViewModel: SignUpPageViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldMFAVerifyEmail(navController, signUpPageViewModel)
+        ScaffoldMFAVerifyEmail(navController, homeViewModel, signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
+                           homeViewModel: HomeViewModel,
                            signUpPageViewModel: SignUpPageViewModel
 ){
     val verificationCode = stringResource(id = R.string.code)
@@ -70,7 +74,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
 
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
-                    value = verify, rank = 5,
+                    value = verify, rank = 4,
+                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
                 )

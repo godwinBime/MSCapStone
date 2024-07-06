@@ -33,4 +33,9 @@
     <string name="master_title">Capstone-2024</string>
     <string name="resend_code">ReSend Code</string>
     <string name="settings">Settings</string>
+    <string name="login_and_security">Login and Security</string>
+    <string name="extend_login_session">Extend Your Login Session</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
+    <string name="github">GitHub</string>
 </resources>

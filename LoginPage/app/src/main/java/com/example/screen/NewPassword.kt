@@ -21,20 +21,24 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
+                homeViewModel: HomeViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldNewPasswordTopBar(navController, signUpPageViewModel)
+        ScaffoldNewPasswordTopBar(navController, signUpPageViewModel, homeViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun ScaffoldNewPasswordTopBar(navController: NavHostController,
+                              signUpPageViewModel: SignUpPageViewModel,
+                              homeViewModel: HomeViewModel){
     val password = stringResource(id = R.string.password)
     val confirmPassword = stringResource(id = R.string.confirm_password)
     val resetPassword = stringResource(id = R.string.reset_password)
@@ -85,6 +89,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController, signUpPageViewMo
                     navController = navController,
                     value = resetPassword,
                     rank = 4,
+                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.passwordValidationsPassed.value
                 /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/

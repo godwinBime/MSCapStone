@@ -15,6 +15,7 @@ import com.example.loginpage.ui.theme.LoginPageTheme
 import com.example.navigation.ScreenMain
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

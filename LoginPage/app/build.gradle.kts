@@ -4,6 +4,8 @@ plugins {
 
     //id("com.android.application")
     id("com.google.gms.google-services")
+    id ("kotlin-kapt")
+    id ("com.google.dagger.hilt.android")
 }
 
 android {
@@ -54,22 +56,32 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.material)
 
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.compose.material:material:1.6.8")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    //Desugar jdk
-    //coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-
-    implementation("androidx.compose.material:material-icons-extended:1.6.8")
+    implementation(libs.androidx.material.icons.extended)
 
     //Firebase SDK
-    implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation(libs.firebase.auth.ktx)
+    implementation(platform(libs.firebase.bom))
     //implementation("com.google.firebase:firebase-analytics")
+
+    //  Google authentication dependency
+    implementation(libs.play.services.auth)
+
+    // Dagger - Hilt
+    implementation(libs.hilt.android)
+    annotationProcessor (libs.hilt.android.compiler)
+    annotationProcessor (libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Datastore dependencies
+//    implementation(libs.androidx.datastore)
+//    implementation(libs.kotlinx.collection.immutable)
+//    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -86,4 +98,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+//  Allow references to generated code
+kapt{
+    correctErrorTypes = true
 }

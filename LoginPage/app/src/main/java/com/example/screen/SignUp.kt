@@ -28,17 +28,22 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.home.HomeViewModel
 import com.example.data.signup.SignUpPageUIEvent
 import com.example.data.signup.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
-fun SignUp(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel){
+fun SignUp(navController: NavHostController,
+           homeViewModel: HomeViewModel,
+           signUpPageViewModel: SignUpPageViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldSignUpWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel)
+        ScaffoldSignUpWithTopBar(navController,
+            homeViewModel,
+            scrollState, signUpPageViewModel = signUpPageViewModel)
         if (signUpPageViewModel.signINSignUpInProgress.value) {
             CircularProgressIndicator()
         }
@@ -47,7 +52,8 @@ fun SignUp(navController: NavHostController, signUpPageViewModel: SignUpPageView
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: ScrollState,
+fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: HomeViewModel,
+                             scrollState: ScrollState,
                              signUpPageViewModel: SignUpPageViewModel
 ){
     val firstName = stringResource(id = R.string.first_name)
@@ -62,6 +68,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
     val phoneNumberPainterResource = painterResource(id = R.drawable.phone)
     val passwordPainterResource = painterResource(id = R.drawable.password)
     val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
+    val googlePaintResource = "painterResource(id = R.drawable.ic_google)"
+    val gitHubPaintResource = "painterResource(id = R.drawable.ic_gitHub)"
+    val facebookPaintResource = "painterResource(id = R.drawable.ic_facebook)"
 
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
@@ -172,7 +181,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, scrollState: Scro
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,
-                        value = stringResource(id = R.string.signup), 1,
+                        value = stringResource(id = R.string.signup),
+                        rank = 1,
+                        homeViewModel = homeViewModel,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(
                                 SignUpPageUIEvent.RegisterButtonClicked,

@@ -10,10 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.NavigationItem
+import com.example.data.google.GoogleSignInViewModel
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
@@ -44,16 +45,21 @@ class HomeViewModel: ViewModel() {
     )
 
     fun logOut(navController: NavHostController){
+
         val firebaseAuth = FirebaseAuth
             .getInstance()
         firebaseAuth.signOut()
 
+//        val firebaseAuth = Firebase.auth.signOut()
+
         val authStateListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser == null) {
+                isUserLoggedIn.value = false
                 navController.navigate(Routes.Login.route)
-                Log.d(TAG, "Inside sign out success state")
+                Log.d(TAG, "Inside sign out success state...")
             } else {
-                Log.d(TAG, "Inside sign out is not complete state...")
+                Log.d(TAG, "Logged-In User: ${it.currentUser!!.displayName}")
+                Log.d(TAG, "Inside sign out is not complete state...wait")
             }
         }
         firebaseAuth.addAuthStateListener(authStateListener)
@@ -65,12 +71,14 @@ class HomeViewModel: ViewModel() {
             isUserLoggedIn.value = true
         }else{
             Log.d(TAG, "User is not logged in")
+            Log.d(TAG, "User Login-State: ${FirebaseAuth.getInstance().currentUser != null}")
             isUserLoggedIn.value = false
         }
     }
 
     fun getUserData(){
         FirebaseAuth.getInstance().currentUser?.also { //returns user if it is not null
+//            Log.d(TAG, "User's name: ${it.displayName}")
             it.email?.also {
                 email ->
                     emailId.value = email

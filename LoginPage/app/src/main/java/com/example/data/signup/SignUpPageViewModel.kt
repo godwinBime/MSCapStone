@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.data.home.HomeViewModel
 import com.example.data.rules.SignUpPageValidator
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
@@ -244,7 +245,9 @@ class SignUpPageViewModel: ViewModel() {
     }
 
     //Create authentication details in firebase database
-    private fun createUserInFireBase(email: String, password: String, navController: NavHostController){
+    private fun createUserInFireBase(email: String,
+                                     password: String,
+                                     navController: NavHostController){
         signINSignUpInProgress.value = true
         FirebaseAuth
             .getInstance()
@@ -253,6 +256,7 @@ class SignUpPageViewModel: ViewModel() {
                 Log.d(TAG, "Inside Firebase SignUp addOnCompleteListener")
                 Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
                 if (it.isSuccessful){
+
                     navController.navigate(Routes.Login.route)
                     signINSignUpInProgress.value = false
                 }
