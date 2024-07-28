@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
+//    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
+
     //id("com.android.application")
     id("com.google.gms.google-services")
     id ("kotlin-kapt")
@@ -80,8 +83,10 @@ dependencies {
 
     // Datastore dependencies
 //    implementation(libs.androidx.datastore)
-//    implementation(libs.kotlinx.collection.immutable)
-//    implementation(libs.kotlinx.serialization.json)
+    implementation("androidx.datastore:datastore:1.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,9 +1,10 @@
-package com.example.data.google
+package com.example.data.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.data.google.GoogleSignInState
 import com.example.data.repository.AuthenticationRepository
 import com.example.util.Resource
 import com.google.firebase.auth.AuthCredential

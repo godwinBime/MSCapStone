@@ -6,11 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.data.home.HomeViewModel
+import com.example.data.viewmodel.HomeViewModel
 import com.example.loginpage.ui.theme.LoginPageTheme
 import com.example.navigation.ScreenMain
 

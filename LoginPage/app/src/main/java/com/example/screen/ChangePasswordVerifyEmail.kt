@@ -22,15 +22,16 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun ChangePasswordVerifyEmail(navController: NavHostController,
                               homeViewModel: HomeViewModel,
-                              signUpPageViewModel: SignUpPageViewModel){
+                              signUpPageViewModel: SignUpPageViewModel
+){
     Box(modifier = Modifier.fillMaxSize()){
         ScaffoldChangePassword(navController,
             homeViewModel, signUpPageViewModel)
@@ -41,7 +42,8 @@ fun ChangePasswordVerifyEmail(navController: NavHostController,
 @Composable
 fun ScaffoldChangePassword(navController: NavHostController,
                            homeViewModel: HomeViewModel,
-                           signUpPageViewModel: SignUpPageViewModel){
+                           signUpPageViewModel: SignUpPageViewModel
+){
     val verificationCode = stringResource(id = R.string.code)
 
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)

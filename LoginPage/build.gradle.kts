@@ -19,6 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.google.gms:google-services:4.4.2")
+        classpath(libs.google.services)
+        classpath("org.jetbrains.kotlin:kotlin-serialization:1.6.10")
     }
 }

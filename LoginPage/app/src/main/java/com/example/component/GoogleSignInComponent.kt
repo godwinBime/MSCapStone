@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.data.Constant.ServerClient
-import com.example.data.google.GoogleSignInViewModel
-import com.example.data.home.HomeViewModel
+import com.example.data.local.entities.Constant.ServerClient
+import com.example.data.viewmodel.GoogleSignInViewModel
+import com.example.data.viewmodel.HomeViewModel
 import com.example.navigation.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -61,14 +61,11 @@ fun GoogleSignInScreen(
                 .build()
 
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
-            launcher.launch(googleSignInClient.signInIntent)
-        }) {
-//        Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
-//        Image(
-//            modifier = Modifier
-//                .background(Color.Red),
-//            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-//            contentDescription = null)
+            launcher.launch(
+                googleSignInClient.signInIntent
+            )
+        }
+    ) {
         Spacer(modifier = Modifier.width(3.dp))
         Text(text = value,
             fontSize = 18.sp,

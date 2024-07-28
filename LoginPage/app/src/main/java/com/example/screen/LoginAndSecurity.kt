@@ -1,7 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,27 +30,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.component.DrawerContentComponent
 import com.example.component.GeneralBottomAppBar
-import com.example.component.HomeScreenDrawerHeader
 import com.example.component.HomeScreenTopAppBar
-import com.example.component.NavigationDrawerBody
 import com.example.component.RadioButtonSpace
 import com.example.component.getToast
-import com.example.data.google.GoogleSignInViewModel
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.loginpage.MainActivity
 import com.example.loginpage.R
-import com.example.navigation.Routes
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginAndSecurity(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
-             signUpPageViewModel: SignUpPageViewModel = viewModel()){
+                     signUpPageViewModel: SignUpPageViewModel = viewModel(), mainActivity: MainActivity){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldLoginAndSecurityScreenWithTopBar(navController, homeViewModel, scrollState)
+        ScaffoldLoginAndSecurityScreenWithTopBar(navController, homeViewModel, scrollState,
+            mainActivity)
         if (signUpPageViewModel.signINSignUpInProgress.value){
             CircularProgressIndicator()
         }
@@ -61,7 +57,8 @@ fun LoginAndSecurity(navController: NavHostController, homeViewModel: HomeViewMo
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
-                                     homeViewModel: HomeViewModel, scrollState: ScrollState){
+                                             homeViewModel: HomeViewModel, scrollState: ScrollState,
+                                             mainActivity: MainActivity){
     val context = LocalContext.current
     val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
@@ -86,7 +83,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
                 )
             }
         },
-        topBar = { HomeScreenTopAppBar(navController, home, action = "LoginAndSecurity Screen",
+        topBar = { HomeScreenTopAppBar(navController, home, action = "Login And Security Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
@@ -113,7 +110,8 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                RadioButtonSpace(value = stringResource(id = R.string.extend_login_session))
+                RadioButtonSpace(value = stringResource(id = R.string.extend_login_session),
+                    mainActivity = mainActivity)
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }

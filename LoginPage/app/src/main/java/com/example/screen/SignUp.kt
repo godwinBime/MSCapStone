@@ -28,15 +28,16 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun SignUp(navController: NavHostController,
            homeViewModel: HomeViewModel,
-           signUpPageViewModel: SignUpPageViewModel){
+           signUpPageViewModel: SignUpPageViewModel
+){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),

@@ -1,4 +1,4 @@
-package com.example.data.home
+package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -9,8 +9,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.example.data.NavigationItem
-import com.example.data.google.GoogleSignInViewModel
+import com.example.data.local.entities.NavigationItem
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 
@@ -49,8 +48,6 @@ class HomeViewModel(): ViewModel() {
         val firebaseAuth = FirebaseAuth
             .getInstance()
         firebaseAuth.signOut()
-
-//        val firebaseAuth = Firebase.auth.signOut()
 
         val authStateListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser == null) {

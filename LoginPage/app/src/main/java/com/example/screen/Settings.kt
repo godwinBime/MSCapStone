@@ -1,7 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,21 +29,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.component.DrawerContentComponent
 import com.example.component.GeneralBottomAppBar
-import com.example.component.HomeScreenDrawerHeader
 import com.example.component.HomeScreenTopAppBar
-import com.example.component.NavigationDrawerBody
 import com.example.component.NormalTextComponent
 import com.example.component.getToast
-import com.example.data.google.GoogleSignInViewModel
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
 fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
-         signUpPageViewModel: SignUpPageViewModel = viewModel()){
+             signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
@@ -59,7 +54,7 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
-                                 homeViewModel: HomeViewModel, scrollState: ScrollState){
+                                     homeViewModel: HomeViewModel, scrollState: ScrollState){
     val context = LocalContext.current
     val name = "\nSettings + 1"
     val home = stringResource(id = R.string.settings)

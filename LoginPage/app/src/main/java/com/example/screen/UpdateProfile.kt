@@ -25,15 +25,15 @@ import com.example.component.CustomTopAppBar
 import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.MyTextFieldComponent
-import com.example.data.google.GoogleSignInViewModel
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
-                  homeViewModel: HomeViewModel){
+                  homeViewModel: HomeViewModel
+){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
@@ -49,7 +49,8 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollState: ScrollState,
-                             signUpPageViewModel: SignUpPageViewModel, homeViewModel: HomeViewModel){
+                                    signUpPageViewModel: SignUpPageViewModel, homeViewModel: HomeViewModel
+){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)

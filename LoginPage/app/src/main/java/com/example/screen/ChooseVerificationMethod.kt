@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import com.example.component.DesignMFASpace
 import com.example.component.HeadingTextComponent
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
 
 @Composable
 fun ChooseVerificationMethod(navController: NavHostController,

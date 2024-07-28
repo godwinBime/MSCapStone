@@ -21,15 +21,16 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyTextFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun SMSVerification(navController: NavHostController,
                     homeViewModel: HomeViewModel,
-                    signUpPageViewModel: SignUpPageViewModel){
+                    signUpPageViewModel: SignUpPageViewModel
+){
     Box(modifier = Modifier.fillMaxSize()){
         ScaffoldSMSVerification(navController, homeViewModel, signUpPageViewModel)
     }
@@ -39,7 +40,8 @@ fun SMSVerification(navController: NavHostController,
 @Composable
 fun ScaffoldSMSVerification(navController: NavHostController,
                             homeViewModel: HomeViewModel,
-                            signUpPageViewModel: SignUpPageViewModel){
+                            signUpPageViewModel: SignUpPageViewModel
+){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 

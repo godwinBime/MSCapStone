@@ -21,14 +21,15 @@ import com.example.component.HeadingTextComponent
 import com.example.component.MyPasswordFieldComponent
 import com.example.component.SubButton
 import com.example.component.TopAppBarBeforeLogin
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
-                homeViewModel: HomeViewModel){
+                homeViewModel: HomeViewModel
+){
     Box(modifier = Modifier.fillMaxSize()){
         ScaffoldNewPasswordTopBar(navController, signUpPageViewModel, homeViewModel)
     }
@@ -38,7 +39,8 @@ fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPag
 @Composable
 fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                               signUpPageViewModel: SignUpPageViewModel,
-                              homeViewModel: HomeViewModel){
+                              homeViewModel: HomeViewModel
+){
     val password = stringResource(id = R.string.password)
     val confirmPassword = stringResource(id = R.string.confirm_password)
     val resetPassword = stringResource(id = R.string.reset_password)

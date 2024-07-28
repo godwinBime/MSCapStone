@@ -1,9 +1,7 @@
 package com.example.component
 
 import android.util.Log
-import android.widget.Button
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -33,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,8 +46,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -67,12 +62,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageUIEvent
-import com.example.data.signup.SignUpPageViewModel
-import com.example.loginpage.R
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
 
 @Composable
@@ -418,7 +412,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
                     rank: Int, onButtonClicked: () -> Unit){
-    Box() {
+    Box {
         Button(
             onClick = {
                 when(rank){
@@ -561,7 +555,7 @@ fun ClickableLoginOrLogOutText(navController: NavHostController,
 }
 
 @Composable
-fun RadioButtonSpace(value: String, homeViewModel: HomeViewModel = viewModel()){
+fun RadioButtonSpace(value: String, mainActivity: MainActivity){
     Card(modifier = Modifier
         .height(100.dp)
         .background(Color.Gray)
@@ -578,29 +572,26 @@ fun RadioButtonSpace(value: String, homeViewModel: HomeViewModel = viewModel()){
             color = Color.Black,
             textAlign = TextAlign.Justify
         )
-        SwitchToggleButtonComponent(homeViewModel)
+        SwitchToggleButtonComponent(mainActivity = mainActivity)
     }
 }
 
 @Composable
-fun SwitchToggleButtonComponent(homeViewModel: HomeViewModel){
-    var isCheckedButton by rememberSaveable { mutableStateOf(false)}
+fun SwitchToggleButtonComponent(mainActivity: MainActivity){
+//    val appSettings = mainActivity.getAppSettingsFromMainActivity()
+//    val sessionSettings = SessionSettings.values()[0]
+    var isCheckedButton by rememberSaveable { mutableStateOf(
+        false)}
+    val scope = rememberCoroutineScope()
+
     Switch(
         modifier = Modifier
             .fillMaxSize(.4f)
-//            .background(Color.LightGray)
             .padding(300.dp, 0.dp, 0.dp, 0.dp),
         checked = isCheckedButton,
         onCheckedChange = {
             isCheckedButton = it
         },
-//        colors = SwitchDefaults.colors(
-//            checkedThumbColor = Color.Blue,
-//            checkedTrackColor = Color.LightGray,
-//            uncheckedThumbColor = Color.Gray,
-//            uncheckedTrackColor = Color.White
-//        ),
-//        enabled = ,
         thumbContent = if (isCheckedButton){
             {
                 Icon(
@@ -621,7 +612,6 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
             HomeScreenDrawerHeader(headerTitle)
         }
     }
-//            HomeScreenDrawerHeader(homeViewModel.emailId.value)
     NavigationDrawerBody(navigationDrawerItems = homeViewModel.navigationItemList,
         onNavigationItemClicked = {
             when(it.title){
@@ -641,5 +631,6 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                     homeViewModel.logOut(navController = navController)
                 }
             }
-        })
+        }
+    )
 }

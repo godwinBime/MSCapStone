@@ -1,14 +1,14 @@
-package com.example.data.signup
+package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.example.data.home.HomeViewModel
 import com.example.data.rules.SignUpPageValidator
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.uistate.SignUpPageUIState
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 
 class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName

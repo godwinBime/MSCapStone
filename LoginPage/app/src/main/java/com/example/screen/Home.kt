@@ -1,7 +1,6 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,14 +31,11 @@ import com.example.component.DrawerContentComponent
 import com.example.component.GeneralBottomAppBar
 import com.example.component.HomeScreenDrawerHeader
 import com.example.component.HomeScreenTopAppBar
-import com.example.component.NavigationDrawerBody
 import com.example.component.NormalTextComponent
 import com.example.component.getToast
-import com.example.data.google.GoogleSignInViewModel
-import com.example.data.home.HomeViewModel
-import com.example.data.signup.SignUpPageViewModel
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
-import com.example.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,7 +55,7 @@ fun Home(navController: NavHostController, homeViewModel: HomeViewModel = viewMo
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
-                           homeViewModel: HomeViewModel, scrollState: ScrollState){
+                                 homeViewModel: HomeViewModel, scrollState: ScrollState){
     val context = LocalContext.current
     val name = "User + 1"
     val home = stringResource(id = R.string.home)
