@@ -51,7 +51,8 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "Auth App Verify",
-            true, action = "Goto the Authenticator app and retrieve the code.") },
+            true, action = "Goto the Authenticator app and retrieve the code.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier

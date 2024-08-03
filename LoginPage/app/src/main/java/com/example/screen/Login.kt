@@ -1,6 +1,7 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -76,7 +77,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.master_title),
-            true, action = "Fill the email and password above to login.") },
+            true, action = "Fill the email and password above to login.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier

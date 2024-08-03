@@ -91,7 +91,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
 
         composable(Routes.ChooseVerificationMethod.route){
             ChooseVerificationMethod(navController = navController, 
-                signUpPageViewModel = SignUpPageViewModel()
+                signUpPageViewModel = SignUpPageViewModel(),
+                homeViewModel = HomeViewModel()
             )
         }
 
@@ -118,7 +119,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
 
         composable(Routes.TermsAndConditionsScreen.route){
             TermsAndConditionsScreen(navController = navController,
-                signUpPageViewModel = SignUpPageViewModel()
+                signUpPageViewModel = SignUpPageViewModel(),
+                homeViewModel = HomeViewModel()
             )
         }
 

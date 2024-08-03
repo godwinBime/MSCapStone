@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.component.NormalTextComponent
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
@@ -24,14 +25,15 @@ import com.example.loginpage.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TermsAndConditionsScreen(navController: NavHostController,
-                             signUpPageViewModel: SignUpPageViewModel
-){
+                             signUpPageViewModel: SignUpPageViewModel,
+                             homeViewModel: HomeViewModel){
     val title = stringResource(id = R.string.terms_and_conditions_header)
     val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController = navController, title = title,
-            showBackIcon = true, action = "Read the terms and conditions before proceeding.")
+            showBackIcon = true, action = "Read the terms and conditions before proceeding.",
+            homeViewModel = homeViewModel)
         },
         content = {
             Column(

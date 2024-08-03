@@ -17,6 +17,7 @@ class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
+    val isMFAComplete : MutableLiveData<Boolean> = MutableLiveData()
 
     val emailId: MutableLiveData<String> = MutableLiveData()
 

@@ -23,15 +23,17 @@ import androidx.navigation.NavHostController
 import com.example.component.DesignMFASpace
 import com.example.component.HeadingTextComponent
 import com.example.component.TopAppBarBeforeLogin
+import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 
 @Composable
 fun ChooseVerificationMethod(navController: NavHostController,
-                             signUpPageViewModel: SignUpPageViewModel
-){
+                             signUpPageViewModel: SignUpPageViewModel,
+                             homeViewModel: HomeViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldChooseVerificationMethod(navController = navController, scrollState, signUpPageViewModel)
+        ScaffoldChooseVerificationMethod(navController = navController, scrollState,
+            signUpPageViewModel, homeViewModel)
     }
 }
 
@@ -39,11 +41,12 @@ fun ChooseVerificationMethod(navController: NavHostController,
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
-                                     signUpPageViewModel: SignUpPageViewModel
-){
+                                     signUpPageViewModel: SignUpPageViewModel,
+                                     homeViewModel: HomeViewModel){
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "MFA",
-            true, action = "Choose Verification Method then proceed.") },
+            true, action = "Choose Verification Method then proceed.",
+            homeViewModel, screenName = "ChooseVerificationMethod") },
         content = {
             Column(
                 modifier = Modifier

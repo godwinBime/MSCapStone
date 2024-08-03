@@ -48,7 +48,8 @@ fun ScaffoldSMSVerification(navController: NavHostController,
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "SMS Verify",
-            true, action = "Enter SMS code sent to your phone.") },
+            true, action = "Enter SMS code sent to your phone.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier

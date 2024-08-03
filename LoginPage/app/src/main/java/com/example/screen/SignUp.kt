@@ -55,8 +55,7 @@ fun SignUp(navController: NavHostController,
 @Composable
 fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: HomeViewModel,
                              scrollState: ScrollState,
-                             signUpPageViewModel: SignUpPageViewModel
-){
+                             signUpPageViewModel: SignUpPageViewModel){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val email = stringResource(id = R.string.email)
@@ -84,8 +83,9 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
     val createAccount = stringResource(id = R.string.create_account)
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, createAccount,
-            true, action = "Fill the fields above to get registered."
-        ) },
+            true, action = "Fill the fields above to get registered.",
+            homeViewModel)
+        },
         content = {
             Column(
                 modifier = Modifier

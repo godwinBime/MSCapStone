@@ -50,7 +50,8 @@ fun ScaffoldChangePassword(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "Verify Email",
-            true, action = "Enter Verification Code sent to your email.") },
+            true, action = "Enter Verification Code sent to your email.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier

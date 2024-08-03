@@ -1,5 +1,6 @@
 package com.example.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,9 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
+import com.example.data.viewmodel.HomeViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 
+private val TAG = HomeViewModel::class.simpleName
 @Composable
 fun CustomTopAppBar(navController: NavHostController,
                     title: String, showBackIcon: Boolean,
@@ -74,7 +77,8 @@ fun CustomTopAppBar(navController: NavHostController,
 
 @Composable
 fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
-                         showBackIcon: Boolean, action: String){
+                         showBackIcon: Boolean, action: String, homeViewModel: HomeViewModel,
+                         screenName: String = "DefaultScreen"){
     val context = LocalContext.current
     TopAppBar(
         backgroundColor = Color.LightGray,
@@ -86,9 +90,21 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
         navigationIcon = if (showBackIcon && navController.previousBackStackEntry != null){
             {
                 IconButton(onClick = {
-//                    navController.navigateUp()
-                    getToast(context, "Please Login to continue.")
-                    navController.navigate(Routes.Login.route)
+                    when(screenName){
+                        "ChooseVerificationMethod" -> {
+                            // Check if user is logged-in and log them out
+                            homeViewModel.checkForActiveSession()
+                            if(homeViewModel.isUserLoggedIn.value == true){
+                                Log.d(TAG, "User was logged-in...logging user out...")
+                                homeViewModel.logOut(navController = navController)
+                                navController.navigate(Routes.Login.route)
+                                getToast(context, "Please Login to continue.")
+                            }
+                        }
+                        "DefaultScreen" -> {
+                            navController.navigateUp()
+                        }
+                    }
                 }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null)

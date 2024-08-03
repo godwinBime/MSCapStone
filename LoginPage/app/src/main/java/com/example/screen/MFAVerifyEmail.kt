@@ -49,7 +49,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
-            true, action = "Enter Verification code sent to your email.") },
+            true, action = "Enter Verification code sent to your email.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier

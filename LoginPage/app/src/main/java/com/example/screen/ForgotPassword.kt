@@ -47,7 +47,8 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.reset_password),
-            true, action = "Enter your email to get verified.") },
+            true, action = "Enter your email to get verified.",
+            homeViewModel = homeViewModel) },
 
         content = {
             Column(

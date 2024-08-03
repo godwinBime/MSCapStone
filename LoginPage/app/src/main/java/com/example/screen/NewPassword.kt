@@ -50,7 +50,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "New Password",
-            true, action = "Enter new password above.") },
+            true, action = "Enter new password above.",
+            homeViewModel = homeViewModel) },
         content = {
             Column(
                 modifier = Modifier
