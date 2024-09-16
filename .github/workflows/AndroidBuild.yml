@@ -18,11 +18,11 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: build with Gradle
+      - name: Build with Gradle
         run: ./gradlew build
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.2.1-node20
         with:
           name: LoginPages.apk
-          path: app/build/output/apk/app-debug.apk
+          path: app/build/output/apk/debug/app-debug.apk
