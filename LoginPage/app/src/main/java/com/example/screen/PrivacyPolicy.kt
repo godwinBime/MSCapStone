@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.CustomTopAppBar
-import com.example.component.NormalTextComponent
+import com.example.loginpage.ui.component.CustomTopAppBar
+import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

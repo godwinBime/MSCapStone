@@ -1,4 +1,4 @@
-package com.example.component
+package com.example.loginpage.ui.component
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.NormalTextComponent
-import com.example.component.TopAppBarBeforeLogin
+import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R

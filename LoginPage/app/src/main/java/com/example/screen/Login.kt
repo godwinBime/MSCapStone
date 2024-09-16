@@ -1,8 +1,8 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,26 +20,27 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.component.ButtonComponent
-import com.example.component.ClickableLoginOrLogOutText
-import com.example.component.DividerTextComponent
-import com.example.component.GeneralClickableTextComponent
-import com.example.component.GoogleSignInScreen
-import com.example.component.HeadingTextComponent
-import com.example.component.MyPasswordFieldComponent
-import com.example.component.MyTextFieldComponent
-import com.example.component.NormalTextComponent
-import com.example.component.TopAppBarBeforeLogin
+import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
-import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.ButtonComponent
+import com.example.loginpage.ui.component.ClickableLoginOrLogOutText
+import com.example.loginpage.ui.component.DividerTextComponent
+import com.example.loginpage.ui.component.GeneralClickableTextComponent
+import com.example.loginpage.ui.component.GoogleSignInScreen
+import com.example.loginpage.ui.component.HeadingTextComponent
+import com.example.loginpage.ui.component.MyPasswordFieldComponent
+import com.example.loginpage.ui.component.MyTextFieldComponent
+import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 
 @Composable
 fun Login(navController: NavHostController,
@@ -71,10 +72,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
                             scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel
 ){
-//    val googlePaintResource = painterResource(id = R.mipmap.ic_google)
-//    val gitHubPaintResource = painterResource(id = R.mipmap.ic_github)
-//    val facebookPaintResource = painterResource(id = R.mipmap.facebook_round)
-
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.master_title),
             true, action = "Fill the email and password above to login.",
@@ -167,14 +164,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                         homeViewModel = homeViewModel,
                         value = stringResource(id = R.string.google),
                         navController = navController)
-
-//                    Spacer(modifier = Modifier.width(50.dp))
-//                    RowButtonComponent(value = stringResource(id = R.string.facebook))
-
-//                    Spacer(modifier = Modifier.width(10.dp))
-//                    GoogleSignInScreen(googleSignInViewModel = googleSignInViewModel,
-//                        value = stringResource(id = R.string.github),
-//                        navController = navController)
                     Spacer(modifier = Modifier.width(5.dp))
                 }
 

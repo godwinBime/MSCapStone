@@ -28,11 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.component.DrawerContentComponent
-import com.example.component.GeneralBottomAppBar
-import com.example.component.HomeScreenTopAppBar
-import com.example.component.RadioButtonSpace
-import com.example.component.getToast
+import com.example.loginpage.ui.component.DrawerContentComponent
+import com.example.loginpage.ui.component.GeneralBottomAppBar
+import com.example.loginpage.ui.component.HomeScreenTopAppBar
+import com.example.loginpage.ui.component.RadioButtonSpace
+import com.example.loginpage.ui.component.getToast
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.MainActivity
@@ -63,9 +63,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
     val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
     homeViewModel.getUserData()
-
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
@@ -75,7 +73,6 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
         floatingActionButton = {
             FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
-                //containerColor = Color(0xff344ceb)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -102,7 +99,6 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
         content = {
             Column(
                 modifier = Modifier
-//                    .background(Color.Gray)
                     .verticalScroll(scrollState)
                     .padding(20.dp)
                     .fillMaxSize(),

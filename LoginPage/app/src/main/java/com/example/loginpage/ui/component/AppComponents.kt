@@ -1,8 +1,9 @@
-package com.example.component
+package com.example.loginpage.ui.component
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -81,7 +82,7 @@ fun NormalTextComponent(value: String){
             fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal
         ),
-        color = Color.Black,
+        color = Color.Black, //if (isSystemInDarkTheme()) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
 }
@@ -98,7 +99,7 @@ fun HeadingTextComponent(value: String){
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Normal
         ),
-        color = Color.Black,
+        color = Color.Black, // if (isSystemInDarkTheme()) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -474,7 +475,7 @@ fun DesignMFASpace(navController: NavHostController,
                 .padding(38.dp),
             text = value,
             fontSize = 20.sp,
-            color = Color.Black,
+            color = if (isSystemInDarkTheme()) Color.White else Color.Black,
             textAlign = TextAlign.Justify
         )
         ChooseMFAButton(name = buttonType,
@@ -558,7 +559,6 @@ fun ClickableLoginOrLogOutText(navController: NavHostController,
 fun RadioButtonSpace(value: String, mainActivity: MainActivity){
     Card(modifier = Modifier
         .height(100.dp)
-        .background(Color.Gray)
         .fillMaxWidth(),
         elevation = 10.dp,
         border = BorderStroke(1.dp, Color.LightGray),
@@ -578,8 +578,6 @@ fun RadioButtonSpace(value: String, mainActivity: MainActivity){
 
 @Composable
 fun SwitchToggleButtonComponent(mainActivity: MainActivity){
-//    val appSettings = mainActivity.getAppSettingsFromMainActivity()
-//    val sessionSettings = SessionSettings.values()[0]
     var isCheckedButton by rememberSaveable { mutableStateOf(
         false)}
     val scope = rememberCoroutineScope()

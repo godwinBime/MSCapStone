@@ -17,10 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.HeadingTextComponent
-import com.example.component.MyPasswordFieldComponent
-import com.example.component.SubButton
-import com.example.component.TopAppBarBeforeLogin
+import com.example.loginpage.ui.component.HeadingTextComponent
+import com.example.loginpage.ui.component.MyPasswordFieldComponent
+import com.example.loginpage.ui.component.SubButton
+import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel

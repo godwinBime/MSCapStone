@@ -20,11 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.component.ButtonComponent
-import com.example.component.CustomTopAppBar
-import com.example.component.HeadingTextComponent
-import com.example.component.MyPasswordFieldComponent
-import com.example.component.MyTextFieldComponent
+import com.example.loginpage.ui.component.ButtonComponent
+import com.example.loginpage.ui.component.CustomTopAppBar
+import com.example.loginpage.ui.component.HeadingTextComponent
+import com.example.loginpage.ui.component.MyPasswordFieldComponent
+import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
@@ -80,7 +80,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
             logoutButtonClicked = {
                 homeViewModel.logOut(navController = navController)
             }
-        )},
+        )
+        },
         content = {
             Column(
                 modifier = Modifier

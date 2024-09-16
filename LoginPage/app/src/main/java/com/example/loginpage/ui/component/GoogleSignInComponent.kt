@@ -1,4 +1,4 @@
-package com.example.component
+package com.example.loginpage.ui.component
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
