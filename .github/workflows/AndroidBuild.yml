@@ -18,6 +18,10 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+        working-directory: LoginPage
+
       - name: Build with Gradle
         run: ./gradlew build
         working-directory: LoginPage
