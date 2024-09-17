@@ -19,7 +19,8 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle
-        run: ./LoginPage/gradlew build
+        run: ./gradlew build
+        working-directory: ../LoginPage
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.2.1-node20
