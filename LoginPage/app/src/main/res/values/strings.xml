@@ -38,4 +38,5 @@
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
     <string name="github">GitHub</string>
+    <string name="choose_verification_method">Choose Verification Method</string>
 </resources>

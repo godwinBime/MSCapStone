@@ -85,7 +85,7 @@ fun ScaffoldSMSVerification(navController: NavHostController,
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
-                    navController = navController, 5)
+                    navController = navController)
             }
         }
     )

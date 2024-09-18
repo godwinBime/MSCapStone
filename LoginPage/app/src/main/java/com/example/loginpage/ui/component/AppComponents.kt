@@ -281,7 +281,7 @@ fun ClickableTextComponent(value: String, navController: NavHostController){
 }
 
 @Composable
-fun GeneralClickableTextComponent(value: String, navController: NavHostController, rank: Int){
+fun GeneralClickableTextComponent(value: String, navController: NavHostController, rank: Int = 100){
     val context = LocalContext.current
     Box(modifier = Modifier
         .background(Color.Transparent)) {
@@ -319,6 +319,9 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       7 -> {
                           navController.navigate(Routes.UpdateProfile.route)
+                      }
+                      8 -> {
+                          navController.navigate(Routes.ChooseVerificationMethod.route)
                       }
                   }
             },
