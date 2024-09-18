@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -337,7 +338,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 
 @Composable
 fun ButtonComponent(navController: NavHostController,
-                    value: String, rank: Int,
+                    value: String, rank: Int = 100,
                     homeViewModel: HomeViewModel,
                     onButtonClicked: () -> Unit, isEnable: Boolean = false){
     Button(onClick = {
@@ -391,7 +392,7 @@ fun ButtonComponent(navController: NavHostController,
 }
 
 @Composable
-fun SubButton(navController: NavHostController, value: String, rank: Int,
+fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               homeViewModel: HomeViewModel,
               signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false,){
     Card(modifier = Modifier
@@ -415,7 +416,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int,
 
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
-                    rank: Int, onButtonClicked: () -> Unit){
+                    rank: Int = 100, onButtonClicked: () -> Unit){
     Box {
         Button(
             onClick = {
@@ -463,7 +464,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 
 @Composable
 fun DesignMFASpace(navController: NavHostController,
-                   value: String, buttonType: String, rank: Int,
+                   value: String, buttonType: String, rank: Int = 100,
                    signUpPageViewModel: SignUpPageViewModel
 ){
     Card(modifier = Modifier
@@ -524,7 +525,7 @@ fun DividerTextComponent(){
 
 @Composable
 fun ClickableLoginOrLogOutText(navController: NavHostController,
-                               initialText: String, loginText: String, rank: Int){
+                               initialText: String, loginText: String, rank: Int = 100){
     val annotatedString = buildAnnotatedString {
         append("$initialText ")
         withStyle(style = SpanStyle(color = Color.Blue)){
