@@ -39,4 +39,12 @@
     <string name="facebook">Facebook</string>
     <string name="github">GitHub</string>
     <string name="choose_verification_method">Choose Verification Method</string>
+
+
+    <string name="subject_confirm_your_ID">Confirm Your Identity</string>
+    <string name="body">Thank you for using Capstone App. When prompted, use the following verification code: </string>
+    <string name="code_expiration">The code will expire in 10 minutes.</string>
+    <string name="motivation">Enjoy using the Capstone App.</string>
+    <string name="sincerely">Sincerely,</string>
+    <string name="capstone_team">The Capstone App Team.</string>
 </resources>

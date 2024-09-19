@@ -99,6 +99,9 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                                 homeViewModel.logOut(navController = navController)
                                 navController.navigate(Routes.Login.route)
                                 getToast(context, "Please Login to continue.")
+                            }else{
+                                getToast(context, "No user is logged-in")
+                                navController.navigateUp()
                             }
                         }
                         "DefaultScreen" -> {

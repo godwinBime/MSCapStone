@@ -62,7 +62,7 @@ fun ScaffoldChangePassword(navController: NavHostController,
             ){
                 Spacer(modifier = Modifier.height(20.dp))
 
-                HeadingTextComponent(value = "Enter Verification Code")
+                HeadingTextComponent(value = "Enter Verification Code->")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = verificationCode,
@@ -80,7 +80,7 @@ fun ScaffoldChangePassword(navController: NavHostController,
                     .height(50.dp))
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
-                    value = verify,  rank = 3,
+                    value = verify,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
@@ -90,7 +90,7 @@ fun ScaffoldChangePassword(navController: NavHostController,
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
-                    navController = navController, 7)
+                    navController = navController)
             }
         }
     )

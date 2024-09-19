@@ -40,7 +40,7 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
         contentAlignment = Alignment.Center){
         ScaffoldUpdateProfileWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel,
             homeViewModel = homeViewModel)
-        if (signUpPageViewModel.signINSignUpInProgress.value) {
+        if (signUpPageViewModel.signInSignUpInProgress.value) {
             CircularProgressIndicator()
         }
     }

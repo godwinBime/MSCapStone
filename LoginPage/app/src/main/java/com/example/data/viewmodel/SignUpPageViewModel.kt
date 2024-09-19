@@ -22,7 +22,7 @@ class SignUpPageViewModel: ViewModel() {
     var confirmPasswordValidationsPassed = mutableStateOf(false)
     var verificationCodeValidationsPassed = mutableStateOf(false)
     var privacyPolicyValidationPassed = mutableStateOf(false)
-    var signINSignUpInProgress = mutableStateOf(false)
+    var signInSignUpInProgress = mutableStateOf(false)
 
     fun onSignUpEvent(signUpEvent: SignUpPageUIEvent, navController: NavHostController){
 //        validateSignUpDataWithRules()
@@ -220,7 +220,7 @@ class SignUpPageViewModel: ViewModel() {
     }
 
     private fun login(navController: NavHostController){
-        signINSignUpInProgress.value = true
+        signInSignUpInProgress.value = true
         val email = signUpPageUIState.value.email
         val password = signUpPageUIState.value.password
 
@@ -233,14 +233,14 @@ class SignUpPageViewModel: ViewModel() {
 
                 if (it.isSuccessful){
                     navController.navigate(Routes.ChooseVerificationMethod.route)
-                    signINSignUpInProgress.value = false
+                    signInSignUpInProgress.value = false
                 }
             }
             .addOnFailureListener {
                 Log.d(TAG, "Inside Firebase Login addOnFailureListener")
                 Log.d(TAG, "Login Exception = ${it.message}")
                 Log.d(TAG, "Login Exception = ${it.localizedMessage}")
-                signINSignUpInProgress.value = false
+                signInSignUpInProgress.value = false
             }
     }
 
@@ -248,7 +248,7 @@ class SignUpPageViewModel: ViewModel() {
     private fun createUserInFireBase(email: String,
                                      password: String,
                                      navController: NavHostController){
-        signINSignUpInProgress.value = true
+        signInSignUpInProgress.value = true
         FirebaseAuth
             .getInstance()
             .createUserWithEmailAndPassword(email, password)
@@ -258,11 +258,11 @@ class SignUpPageViewModel: ViewModel() {
                 if (it.isSuccessful){
 
                     navController.navigate(Routes.Login.route)
-                    signINSignUpInProgress.value = false
+                    signInSignUpInProgress.value = false
                 }
             }
             .addOnFailureListener {
-                signINSignUpInProgress.value = false
+                signInSignUpInProgress.value = false
                 Log.d(TAG, "Inside Firebase Signup addOnFailureListener")
                 Log.d(TAG, "SignUp Exception = ${it.message}")
                 Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")

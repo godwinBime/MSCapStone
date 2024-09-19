@@ -58,7 +58,7 @@ fun Login(navController: NavHostController,
             homeViewModel = homeViewModel,
             googleSignInViewModel = googleSignInViewModel,
             scrollState, signUpPageViewModel)
-        if (signUpPageViewModel.signINSignUpInProgress.value ||
+        if (signUpPageViewModel.signInSignUpInProgress.value ||
             googleSignInState.loading) {
             CircularProgressIndicator()
         }

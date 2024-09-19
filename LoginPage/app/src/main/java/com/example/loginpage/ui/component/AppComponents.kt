@@ -64,10 +64,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
 
@@ -349,7 +351,7 @@ fun ButtonComponent(navController: NavHostController,
             }
             1 -> {
                 onButtonClicked.invoke()
-//                navController.navigate(Routes.Login.route)
+                navController.navigate(Routes.Login.route)
             }
             2 -> {
                 onButtonClicked.invoke()
@@ -394,23 +396,28 @@ fun ButtonComponent(navController: NavHostController,
 @Composable
 fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               homeViewModel: HomeViewModel,
-              signUpPageViewModel: SignUpPageViewModel, isEnable: Boolean = false,){
+              signUpPageViewModel: SignUpPageViewModel,
+              isEnable: Boolean = false,
+              verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     Card(modifier = Modifier
         .height(90.dp)
         .fillMaxHeight(.9f),
         elevation = 0.dp
     ){
-        ButtonComponent(navController = navController,
-            value = value,
-            rank = rank,
-            homeViewModel = homeViewModel,
-            onButtonClicked = {
-                signUpPageViewModel.onSignUpEvent(
-                    SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
-                    navController = navController
-                )
-            },
-            isEnable = isEnable)
+        verifyEmailViewModel.verifyOTPCode(navController = navController)
+        if (verifyEmailViewModel.isOTPSent){
+            ButtonComponent(navController = navController,
+                value = value,
+                rank = 1,
+                homeViewModel = homeViewModel,
+                onButtonClicked = {
+                    signUpPageViewModel.onSignUpEvent(
+                        SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
+                        navController = navController
+                    )
+                },
+                isEnable = isEnable)
+        }
     }
 }
 

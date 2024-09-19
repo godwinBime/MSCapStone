@@ -70,6 +70,8 @@ dependencies {
     //Firebase SDK
     implementation(libs.firebase.auth.ktx)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore)
     //implementation("com.google.firebase:firebase-analytics")
 
     //  Google authentication dependency

@@ -46,7 +46,7 @@ fun Home(navController: NavHostController, homeViewModel: HomeViewModel = viewMo
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
         ScaffoldHomeScreenWithTopBar(navController, homeViewModel, scrollState)
-        if (signUpPageViewModel.signINSignUpInProgress.value){
+        if (signUpPageViewModel.signInSignUpInProgress.value){
             CircularProgressIndicator()
         }
     }

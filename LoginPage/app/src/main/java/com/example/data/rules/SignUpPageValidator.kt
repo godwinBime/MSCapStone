@@ -14,9 +14,16 @@ object SignUpPageValidator {
     }
 
     fun validateEmail(email: String): SignUpValidationResult{
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        val meetsStandard =  email.matches(emailRegex.toRegex())
+
         return SignUpValidationResult(
-            (!email.isNullOrEmpty() && email.length > 10)
+            meetsStandard
         )
+
+//        return SignUpValidationResult(
+//            (!email.isNullOrEmpty() && email.length > 10)
+//        )
     }
 
     fun validatePhoneNumber(phoneNumber: String): SignUpValidationResult{

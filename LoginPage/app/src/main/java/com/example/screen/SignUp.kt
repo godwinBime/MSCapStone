@@ -45,7 +45,7 @@ fun SignUp(navController: NavHostController,
         ScaffoldSignUpWithTopBar(navController,
             homeViewModel,
             scrollState, signUpPageViewModel = signUpPageViewModel)
-        if (signUpPageViewModel.signINSignUpInProgress.value) {
+        if (signUpPageViewModel.signInSignUpInProgress.value) {
             CircularProgressIndicator()
         }
     }

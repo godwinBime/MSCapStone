@@ -48,7 +48,7 @@ fun LoginAndSecurity(navController: NavHostController, homeViewModel: HomeViewMo
         contentAlignment = Alignment.Center){
         ScaffoldLoginAndSecurityScreenWithTopBar(navController, homeViewModel, scrollState,
             mainActivity)
-        if (signUpPageViewModel.signINSignUpInProgress.value){
+        if (signUpPageViewModel.signInSignUpInProgress.value){
             CircularProgressIndicator()
         }
     }
