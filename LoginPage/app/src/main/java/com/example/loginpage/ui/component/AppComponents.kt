@@ -68,6 +68,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.uistate.EmailVerifyUIState
+import com.example.data.uistate.SignUpPageUIState
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
@@ -341,29 +343,52 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 @Composable
 fun ButtonComponent(navController: NavHostController,
                     value: String, rank: Int = 100,
-                    homeViewModel: HomeViewModel,
-                    onButtonClicked: () -> Unit, isEnable: Boolean = false){
+                    homeViewModel: HomeViewModel = viewModel(),
+                    onButtonClicked: () -> Unit, isEnable: Boolean = false,
+                    verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+    val signUpPageUIState = remember {mutableStateOf(SignUpPageUIState())}
+    val email = EmailVerifyUIState(signUpPageUIState.value.email)
+
     Button(onClick = {
         when(rank){
             0 ->{
                 onButtonClicked.invoke()
-//                navController.navigate(Routes.ChooseVerificationMethod.route)
+                verifyEmailViewModel.verifyOTPCode(navController = navController)
+                if (verifyEmailViewModel.isOTPCodeCorrect) {
+                    navController.navigate(Routes.NewPassword.route)
+                }
             }
             1 -> {
                 onButtonClicked.invoke()
-                navController.navigate(Routes.Login.route)
+                verifyEmailViewModel.sendOTPEmail(email)
+                if (verifyEmailViewModel.isOTPSent) {
+                    navController.navigate(Routes.MFAVerifyEmail.route)
+                }
             }
             2 -> {
                 onButtonClicked.invoke()
-                navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+                verifyEmailViewModel.verifyOTPCode(navController = navController)
+                if (verifyEmailViewModel.isOTPCodeCorrect) {
+                    navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+                }
             }
             3 -> {
                 onButtonClicked.invoke()
-                navController.navigate(Routes.NewPassword.route)
+                verifyEmailViewModel.verifyOTPCode(navController = navController)
+                if (verifyEmailViewModel.isOTPCodeCorrect) {
+                    navController.navigate(Routes.NewPassword.route)
+                }
             }
             4 -> {
                 onButtonClicked.invoke()
                 navController.navigate(Routes.Home.route)
+            }
+            5 -> {
+                onButtonClicked.invoke()
+                verifyEmailViewModel.verifyOTPCode(navController = navController)
+                if (verifyEmailViewModel.isOTPCodeCorrect) {
+                    navController.navigate(Routes.Home.route)
+                }
             }
         }
     },
@@ -397,33 +422,33 @@ fun ButtonComponent(navController: NavHostController,
 fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               homeViewModel: HomeViewModel,
               signUpPageViewModel: SignUpPageViewModel,
-              isEnable: Boolean = false,
-              verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+              isEnable: Boolean = false){
     Card(modifier = Modifier
         .height(90.dp)
         .fillMaxHeight(.9f),
         elevation = 0.dp
     ){
-        verifyEmailViewModel.verifyOTPCode(navController = navController)
-        if (verifyEmailViewModel.isOTPSent){
-            ButtonComponent(navController = navController,
-                value = value,
-                rank = 1,
-                homeViewModel = homeViewModel,
-                onButtonClicked = {
-                    signUpPageViewModel.onSignUpEvent(
-                        SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
-                        navController = navController
-                    )
-                },
-                isEnable = isEnable)
-        }
+        ButtonComponent(navController = navController,
+            value = value,
+            rank = rank,
+            homeViewModel = homeViewModel,
+            onButtonClicked = {
+                signUpPageViewModel.onSignUpEvent(
+                    SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
+                    navController = navController
+                )
+            },
+            isEnable = isEnable)
     }
 }
 
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
-                    rank: Int = 100, onButtonClicked: () -> Unit){
+                    rank: Int = 100, onButtonClicked: () -> Unit,
+                    verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+    val signUpPageUIState = remember {mutableStateOf(SignUpPageUIState())}
+    val email = EmailVerifyUIState(signUpPageUIState.value.email)
+
     Box {
         Button(
             onClick = {
@@ -438,7 +463,10 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     }
                     2 -> {
                         onButtonClicked.invoke()
-                        navController.navigate(Routes.MFAVerifyEmail.route)
+                        verifyEmailViewModel.sendOTPEmail(email)
+                        if (verifyEmailViewModel.isOTPSent) {
+                            navController.navigate(Routes.MFAVerifyEmail.route)
+                        }
                     }
                 }
             },

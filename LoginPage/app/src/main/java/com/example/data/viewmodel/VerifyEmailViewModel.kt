@@ -20,7 +20,8 @@ class VerifyEmailViewModel: ViewModel() {
     val generatedVerificationCode = generateVerificationCode()
     var sentOTPCode by mutableStateOf("")
     var verificationMessage by mutableStateOf("")
-    var isOTPSent by mutableStateOf(true)
+    var isOTPSent by mutableStateOf(false)
+    var isOTPCodeCorrect by mutableStateOf(false)
 
 
     private fun generateVerificationCode(): String{
@@ -30,9 +31,8 @@ class VerifyEmailViewModel: ViewModel() {
         }.joinToString("")
     }
 
-    fun sendOTPEmail(email: EmailVerifyUIState){
+    fun sendOTPEmail(email: EmailVerifyUIState, destination: String = "None"){
 //        val email = EmailVerifyUIState("")
-        email.body = generatedVerificationCode
         val emailData = hashMapOf(
             "to" to email.to,
             "message" to hashMapOf(
@@ -62,21 +62,24 @@ class VerifyEmailViewModel: ViewModel() {
     fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please provide enter the verification code sent to your email"
+            Log.d(TAG, verificationMessage)
         }else if (auth.currentUser != null){
             if (sentOTPCode == generatedVerificationCode){
-                isOTPSent = true
+                isOTPCodeCorrect = true
                 when(destination) {
                     "MFAVerifyEmail" ->
                         navController.navigate(Routes.Home.route)
                 }
             }else{
-                isOTPSent = false
+                isOTPCodeCorrect = false
                 verificationMessage = "Verification code is incorrect..."
-            }
-        }else if (destination == "ChangePasswordVerifyEmail"){
-            if (isOTPSent){
-                navController.navigate(Routes.Login.route)
+                Log.d(TAG, verificationMessage)
             }
         }
+//        else if (destination == "ChangePasswordVerifyEmail"){
+//            if (isOTPSent){
+//                navController.navigate(Routes.Login.route)
+//            }
+//        }
     }
 }

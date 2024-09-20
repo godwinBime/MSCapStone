@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,6 +96,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 val isEnabled = signUpPageViewModel.emailValidationsPassed.value
                         && signUpPageViewModel.passwordValidationsPassed.value
 
+                var em = ""
+
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
@@ -119,7 +122,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                 )
-
                 Spacer(modifier = Modifier.height(50.dp))
 
                 Box(modifier = Modifier
