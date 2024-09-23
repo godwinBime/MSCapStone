@@ -228,7 +228,7 @@ class SignUpPageViewModel: ViewModel() {
             .getInstance()
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener{
-                Log.d(TAG, "Inside login success...")
+                Log.d(TAG, "Inside login success... by ${signUpPageUIState.value.email}")
                 Log.d(TAG, "Is Login Success: ${it.isSuccessful}")
 
                 if (it.isSuccessful){

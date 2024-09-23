@@ -16,12 +16,14 @@ class VerifyEmailViewModel: ViewModel() {
     val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
-    private val TAG = SignUpPageViewModel::class.simpleName
-    val generatedVerificationCode = generateVerificationCode()
+    private val TAG = VerifyEmailViewModel::class.simpleName
+    private val generatedVerificationCode = generateVerificationCode()
     var sentOTPCode by mutableStateOf("")
     var verificationMessage by mutableStateOf("")
     var isOTPSent by mutableStateOf(false)
     var isOTPCodeCorrect by mutableStateOf(false)
+
+    var emailAddress by mutableStateOf("")
 
 
     private fun generateVerificationCode(): String{
@@ -31,25 +33,33 @@ class VerifyEmailViewModel: ViewModel() {
         }.joinToString("")
     }
 
-    fun sendOTPEmail(email: EmailVerifyUIState, destination: String = "None"){
+    fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
 //        val email = EmailVerifyUIState("")
+        Log.d(TAG, "Email-Address ---> $emailAddress")
         val emailData = hashMapOf(
-            "to" to email.to,
+            "to" to emailAddress,
             "message" to hashMapOf(
                 "subject" to email.subject,
-                "text" to email.body + " " + generatedVerificationCode + " " + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
+                "text" to email.body + " " + generatedVerificationCode + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
             )
         )
 
-        if (email.to.isEmpty() && email.subject.isEmpty() && email.body.isEmpty()){
+        if (emailData.isEmpty()){
             isOTPSent = false
             verificationMessage = "Missing data, try again later."
         }else{
             firestore.collection("capstone").add(emailData)
                 .addOnSuccessListener {
                     isOTPSent = true
-                    verificationMessage = "Success: MFA code sent to ${email.to}"
+                    Log.d(TAG, "isOTPSent from sendOTPEmail function: $isOTPSent")
+                    verificationMessage = "Success: MFA code sent to $emailAddress"
                     Log.d(TAG, verificationMessage)
+                    when(type){
+                        "ChangePasswordVerifyEmail" ->{
+                            Log.d(TAG, "Going to verify MFA code...")
+                            navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+                        }
+                    }
                 }
                 .addOnFailureListener{
                     isOTPSent = false
@@ -61,14 +71,16 @@ class VerifyEmailViewModel: ViewModel() {
 
     fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
         if (sentOTPCode.isEmpty()){
-            verificationMessage = "Please provide enter the verification code sent to your email"
+            verificationMessage = "Please enter the verification code sent to your email"
             Log.d(TAG, verificationMessage)
         }else if (auth.currentUser != null){
             if (sentOTPCode == generatedVerificationCode){
                 isOTPCodeCorrect = true
                 when(destination) {
-                    "MFAVerifyEmail" ->
+                    "MFAVerifyEmail" -> {
+                        isOTPSent = false
                         navController.navigate(Routes.Home.route)
+                    }
                 }
             }else{
                 isOTPCodeCorrect = false
@@ -76,10 +88,6 @@ class VerifyEmailViewModel: ViewModel() {
                 Log.d(TAG, verificationMessage)
             }
         }
-//        else if (destination == "ChangePasswordVerifyEmail"){
-//            if (isOTPSent){
-//                navController.navigate(Routes.Login.route)
-//            }
-//        }
+//
     }
 }

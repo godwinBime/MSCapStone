@@ -62,19 +62,20 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
 
                 Spacer(modifier = Modifier.height(20.dp))
                 DesignMFASpace(navController = navController,
-                    value = "Authenticator App", buttonType = "Enter Code", rank = 0,
+                    value = "Authenticator App", buttonType = "Enter Code",
+                    type = "MFAAuthenticatorApp",
                     signUpPageViewModel = signUpPageViewModel)
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 DesignMFASpace(navController = navController, value = "SMS Verification",
-                    buttonType = "Send Text", rank = 1,
+                    buttonType = "Send Text", type = "MFASMSVerification",
                     signUpPageViewModel = signUpPageViewModel)
 
                 Spacer(modifier = Modifier.height(40.dp))
 
                 DesignMFASpace(navController = navController, value = "Email Verification",
-                    buttonType = "Send Email", rank = 2,
+                    buttonType = "Send Email", type = "MFAVerifyEmail",
                     signUpPageViewModel = signUpPageViewModel)
 
                 Spacer(modifier = Modifier

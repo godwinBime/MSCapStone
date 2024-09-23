@@ -1,5 +1,6 @@
 package com.example.loginpage.ui.component
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -114,8 +116,11 @@ fun HeadingTextComponent(value: String){
 @Composable
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          onTextChanged:(String) -> Unit,
-                         errorStatus: Boolean = false){
+                         errorStatus: Boolean = false,
+                         emailViewModel: VerifyEmailViewModel = viewModel(),
+                         action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
+    val TAG = VerifyEmailViewModel::class.simpleName
 
     TextField(
         modifier = Modifier
@@ -131,6 +136,12 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             imeAction = ImeAction.Next),
         onValueChange = {
             textValue.value = it
+            when(action){
+                "ForgotPassword" ->{
+                    emailViewModel.emailAddress = textValue.value
+//                    Log.d(TAG, "Forgot Password Action")
+                }
+            }
             onTextChanged(it)},
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "" )
@@ -340,18 +351,30 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
     }
 }
 
+
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ButtonComponent(navController: NavHostController,
                     value: String, rank: Int = 100,
                     homeViewModel: HomeViewModel = viewModel(),
                     onButtonClicked: () -> Unit, isEnable: Boolean = false,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
-    val signUpPageUIState = remember {mutableStateOf(SignUpPageUIState())}
-    val email = EmailVerifyUIState(signUpPageUIState.value.email)
+
+    val TAG = VerifyEmailViewModel::class.simpleName
+
+    val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
+
+//    if (rank == 2){
+//        verifyEmailViewModel.sendOTPEmail(email)
+//        var timerFinished by mutableStateOf(false)
+//        LaunchedEffect(Unit) {
+//
+//        }
+//    }
 
     Button(onClick = {
         when(rank){
-            0 ->{
+            0 -> {
                 onButtonClicked.invoke()
                 verifyEmailViewModel.verifyOTPCode(navController = navController)
                 if (verifyEmailViewModel.isOTPCodeCorrect) {
@@ -360,17 +383,20 @@ fun ButtonComponent(navController: NavHostController,
             }
             1 -> {
                 onButtonClicked.invoke()
-                verifyEmailViewModel.sendOTPEmail(email)
+                verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
+                    navController = navController)
                 if (verifyEmailViewModel.isOTPSent) {
                     navController.navigate(Routes.MFAVerifyEmail.route)
                 }
             }
             2 -> {
+                verifyEmailViewModel.sendOTPEmail(email, "ChangePasswordVerifyEmail", navController = navController)
                 onButtonClicked.invoke()
-                verifyEmailViewModel.verifyOTPCode(navController = navController)
-                if (verifyEmailViewModel.isOTPCodeCorrect) {
-                    navController.navigate(Routes.ChangePasswordVerifyEmail.route)
-                }
+//                Log.d(TAG, "isOTPSent from ButtonComponent: ${verifyEmailViewModel.isOTPSent}")
+//                if (verifyEmailViewModel.isOTPSent) {
+//                    Log.d(TAG, "OTP Sent to ${verifyEmailViewModel.emailAddress}")
+//                    navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+//                }
             }
             3 -> {
                 onButtonClicked.invoke()
@@ -442,28 +468,34 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
-                    rank: Int = 100, onButtonClicked: () -> Unit,
+                    buttonType: String = "None", onButtonClicked: () -> Unit,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
-    val signUpPageUIState = remember {mutableStateOf(SignUpPageUIState())}
+
+    var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     val email = EmailVerifyUIState(signUpPageUIState.value.email)
+    val context = LocalContext.current.applicationContext
 
     Box {
         Button(
             onClick = {
-                when(rank){
-                    0 -> {
+                when(buttonType){
+                    "MFAAuthenticatorApp" -> {
                         onButtonClicked.invoke()
-                        navController.navigate(Routes.AuthenticatorAppVerification.route)
+//                        navController.navigate(Routes.AuthenticatorAppVerification.route)
+                        getToast(context, action = "AuthenticatorAppVerification Coming soon!")
                     }
-                    1 -> {
+                    "MFASMSVerification" -> {
                         onButtonClicked.invoke()
-                        navController.navigate(Routes.SMSVerification.route)
+//                        navController.navigate(Routes.SMSVerification.route)
+                        getToast(context, action = "SMSVerification coming soon!")
                     }
-                    2 -> {
+                    "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
-                        verifyEmailViewModel.sendOTPEmail(email)
+                        verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
+                            navController = navController)
                         if (verifyEmailViewModel.isOTPSent) {
                             navController.navigate(Routes.MFAVerifyEmail.route)
                         }
@@ -499,7 +531,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 
 @Composable
 fun DesignMFASpace(navController: NavHostController,
-                   value: String, buttonType: String, rank: Int = 100,
+                   value: String, buttonType: String, type: String = "None",
                    signUpPageViewModel: SignUpPageViewModel
 ){
     Card(modifier = Modifier
@@ -518,7 +550,7 @@ fun DesignMFASpace(navController: NavHostController,
             textAlign = TextAlign.Justify
         )
         ChooseMFAButton(name = buttonType,
-            navController = navController, rank = rank,
+            navController = navController, buttonType = type,
             onButtonClicked = {
                 signUpPageViewModel.onSignUpEvent(
                     signUpEvent = SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,

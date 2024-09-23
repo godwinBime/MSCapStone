@@ -71,7 +71,8 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
+                    action = "ForgotPassword"
                 )
 
                 Spacer(modifier = Modifier
