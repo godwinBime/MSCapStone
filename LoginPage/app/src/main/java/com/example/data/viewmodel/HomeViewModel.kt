@@ -53,6 +53,7 @@ class HomeViewModel(): ViewModel() {
         val authStateListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser == null) {
                 isUserLoggedIn.value = false
+                isMFAComplete.value = false
                 navController.navigate(Routes.Login.route)
                 Log.d(TAG, "Inside sign out success state...")
             } else {

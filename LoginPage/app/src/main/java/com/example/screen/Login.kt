@@ -105,7 +105,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             SignUpPageUIEvent.EmailChanged(it),
                             navController = navController)
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
+                    action = "Login"
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

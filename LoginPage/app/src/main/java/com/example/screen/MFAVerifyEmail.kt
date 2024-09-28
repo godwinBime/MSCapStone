@@ -71,7 +71,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError,
+                    action = "VerifyAndGotoHomeScreen"
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))

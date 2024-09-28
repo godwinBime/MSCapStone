@@ -1,6 +1,5 @@
 package com.example.data.viewmodel
 
-import android.os.IBinder.DeathRecipient
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,35 +14,38 @@ import com.google.firebase.firestore.FirebaseFirestore
 class VerifyEmailViewModel: ViewModel() {
     val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-
     private val TAG = VerifyEmailViewModel::class.simpleName
-    private val generatedVerificationCode = generateVerificationCode()
     var sentOTPCode by mutableStateOf("")
     var verificationMessage by mutableStateOf("")
     var isOTPSent by mutableStateOf(false)
-    var isOTPCodeCorrect by mutableStateOf(false)
-
     var emailAddress by mutableStateOf("")
+//    var generatedCode by mutableStateOf(generateVerificationCode())
+    var isOTPCodeGenerated = false
 
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()
-        return(1..5).map {
-            char.random()
-        }.joinToString("")
+        return (1..5).map {
+                char.random()
+            }.joinToString("")
     }
+
 
     fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
 //        val email = EmailVerifyUIState("")
-        Log.d(TAG, "Email-Address ---> $emailAddress")
+//        Log.d(TAG, "Email-Address ---> $emailAddress")
+//        getGeneratedCode()
+        email.to = auth.currentUser?.email.toString()
+        email.code = generateVerificationCode()
         val emailData = hashMapOf(
-            "to" to emailAddress,
+            "to" to email.to,
             "message" to hashMapOf(
                 "subject" to email.subject,
-                "text" to email.body + " " + generatedVerificationCode + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
+                "text" to email.body + " " + email.code + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam,
+                "code" to email.code
             )
         )
-
+        Log.d(TAG, "Code sent to ${email.to} is ${email.code}")
         if (emailData.isEmpty()){
             isOTPSent = false
             verificationMessage = "Missing data, try again later."
@@ -51,13 +53,15 @@ class VerifyEmailViewModel: ViewModel() {
             firestore.collection("capstone").add(emailData)
                 .addOnSuccessListener {
                     isOTPSent = true
-                    Log.d(TAG, "isOTPSent from sendOTPEmail function: $isOTPSent")
-                    verificationMessage = "Success: MFA code sent to $emailAddress"
-                    Log.d(TAG, verificationMessage)
+                    Log.d(TAG, "isOTPSent (${email.code}) from sendOTPEmail function: $isOTPSent")
                     when(type){
                         "ChangePasswordVerifyEmail" ->{
-                            Log.d(TAG, "Going to verify MFA code...")
+                            Log.d(TAG, "ChangePasswordVerifyEmail code sent...")
                             navController.navigate(Routes.ChangePasswordVerifyEmail.route)
+                        }
+                        "MFAVerifyEmail" ->{
+                            Log.d(TAG, "MFAVerifyEmail code sent to ${email.to}")
+                            navController.navigate(Routes.MFAVerifyEmail.route)
                         }
                     }
                 }
@@ -70,21 +74,22 @@ class VerifyEmailViewModel: ViewModel() {
     }
 
     fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
+        val email = EmailVerifyUIState("")
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please enter the verification code sent to your email"
             Log.d(TAG, verificationMessage)
         }else if (auth.currentUser != null){
-            if (sentOTPCode == generatedVerificationCode){
-                isOTPCodeCorrect = true
+            if (sentOTPCode == email.code){
+                Log.d(TAG, verificationMessage)
                 when(destination) {
-                    "MFAVerifyEmail" -> {
+                    "VerifyAndGotoHomeScreen" -> {
                         isOTPSent = false
+                        verificationMessage = "OTP Verified...Navigating to home screen..."
                         navController.navigate(Routes.Home.route)
                     }
                 }
             }else{
-                isOTPCodeCorrect = false
-                verificationMessage = "Verification code is incorrect..."
+                verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${email.code}"
                 Log.d(TAG, verificationMessage)
             }
         }

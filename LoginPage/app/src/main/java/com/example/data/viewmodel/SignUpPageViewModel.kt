@@ -3,6 +3,7 @@ package com.example.data.viewmodel
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
 import com.example.data.uievents.SignUpPageUIEvent
@@ -13,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
-
     var firstNameValidationsPassed = mutableStateOf(false)
     var lastNameValidationsPassed = mutableStateOf(false)
     var emailValidationsPassed = mutableStateOf(false)
@@ -230,8 +230,8 @@ class SignUpPageViewModel: ViewModel() {
             .addOnCompleteListener{
                 Log.d(TAG, "Inside login success... by ${signUpPageUIState.value.email}")
                 Log.d(TAG, "Is Login Success: ${it.isSuccessful}")
-
                 if (it.isSuccessful){
+                    Log.d(TAG, "Going to choose verification method with email: ${signUpPageUIState.value.email}")
                     navController.navigate(Routes.ChooseVerificationMethod.route)
                     signInSignUpInProgress.value = false
                 }
@@ -256,7 +256,6 @@ class SignUpPageViewModel: ViewModel() {
                 Log.d(TAG, "Inside Firebase SignUp addOnCompleteListener")
                 Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
                 if (it.isSuccessful){
-
                     navController.navigate(Routes.Login.route)
                     signInSignUpInProgress.value = false
                 }

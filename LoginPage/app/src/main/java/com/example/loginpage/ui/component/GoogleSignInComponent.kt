@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.data.local.entities.Constant.ServerClient
+import com.example.data.local.entities.Constant.SERVERCLIENT
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.navigation.Routes
@@ -56,7 +56,7 @@ fun GoogleSignInScreen(
         onClick = {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken(ServerClient)
+                .requestIdToken(SERVERCLIENT)
                 .requestProfile()
                 .build()
 
