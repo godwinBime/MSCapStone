@@ -177,7 +177,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                                 navController = navController
                             )
                         },
-                        isEnable = isEnabled
+                        isEnable = isEnabled,
+                        originalPage = "UpdateProfile.kt"
                     )
                 }
             }

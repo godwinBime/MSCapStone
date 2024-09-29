@@ -191,7 +191,8 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                                 navController = navController
                             )
                         },
-                        isEnable = isEnabled
+                        isEnable = isEnabled,
+                        originalPage = "SignUp.kt"
                     )
                 }
 

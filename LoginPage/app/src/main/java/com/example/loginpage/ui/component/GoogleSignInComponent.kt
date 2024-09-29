@@ -3,10 +3,13 @@ package com.example.loginpage.ui.component
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +26,7 @@ import androidx.navigation.NavHostController
 import com.example.data.local.entities.Constant.SERVERCLIENT
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
+import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -50,7 +55,7 @@ fun GoogleSignInScreen(
         }
 
     val context = LocalContext.current
-    Button(
+    OutlinedButton (
         modifier = Modifier
             .height(60.dp),
         onClick = {
@@ -67,10 +72,15 @@ fun GoogleSignInScreen(
         }
     ) {
         Spacer(modifier = Modifier.width(3.dp))
+//        Image(
+//            painter = painterResource(id = R.mipmap.ic_google),
+//            contentDescription = null,
+//            modifier = Modifier.size(40.dp)
+//        )
         Text(text = value,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White)
+            color = Color.Blue)
 
         LaunchedEffect(key1 = googleSignInState.success) {
             scope.launch {

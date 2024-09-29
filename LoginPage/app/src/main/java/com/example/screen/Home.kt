@@ -91,7 +91,8 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {
-            HomeScreenDrawerHeader(homeViewModel.emailId.value)
+//            HomeScreenDrawerHeader(homeViewModel.emailId.value)
+            HomeScreenDrawerHeader(homeViewModel.fullNames.value)
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,

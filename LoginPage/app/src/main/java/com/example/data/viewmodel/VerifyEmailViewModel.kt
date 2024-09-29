@@ -5,23 +5,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class VerifyEmailViewModel: ViewModel() {
     val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
     private val TAG = VerifyEmailViewModel::class.simpleName
     var sentOTPCode by mutableStateOf("")
-    var verificationMessage by mutableStateOf("")
+    private var verificationMessage by mutableStateOf("")
     var isOTPSent by mutableStateOf(false)
     var emailAddress by mutableStateOf("")
-//    var generatedCode by mutableStateOf(generateVerificationCode())
-    var isOTPCodeGenerated = false
-
+    private var otpCode by mutableStateOf("")
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()
@@ -30,30 +31,98 @@ class VerifyEmailViewModel: ViewModel() {
             }.joinToString("")
     }
 
+//    fun storeOTPCode(){
+//        val code = OTPCode()
+//        val otpCode = hashMapOf(
+//            "id" to code.id,
+//            "code" to code.otpcode
+//        )
+////        firestore.collection("authuser").
+//    }
 
-    fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
-//        val email = EmailVerifyUIState("")
-//        Log.d(TAG, "Email-Address ---> $emailAddress")
-//        getGeneratedCode()
-        email.to = auth.currentUser?.email.toString()
-        email.code = generateVerificationCode()
+    private suspend fun readOTPCode():String?{
+        if (auth.currentUser != null) {
+            try {
+                val document =
+                    firestore.collection("authuser").document("qM1Zd2xkkJSGNxGp6vyT").get().await()
+                Log.d(TAG, "OTPCode from db:-> ${document.get("otpcode") as? String }")
+                return document.getString("otpcode")
+            } catch (e: Exception) {
+                Log.d(TAG, "readOTPCode Exception: ${e.message}")
+                return "Exception: No value read from db by readOTPCode()"
+            }
+        }else{
+            Log.d(TAG, "No active user found when readOTPCode() was called..")
+            return "No value read from db by readOTPCode()"
+        }
+    }
+
+    private fun otpCodeUpdate(actionType: String = "None"){
+        viewModelScope.launch {
+            updateOTPCode()
+        }
+    }
+
+    private suspend fun updateOTPCode(actionType: String = "None"){
+        if(auth.currentUser != null || actionType == "ChangePasswordVerifyEmail") {
+            viewModelScope.launch {
+                try {
+                    val documentRef =
+                        firestore.collection("authuser").document("qM1Zd2xkkJSGNxGp6vyT")
+                    val updateData = hashMapOf<String, Any>(
+                        "otpcode" to generateVerificationCode()
+                    )
+                    documentRef.update(updateData).await()
+
+                    // Read otpcode from db
+//                val updateAndRead = documentRef.get().await()
+//                generatedCode = (updateAndRead.get("otpcode") as? String).toString()
+//                Log.d(TAG, "New OTPCode:-> ${readOTPCode()}")
+                } catch (e: Exception) {
+                    Log.d(TAG, "updateOTPCode Exception: ${e.message}")
+                }
+            }
+        }
+        Log.d(TAG, "No active user found when updateOTPCode() was called..")
+    }
+
+    fun sendOTPToEmail(email: EmailVerifyUIState,
+                       navController: NavHostController,
+                       type: String){
+        viewModelScope.launch {
+            sendOTPEmail(
+                email = email,
+                type = type,
+                navController = navController)
+        }
+    }
+
+    private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
+        if (auth.currentUser == null){
+            otpCodeUpdate(actionType = "ChangePasswordVerifyEmail")
+            Log.d(TAG, "Password reset request initiated...")
+            otpCode = generateVerificationCode()
+            email.to = emailAddress
+        }else{
+            otpCodeUpdate()
+            otpCode = readOTPCode().toString()
+        }
         val emailData = hashMapOf(
             "to" to email.to,
             "message" to hashMapOf(
                 "subject" to email.subject,
-                "text" to email.body + " " + email.code + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam,
-                "code" to email.code
+                "text" to email.body + " " + otpCode + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
             )
         )
-        Log.d(TAG, "Code sent to ${email.to} is ${email.code}")
         if (emailData.isEmpty()){
             isOTPSent = false
             verificationMessage = "Missing data, try again later."
-        }else{
+        }else if(email.to.isNotEmpty()){
+            otpCode = readOTPCode().toString()
             firestore.collection("capstone").add(emailData)
                 .addOnSuccessListener {
                     isOTPSent = true
-                    Log.d(TAG, "isOTPSent (${email.code}) from sendOTPEmail function: $isOTPSent")
+                    Log.d(TAG, "isOTPSent ($otpCode) from sendOTPEmail function: $isOTPSent")
                     when(type){
                         "ChangePasswordVerifyEmail" ->{
                             Log.d(TAG, "ChangePasswordVerifyEmail code sent...")
@@ -70,29 +139,43 @@ class VerifyEmailViewModel: ViewModel() {
                     verificationMessage = "Error: -> MFA code not sent"
                     Log.d(TAG, verificationMessage)
                 }
+        }else{
+            verificationMessage = "Error: -> Issue with email or code to sendOTPEmail. Try again..."
+            Log.d(TAG, verificationMessage)
         }
     }
 
-    fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
-        val email = EmailVerifyUIState("")
+    fun verifySentOTPCode(navController: NavHostController, destination: String = "None"){
+        viewModelScope.launch {
+            verifyOTPCode(navController = navController, destination = destination)
+        }
+    }
+
+    private suspend fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
+        Log.d(TAG, verificationMessage)
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please enter the verification code sent to your email"
             Log.d(TAG, verificationMessage)
         }else if (auth.currentUser != null){
-            if (sentOTPCode == email.code){
-                Log.d(TAG, verificationMessage)
+            if (sentOTPCode == readOTPCode()){
                 when(destination) {
                     "VerifyAndGotoHomeScreen" -> {
                         isOTPSent = false
                         verificationMessage = "OTP Verified...Navigating to home screen..."
+                        Log.d(TAG, verificationMessage)
                         navController.navigate(Routes.Home.route)
+                    }
+                    "ChangePasswordVerifyEmail" -> {
+                        isOTPSent = false
+                        verificationMessage = "Password change otp verified..."
+                        Log.d(TAG, verificationMessage)
+                        navController.navigate(Routes.NewPassword.route)
                     }
                 }
             }else{
-                verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${email.code}"
+                verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${readOTPCode()}"
                 Log.d(TAG, verificationMessage)
             }
         }
-//
     }
 }

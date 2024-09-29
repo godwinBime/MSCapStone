@@ -39,8 +39,8 @@ fun ForgotPassword(navController: NavHostController,
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
-                                     homeViewModel: HomeViewModel, signUpPageViewModel: SignUpPageViewModel
-){
+                                     homeViewModel: HomeViewModel,
+                                     signUpPageViewModel: SignUpPageViewModel){
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
     val emailPainterResource = painterResource(id = R.drawable.email)
@@ -82,7 +82,8 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                     value = send, 2,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.emailValidationsPassed.value
+                    isEnable = signUpPageViewModel.emailValidationsPassed.value,
+                    originalPage = "ForgotPassword.kt"
                 )
             }
         }

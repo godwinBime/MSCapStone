@@ -19,7 +19,9 @@ class HomeViewModel(): ViewModel() {
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
     val isMFAComplete : MutableLiveData<Boolean> = MutableLiveData()
 
-    val emailId: MutableLiveData<String> = MutableLiveData()
+//    val emailId: MutableLiveData<String> = MutableLiveData()
+    val fullNames: MutableLiveData<String> = MutableLiveData()
+
 
     val navigationItemList = listOf<NavigationItem>(
         NavigationItem(title = "Home",
@@ -77,10 +79,14 @@ class HomeViewModel(): ViewModel() {
 
     fun getUserData(){
         FirebaseAuth.getInstance().currentUser?.also { //returns user if it is not null
-//            Log.d(TAG, "User's name: ${it.displayName}")
-            it.email?.also {
-                email ->
-                    emailId.value = email
+            Log.d(TAG, "User's name: ${it.displayName}")
+//            it.email?.also {
+//                email ->
+//                    emailId.value = email
+//            }
+            it.displayName?.also {
+                name ->
+                fullNames.value = name
             }
         }
     }

@@ -82,7 +82,8 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController,
                     value = verify, rank = 4,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
+                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
+                    originalPage = "AuthenticatorAppVerification.kt"
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

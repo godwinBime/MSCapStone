@@ -137,7 +137,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                                 SignUpPageUIEvent.LoginButtonClicked,
                                 navController = navController)
                         },
-                        isEnable = isEnabled
+                        isEnable = isEnabled,
+                        originalPage = "Login.kt"
                     )
                 }
 

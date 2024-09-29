@@ -78,7 +78,8 @@ fun ScaffoldSMSVerification(navController: NavHostController,
                     homeViewModel = homeViewModel,
                     value = verify, rank = 4,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
+                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
+                    originalPage = "SMSVerification"
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

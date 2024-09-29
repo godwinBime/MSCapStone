@@ -122,7 +122,6 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          emailViewModel: VerifyEmailViewModel = viewModel(),
                          action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
-    val TAG = VerifyEmailViewModel::class.simpleName
 
     TextField(
         modifier = Modifier
@@ -141,6 +140,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             when(action){
                 "ForgotPassword" ->{
                     emailViewModel.emailAddress = textValue.value
+                    Log.d(TAG, "ForgotPassword email to Sent OTP Code: ${emailViewModel.emailAddress}")
                 }
                 "VerifyAndGotoHomeScreen" -> {
                     emailViewModel.sentOTPCode = textValue.value
@@ -322,7 +322,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.SignUp.route)
                       }
                       2 -> {
-                          getToast(context = context, "Nav to Forgot Pass")
+                          getToast(context = context, "Nav to Reset Password")
                           navController.navigate(Routes.ForgotPassword.route)
                       }
                       3 -> {
@@ -342,6 +342,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.UpdateProfile.route)
                       }
                       8 -> {
+                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
                           navController.navigate(Routes.ChooseVerificationMethod.route)
                       }
                   }
@@ -363,48 +364,46 @@ fun ButtonComponent(navController: NavHostController,
                     value: String, rank: Int = 100,
                     homeViewModel: HomeViewModel = viewModel(),
                     onButtonClicked: () -> Unit, isEnable: Boolean = false,
-                    verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
-
+                    verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                    originalPage: String = "None"){
     val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
-
-//    if (rank == 2){
-//        verifyEmailViewModel.sendOTPEmail(email)
-//        var timerFinished by mutableStateOf(false)
-//        LaunchedEffect(Unit) {
-//
-//        }
-//    }
 
     Button(onClick = {
         when(rank){
             0 -> {
                 onButtonClicked.invoke()
-                Log.d(TAG, "Going to choose verification method with email: ${verifyEmailViewModel.emailAddress}")
-                navController.navigate(Routes.ChooseVerificationMethod.route)
+                Log.d(TAG, "From $originalPage in ButtonComponent Going to choose verification method with email: ${verifyEmailViewModel.auth.currentUser?.email}")
             }
             1 -> {
                 onButtonClicked.invoke()
-                verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
-                    navController = navController)
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                verifyEmailViewModel.sendOTPToEmail(
+                    email = email,
+                    navController = navController,
+                    type = "MFAVerifyEmail")
             }
             2 -> {
                 onButtonClicked.invoke()
-                verifyEmailViewModel.sendOTPEmail(email, "ChangePasswordVerifyEmail",
-                    navController = navController)
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                verifyEmailViewModel.sendOTPToEmail(
+                    email = email,
+                    navController = navController,
+                    type = "ChangePasswordVerifyEmail")
             }
             3 -> {
                 onButtonClicked.invoke()
-                verifyEmailViewModel.verifyOTPCode(navController = navController)
+                Log.d(TAG, "From $originalPage in ButtonComponent")
                 navController.navigate(Routes.NewPassword.route)
             }
             4 -> {
                 onButtonClicked.invoke()
-//                navController.navigate(Routes.Home.route)
+                Log.d(TAG, "From $originalPage in ButtonComponent")
             }
             5 -> {
                 onButtonClicked.invoke()
-                verifyEmailViewModel.verifyOTPCode(navController = navController,
-                    destination = "VerifyAndGotoHomeScreen")
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                verifyEmailViewModel.verifySentOTPCode(
+                    navController = navController, destination = "VerifyAndGotoHomeScreen")
             }
         }
     },
@@ -438,7 +437,8 @@ fun ButtonComponent(navController: NavHostController,
 fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               homeViewModel: HomeViewModel,
               signUpPageViewModel: SignUpPageViewModel,
-              isEnable: Boolean = false){
+              isEnable: Boolean = false,
+              originalPage: String = "None"){
     Card(modifier = Modifier
         .height(90.dp)
         .fillMaxHeight(.9f),
@@ -454,7 +454,8 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
                     navController = navController
                 )
             },
-            isEnable = isEnable)
+            isEnable = isEnable,
+            originalPage = originalPage)
     }
 }
 
@@ -466,6 +467,21 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     val context = LocalContext.current.applicationContext
+    val email = EmailVerifyUIState()
+
+//    when(buttonType){
+//        "MFAVerifyEmail" -> {
+//            LaunchedEffect(key1 = Unit) {
+//                val email = EmailVerifyUIState()
+//                Log.d(TAG, "About to send MFAVerifyEmail to ${email.to}")
+//                verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
+//                    navController = navController)
+//            }
+//        }
+//        "No Btn click Detected" -> {
+//            Log.d(TAG, "Error: -> No Btn click Detected... Try again")
+//        }
+//    }
 
     Box {
         Button(
@@ -483,9 +499,8 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     }
                     "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
-                        Log.d(TAG, "Going to enter MFA code sent to  ${verifyEmailViewModel.auth.currentUser?.email}")
-                        val email = EmailVerifyUIState()
-                        verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
+                        Log.d(TAG, "Going to Send MFA code sent to  ${verifyEmailViewModel.auth.currentUser?.email}")
+                        verifyEmailViewModel.sendOTPToEmail(email, type = "MFAVerifyEmail",
                             navController = navController)
                     }
                 }
@@ -519,7 +534,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 
 @Composable
 fun DesignMFASpace(navController: NavHostController,
-                   value: String, buttonType: String, type: String = "None",
+                   value: String, buttonType: String = "No Btn click Detected", type: String = "None",
                    signUpPageViewModel: SignUpPageViewModel
 ){
     Card(modifier = Modifier

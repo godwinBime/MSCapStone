@@ -94,7 +94,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     rank = 4,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.passwordValidationsPassed.value
+                    isEnable = signUpPageViewModel.passwordValidationsPassed.value,
+                    originalPage = "NewPassword"
                 /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/
                 )
             }

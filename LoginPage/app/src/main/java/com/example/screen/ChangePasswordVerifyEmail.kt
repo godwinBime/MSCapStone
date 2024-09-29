@@ -81,10 +81,11 @@ fun ScaffoldChangePassword(navController: NavHostController,
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
                     value = verify,
-                    rank = 0,
+                    rank = 2,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value
+                    isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
+                    originalPage = "ChangePasswordVerifyEmail.kt"
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
