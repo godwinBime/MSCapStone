@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -31,14 +32,34 @@ class VerifyEmailViewModel: ViewModel() {
             }.joinToString("")
     }
 
-//    fun storeOTPCode(){
-//        val code = OTPCode()
-//        val otpCode = hashMapOf(
-//            "id" to code.id,
-//            "code" to code.otpcode
-//        )
-////        firestore.collection("authuser").
-//    }
+    fun doesEmailExist(auth: FirebaseAuth, email: String){
+        viewModelScope.launch {
+            checkEmailExist(auth = auth, email = email){
+            }
+        }
+    }
+
+    /**
+     * Check if forgot password provided email exist in Firebase db
+     */
+    private suspend fun checkEmailExist(auth: FirebaseAuth,  email: String,
+                                        callback: (Boolean) -> Unit){
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener{task ->
+                if (task.isSuccessful){
+                    Log.d(TAG, "Email ($email) Exist")
+                    callback(true)
+                }else{
+                    if (task.exception is FirebaseAuthInvalidUserException) {
+                        Log.d(TAG, "Error: Email $email does not exist.")
+                        callback(false)
+                    }else{
+                        Log.d(TAG, "Error: Email $email is bad.")
+                        callback(false)
+                    }
+                }
+            }
+    }
 
     private suspend fun readOTPCode():String?{
         if (auth.currentUser != null) {

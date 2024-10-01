@@ -76,6 +76,7 @@ import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
+import com.google.firebase.auth.FirebaseAuth
 
 
 private val TAG = VerifyEmailViewModel::class.simpleName
@@ -384,7 +385,10 @@ fun ButtonComponent(navController: NavHostController,
             }
             2 -> {
                 onButtonClicked.invoke()
+                val auth = FirebaseAuth.getInstance()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
+                verifyEmailViewModel.doesEmailExist(auth = auth,
+                    email = verifyEmailViewModel.emailAddress)
                 verifyEmailViewModel.sendOTPToEmail(
                     email = email,
                     navController = navController,

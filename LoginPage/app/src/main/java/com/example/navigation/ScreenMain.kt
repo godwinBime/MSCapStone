@@ -16,6 +16,7 @@ import com.example.loginpage.MainActivity
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
 import com.example.screen.ChooseVerificationMethod
+import com.example.screen.ContinueToPasswordChange
 import com.example.screen.ForgotPassword
 import com.example.screen.Home
 import com.example.screen.Login
@@ -139,6 +140,12 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
                 navController = navController, homeViewModel = HomeViewModel(),
                 signUpPageViewModel = SignUpPageViewModel(),
                 mainActivity = MainActivity()
+            )
+        }
+
+        composable(Routes.ContinueToPasswordChange.route){
+            ContinueToPasswordChange(
+                navController = navController
             )
         }
     }

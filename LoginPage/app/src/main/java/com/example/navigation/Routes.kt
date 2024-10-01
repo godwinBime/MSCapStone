@@ -26,4 +26,6 @@ sealed class Routes(val route: String) {
     object Settings: Routes("Settings")
 
     object LoginAndSecurity: Routes("LoginAndSecurity")
+
+    object ContinueToPasswordChange: Routes("ContinueToPasswordChange")
 }
