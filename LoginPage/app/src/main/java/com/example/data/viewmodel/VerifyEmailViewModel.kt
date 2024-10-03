@@ -32,9 +32,9 @@ class VerifyEmailViewModel: ViewModel() {
             }.joinToString("")
     }
 
-    fun doesEmailExist(auth: FirebaseAuth, email: String){
+    fun passwordResetLink(email: String){
         viewModelScope.launch {
-            checkEmailExist(auth = auth, email = email){
+            sendPasswordResetLink(email = email){
             }
         }
     }
@@ -42,23 +42,27 @@ class VerifyEmailViewModel: ViewModel() {
     /**
      * Check if forgot password provided email exist in Firebase db
      */
-    private suspend fun checkEmailExist(auth: FirebaseAuth,  email: String,
+    private fun sendPasswordResetLink(email: String,
                                         callback: (Boolean) -> Unit){
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener{task ->
-                if (task.isSuccessful){
-                    Log.d(TAG, "Email ($email) Exist")
-                    callback(true)
-                }else{
-                    if (task.exception is FirebaseAuthInvalidUserException) {
-                        Log.d(TAG, "Error: Email $email does not exist.")
-                        callback(false)
+        try {
+            auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener{task ->
+                    if (task.isSuccessful){
+                        Log.d(TAG, "Email ($email) Exist")
+                        callback(true)
                     }else{
-                        Log.d(TAG, "Error: Email $email is bad.")
-                        callback(false)
+                        if (task.exception is FirebaseAuthInvalidUserException) {
+                            Log.d(TAG, "Error: Email $email does not exist.")
+                            callback(false)
+                        }else{
+                            Log.d(TAG, "Error: Email $email is bad.")
+                            callback(false)
+                        }
                     }
                 }
-            }
+        }catch (e: Exception){
+            Log.d(TAG, "sendPasswordResetEmail Exception: ${e.message}")
+        }
     }
 
     private suspend fun readOTPCode():String?{

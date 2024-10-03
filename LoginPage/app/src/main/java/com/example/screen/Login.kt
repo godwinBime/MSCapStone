@@ -145,7 +145,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(20.dp))
 
                 GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.choose_verification_method),
+                    value = stringResource(id = R.string.go_and_change_password),
                     navController = navController, 8)
 
                 Spacer(modifier = Modifier.height(20.dp))

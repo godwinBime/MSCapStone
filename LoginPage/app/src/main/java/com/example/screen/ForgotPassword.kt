@@ -59,7 +59,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
 
-                HeadingTextComponent(value = "Enter your email")
+                HeadingTextComponent(value = "Enter your email.")
 
                 Spacer(modifier = Modifier.height(20.dp))
 

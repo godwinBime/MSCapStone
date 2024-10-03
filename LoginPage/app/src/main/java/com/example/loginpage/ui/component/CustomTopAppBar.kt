@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.data.viewmodel.HomeViewModel
@@ -77,7 +78,8 @@ fun CustomTopAppBar(navController: NavHostController,
 
 @Composable
 fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
-                         showBackIcon: Boolean, action: String, homeViewModel: HomeViewModel,
+                         showBackIcon: Boolean, action: String,
+                         homeViewModel: HomeViewModel = viewModel(),
                          screenName: String = "DefaultScreen"){
     val context = LocalContext.current
     TopAppBar(
@@ -106,6 +108,10 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                         }
                         "DefaultScreen" -> {
                             navController.navigateUp()
+                        }
+                        "ChangePassword" -> {
+                            navController.navigate(Routes.Login.route)
+                            getToast(context, "Please Login to continue.")
                         }
                     }
                 }) {

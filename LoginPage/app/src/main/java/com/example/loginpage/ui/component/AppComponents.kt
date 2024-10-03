@@ -1,5 +1,6 @@
 package com.example.loginpage.ui.component
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -19,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -30,6 +30,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
@@ -37,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,18 +68,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.uistate.SignUpPageUIState
+import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 
-
 private val TAG = VerifyEmailViewModel::class.simpleName
+var changePasswordEmail: String = ""
 @Composable
 fun NormalTextComponent(value: String){
     Text(
@@ -141,7 +141,8 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             when(action){
                 "ForgotPassword" ->{
                     emailViewModel.emailAddress = textValue.value
-                    Log.d(TAG, "ForgotPassword email to Sent OTP Code: ${emailViewModel.emailAddress}")
+                    changePasswordEmail = textValue.value
+                    Log.d(TAG, "ForgotPassword email to Send OTP Code: ${emailViewModel.emailAddress}")
                 }
                 "VerifyAndGotoHomeScreen" -> {
                     emailViewModel.sentOTPCode = textValue.value
@@ -276,7 +277,7 @@ fun CheckBoxComponent(value: String, navController: NavHostController,
 }
 
 @Composable
-fun ClickableTextComponent(value: String, navController: NavHostController){
+fun ClickableTextComponent(value: String = "", navController: NavHostController){
     val initialText = "By continuing, you accept our "
     val privacyPolicyText = "Privacy policy "
     val andText = "and "
@@ -343,8 +344,8 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.UpdateProfile.route)
                       }
                       8 -> {
-                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.ChooseVerificationMethod.route)
+//                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
+                          navController.navigate(Routes.ContinueToPasswordChange.route)
                       }
                   }
             },
@@ -385,14 +386,17 @@ fun ButtonComponent(navController: NavHostController,
             }
             2 -> {
                 onButtonClicked.invoke()
-                val auth = FirebaseAuth.getInstance()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
-                verifyEmailViewModel.doesEmailExist(auth = auth,
-                    email = verifyEmailViewModel.emailAddress)
-                verifyEmailViewModel.sendOTPToEmail(
-                    email = email,
-                    navController = navController,
-                    type = "ChangePasswordVerifyEmail")
+                verifyEmailViewModel.passwordResetLink(email = verifyEmailViewModel.emailAddress)
+                navController.navigate(Routes.ContinueToPasswordChange.route)
+//                val auth = FirebaseAuth.getInstance()
+//                Log.d(TAG, "From $originalPage in ButtonComponent")
+//                verifyEmailViewModel.doesEmailExist(auth = auth,
+//                    email = verifyEmailViewModel.emailAddress)
+//                verifyEmailViewModel.sendOTPToEmail(
+//                    email = email,
+//                    navController = navController,
+//                    type = "ChangePasswordVerifyEmail")
             }
             3 -> {
                 onButtonClicked.invoke()
@@ -574,11 +578,12 @@ fun DividerTextComponent(){
         .fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically) {
 
-        Divider(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f),
-            color = Color.Gray,
-            thickness = 1.dp
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            thickness = 1.dp,
+            color = Color.Gray
         )
 
         Text(modifier = Modifier
