@@ -41,8 +41,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                               signUpPageViewModel: SignUpPageViewModel,
                               homeViewModel: HomeViewModel
 ){
-    val password = stringResource(id = R.string.password)
-    val confirmPassword = stringResource(id = R.string.confirm_password)
+    val oldPassword = stringResource(id = R.string.old_password)
+    val newPassword = stringResource(id = R.string.new_password)
     val resetPassword = stringResource(id = R.string.reset_password)
 
     val passwordPainterResource = painterResource(id = R.drawable.password)
@@ -65,7 +65,7 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                 HeadingTextComponent(value = "Enter new password")
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyPasswordFieldComponent(labelValue = password,
+                MyPasswordFieldComponent(labelValue = oldPassword,
                     painterResource = passwordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(
@@ -77,16 +77,17 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     )
 
                 Spacer(modifier = Modifier.height(20.dp))
-//                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
-//                    painterResource = passwordPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
-//                            navController = navController)
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
-//                )
-                Spacer(modifier = Modifier.height(20.dp))
+                MyPasswordFieldComponent(labelValue = newPassword,
+                    painterResource = passwordPainterResource,
+                    onTextChanged = {
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.PasswordChanged(it),
+                            navController = navController
+                        )
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                )
+                Spacer(modifier = Modifier.height(60.dp))
 
                 SubButton(
                     navController = navController,

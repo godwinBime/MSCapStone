@@ -141,18 +141,6 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                 )
 
-//                Spacer(modifier = Modifier.height(20.dp))
-//                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
-//                    painterResource = confirmPasswordPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
-//                            navController = navController
-//                        )
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
-//                )
-
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,
                     painterResource = phoneNumberPainterResource,

@@ -101,9 +101,6 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                                 homeViewModel.logOut(navController = navController)
                                 navController.navigate(Routes.Login.route)
                                 getToast(context, "Please Login to continue.")
-                            }else{
-                                getToast(context, "No user is logged-in")
-                                navController.navigateUp()
                             }
                         }
                         "DefaultScreen" -> {
@@ -111,7 +108,11 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                         }
                         "ChangePassword" -> {
                             navController.navigate(Routes.Login.route)
-                            getToast(context, "Please Login to continue.")
+                            getToast(context, "(ChangePassword) Please Login to continue.")
+                        }
+                        "Login" -> {
+                            homeViewModel.logOut(navController = navController)
+                            getToast(context, "(Login) Please Login to continue.")
                         }
                     }
                 }) {

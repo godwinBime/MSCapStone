@@ -98,7 +98,7 @@ fun NormalTextComponent(value: String){
 }
 
 @Composable
-fun HeadingTextComponent(value: String){
+fun HeadingTextComponent(value: String = "None"){
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -332,7 +332,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       4 -> {
                           getToast(context = context, "Nav to Update Profile")
-                          navController.navigate(Routes.UpdateProfile.route)
+//                          navController.navigate(Routes.UpdateProfile.route)
                       }
                       5 -> {
                           navController.navigate(Routes.ChangePasswordVerifyEmail.route)
@@ -345,7 +345,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.ContinueToPasswordChange.route)
+                          navController.navigate(Routes.NewPassword.route)
                       }
                   }
             },
