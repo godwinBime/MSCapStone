@@ -11,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
-    val firebaseAuth: FirebaseAuth): AuthenticationRepository {
+    private val firebaseAuth: FirebaseAuth): AuthenticationRepository {
 
         override fun googleSignIn(credential: AuthCredential): Flow<Resource<AuthResult>>{
             return flow {

@@ -53,23 +53,16 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
 ){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
-    val email = stringResource(id = R.string.email)
     val phoneNumber = stringResource(id = R.string.phone_number)
-    val password = stringResource(id = R.string.password)
-    val confirmPassword = stringResource(id = R.string.confirm_password)
 
-    val emailPainterResource = painterResource(id = R.drawable.email)
     val personPainterResource = painterResource(id = R.drawable.person)
     val phoneNumberPainterResource = painterResource(id = R.drawable.phone)
-    val passwordPainterResource = painterResource(id = R.drawable.password)
-    val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
 
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
             signUpPageViewModel.emailValidationsPassed.value &&
             signUpPageViewModel.phoneNumberValidationsPassed.value &&
             signUpPageViewModel.passwordValidationsPassed.value &&
-            //signUpPageViewModel.confirmPasswordValidationsPassed.value &&
             signUpPageViewModel.privacyPolicyValidationPassed.value
 
     val updateProfileTitle = stringResource(id = R.string.update_profile)
@@ -117,31 +110,6 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError)
 
                 Spacer(modifier = Modifier.height(20.dp))
-
-                MyTextFieldComponent(labelValue = email,
-                    painterResource = emailPainterResource,
-                    onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(
-                            SignUpPageUIEvent.EmailChanged(it),
-                            navController = navController
-                        )
-                    },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-                MyPasswordFieldComponent(labelValue = password,
-                    painterResource = passwordPainterResource,
-                    onTextChanged = {
-                        signUpPageViewModel.onSignUpEvent(
-                            SignUpPageUIEvent.PasswordChanged(it),
-                            navController = navController
-                        )
-                    },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,
                     painterResource = phoneNumberPainterResource,
                     onTextChanged = {
@@ -157,7 +125,7 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,
-                        value = updateButton, 4,
+                        value = updateButton, rank = 4,
                         homeViewModel = homeViewModel,
                         onButtonClicked = {
                             signUpPageViewModel.onSignUpEvent(

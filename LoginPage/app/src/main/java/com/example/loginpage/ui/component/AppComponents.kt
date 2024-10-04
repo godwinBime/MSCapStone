@@ -345,7 +345,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.NewPassword.route)
+                          navController.navigate(Routes.Home.route)
                       }
                   }
             },
@@ -406,12 +406,18 @@ fun ButtonComponent(navController: NavHostController,
             4 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
+                navController.navigate(Routes.UserProfile.route)
             }
             5 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 verifyEmailViewModel.verifySentOTPCode(
                     navController = navController, destination = "VerifyAndGotoHomeScreen")
+            }
+            6 -> {
+                onButtonClicked.invoke()
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                navController.navigate(Routes.UpdateProfile.route)
             }
         }
     },
@@ -443,8 +449,8 @@ fun ButtonComponent(navController: NavHostController,
 
 @Composable
 fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
-              homeViewModel: HomeViewModel,
-              signUpPageViewModel: SignUpPageViewModel,
+              homeViewModel: HomeViewModel = viewModel(),
+              signUpPageViewModel: SignUpPageViewModel = viewModel(),
               isEnable: Boolean = false,
               originalPage: String = "None"){
     Card(modifier = Modifier
@@ -473,7 +479,6 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     buttonType: String = "None", onButtonClicked: () -> Unit,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
 
-    var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     val context = LocalContext.current.applicationContext
     val email = EmailVerifyUIState()
 
@@ -702,6 +707,7 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                 }
                 "Profile" -> {
                     Log.d("Profile ", "Inside onNavigationItemClicked Profile = ${it.itemId}, ${it.title}")
+                    navController.navigate(Routes.UserProfile.route)
                 }
                 "Setting" -> {
                     Log.d("Setting ", "Inside onNavigationItemClicked Settings = ${it.itemId}, ${it.title}")

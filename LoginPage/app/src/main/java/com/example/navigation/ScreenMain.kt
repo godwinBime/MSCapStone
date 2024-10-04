@@ -29,6 +29,7 @@ import com.example.screen.Settings
 import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
+import com.example.screen.UserProfile
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -147,6 +148,10 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
             ContinueToPasswordChange(
                 navController = navController
             )
+        }
+
+        composable(Routes.UserProfile.route){
+            UserProfile(navController = navController)
         }
     }
 }

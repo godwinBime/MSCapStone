@@ -302,7 +302,7 @@ class SignUpPageViewModel: ViewModel() {
                     signInSignUpInProgress.value = false
                 }
                 .addOnFailureListener{
-                   Log.d(TAG, "storeUserData Exception: ${it.message}")
+                   Log.d(TAG, "storeUserData Error: ${it.message}")
                 }
         }catch (e: Exception){
             Log.d(TAG, "addStoreUserData Exception: ${e.message}")

@@ -28,4 +28,6 @@ sealed class Routes(val route: String) {
     object LoginAndSecurity: Routes("LoginAndSecurity")
 
     object ContinueToPasswordChange: Routes("ContinueToPasswordChange")
+
+    object UserProfile: Routes("UserProfile")
 }

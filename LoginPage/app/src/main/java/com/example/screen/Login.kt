@@ -98,8 +98,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 val isEnabled = signUpPageViewModel.emailValidationsPassed.value
                         && signUpPageViewModel.passwordValidationsPassed.value
 
-                var em = ""
-
                 MyTextFieldComponent(labelValue = email,
                     painterResource = emailPainterResource,
                     onTextChanged = {
@@ -147,7 +145,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(20.dp))
 
                 GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.go_and_change_password),
+                    value = stringResource(id = R.string.home),
                     navController = navController, 8)
 
                 Spacer(modifier = Modifier.height(20.dp))
