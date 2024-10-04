@@ -25,3 +25,11 @@ data class SignUpPageUIState (
     var privacyPolicyAccepted: Boolean = false,
     var privacyPolicyError: Boolean = false
 )
+
+//  User data to be stored in the Firebase db
+data class UserData(
+    var userId: String? = "",
+    var firstName: String = "",
+    var lastName: String = "",
+    var phoneNumber: String = ""
+)
