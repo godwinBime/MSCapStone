@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.loginpage.ui.component.GeneralClickableTextComponent
 import com.example.loginpage.ui.component.HeadingTextComponent
@@ -24,7 +27,9 @@ import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.errorMessage
 
 @Composable
 fun MFAVerifyEmail(navController: NavHostController,
@@ -40,8 +45,8 @@ fun MFAVerifyEmail(navController: NavHostController,
 @Composable
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                            homeViewModel: HomeViewModel,
-                           signUpPageViewModel: SignUpPageViewModel
-){
+                           signUpPageViewModel: SignUpPageViewModel,
+                           emailVerifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -89,6 +94,9 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
                     navController = navController, rank = 4)
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = emailVerifyEmailViewModel.errorMessage, color = Color.Red)
+//                Text(text = errorMessage)
             }
         }
     )

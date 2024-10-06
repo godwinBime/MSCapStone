@@ -24,6 +24,7 @@ class VerifyEmailViewModel: ViewModel() {
     var isOTPSent by mutableStateOf(false)
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
+    var errorMessage by mutableStateOf("")
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()

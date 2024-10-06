@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Visibility
@@ -78,6 +79,8 @@ import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private val TAG = VerifyEmailViewModel::class.simpleName
 var changePasswordEmail: String = ""
@@ -304,15 +307,31 @@ fun ClickableTextComponent(value: String = "", navController: NavHostController)
     })
 }
 
+var errorMessage = "->"
+
 @Composable
 fun GeneralClickableTextComponent(value: String, navController: NavHostController,
                                   rank: Int = 100,
                                   verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val context = LocalContext.current
+    var isClickableEnabled by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
     Box(modifier = Modifier
         .background(Color.Transparent)) {
         ClickableText(
-            text = AnnotatedString(value),
+//            text = AnnotatedString(value),
+            text = buildAnnotatedString {
+                if (isClickableEnabled){
+                    withStyle(style = MaterialTheme.typography.body1.toSpanStyle()){
+                        append(text = value)
+                    }
+                }else{
+                    withStyle(style = MaterialTheme.typography.body1.toSpanStyle()){
+                        append(text = value)
+                    }
+                }
+            },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
@@ -334,14 +353,27 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       4 -> {
-                          getToast(context = context, "Resending OTP code")
-                          val email = auth.currentUser?.email?.let { it1 -> EmailVerifyUIState(it1) }
-                          Log.d(TAG, "Resending OTP to: ${email?.to}")
-                          if (email != null) {
-                              verifyEmailViewModel.sendOTPToEmail(
-                                  email = email,
-                                  navController = navController,
-                                  type = "MFAVerifyEmail")
+                          if (isClickableEnabled) {
+                              isClickableEnabled = false
+                              getToast(context = context, "Resending OTP code")
+                              val email =
+                                  auth.currentUser?.email?.let { it1 -> EmailVerifyUIState(it1) }
+                              Log.d(TAG, "Resending OTP to: ${email?.to}")
+                              if (email != null) {
+                                  verifyEmailViewModel.sendOTPToEmail(
+                                      email = email,
+                                      navController = navController,
+                                      type = "MFAVerifyEmail"
+                                  )
+                              }
+                          } else {
+//                              Log.d(TAG, "Request another code in 60 seconds.")
+                              verifyEmailViewModel.errorMessage = "Request another code in 60 seconds."
+//                              getToast(context = context, "Request another code in 60seconds.")
+                              coroutineScope.launch {
+                                  delay(20000)
+                                  isClickableEnabled = true
+                              }
                           }
                       }
                       5 -> {
