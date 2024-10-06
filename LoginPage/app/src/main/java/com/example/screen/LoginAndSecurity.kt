@@ -57,13 +57,15 @@ fun LoginAndSecurity(navController: NavHostController, homeViewModel: HomeViewMo
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
-                                             homeViewModel: HomeViewModel, scrollState: ScrollState,
-                                             mainActivity: MainActivity){
+                                             homeViewModel: HomeViewModel,
+                                             scrollState: ScrollState,
+                                             mainActivity: MainActivity,
+                                             signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
     val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    homeViewModel.getUserData()
+    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {

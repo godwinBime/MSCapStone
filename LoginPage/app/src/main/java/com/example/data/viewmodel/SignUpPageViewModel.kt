@@ -324,7 +324,7 @@ class SignUpPageViewModel: ViewModel() {
     }
 
     //  Fetch user data from firebase database
-    private fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
+    fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
                               userId: String?, onUserDataFetched: (UserData) -> Unit){
         if (auth.currentUser != null){
             signInSignUpInProgress.value = true

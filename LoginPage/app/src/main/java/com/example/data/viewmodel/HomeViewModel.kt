@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
+import com.example.data.uistate.auth
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -78,17 +79,42 @@ class HomeViewModel(): ViewModel() {
         }
     }
 
-    fun getUserData(){
-        FirebaseAuth.getInstance().currentUser?.also { //returns user if it is not null
-            Log.d(TAG, "User's name: ${it.displayName}")
+    fun getUserData(signUpPageViewModel: SignUpPageViewModel){
+        val user = FirebaseAuth.getInstance().currentUser
+        val providerId = signUpPageViewModel.checkUserProvider(user)
+        user?.also {
+            when(providerId){
+                "google.com" -> {
+                    Log.d(TAG, "User's name: ${it.displayName}")
 //            it.email?.also {
 //                email ->
 //                    emailId.value = email
 //            }
-            it.displayName?.also {
-                name ->
-                fullNames.value = name
+                    it.displayName?.also {
+                            name ->
+                        fullNames.value = name
+                    }
+                }
+                "password" -> {
+                    val userId = auth.currentUser?.uid
+                    signUpPageViewModel.fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
+                        user.firstName.also {
+                            fullNames.value = user.firstName + " " + user.lastName
+                        }
+                    }
+                }
             }
         }
+//        FirebaseAuth.getInstance().currentUser?.also { //returns user if it is not null
+//            Log.d(TAG, "User's name: ${it.displayName}")
+////            it.email?.also {
+////                email ->
+////                    emailId.value = email
+////            }
+//            it.displayName?.also {
+//                name ->
+//                fullNames.value = name
+//            }
+//        }
     }
 }

@@ -54,14 +54,16 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
-                                     homeViewModel: HomeViewModel, scrollState: ScrollState){
+                                     homeViewModel: HomeViewModel,
+                                     scrollState: ScrollState,
+                                     signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
     val name = "\nSettings + 1"
     val home = stringResource(id = R.string.settings)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    homeViewModel.getUserData()
+    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,

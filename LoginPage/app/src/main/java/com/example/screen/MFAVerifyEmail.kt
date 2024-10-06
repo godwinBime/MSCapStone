@@ -88,7 +88,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
-                    navController = navController)
+                    navController = navController, rank = 4)
             }
         }
     )

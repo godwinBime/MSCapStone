@@ -72,7 +72,7 @@ fun ScaffoldUserProfileWithTopBar(
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user)
 
-    homeViewModel.getUserData()
+    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         modifier = Modifier
             .background(Color.Red),

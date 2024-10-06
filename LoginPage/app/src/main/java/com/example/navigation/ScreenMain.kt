@@ -33,15 +33,21 @@ import com.example.screen.UserProfile
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun ScreenMain(homeViewModel: HomeViewModel = viewModel()){
+fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
+               signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
     val navController = rememberNavController()
     var startDestination = Routes.Login.route
     homeViewModel.checkForActiveSession()
+    val user = FirebaseAuth.getInstance().currentUser
+    val providerId = signUpPageViewModel.checkUserProvider(user)
 
-    if (homeViewModel.isUserLoggedIn.value == true){
-        getToast(context, "Active user detected", Toast.LENGTH_LONG)
+    if (homeViewModel.isUserLoggedIn.value == true && providerId == "google.com"){
+        getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
         startDestination = Routes.Home.route
+    }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
+        getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
+        startDestination = Routes.ChooseVerificationMethod.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

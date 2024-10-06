@@ -71,6 +71,7 @@ import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.uistate.SignUpPageUIState
+import com.example.data.uistate.auth
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
@@ -304,7 +305,9 @@ fun ClickableTextComponent(value: String = "", navController: NavHostController)
 }
 
 @Composable
-fun GeneralClickableTextComponent(value: String, navController: NavHostController, rank: Int = 100){
+fun GeneralClickableTextComponent(value: String, navController: NavHostController,
+                                  rank: Int = 100,
+                                  verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val context = LocalContext.current
     Box(modifier = Modifier
         .background(Color.Transparent)) {
@@ -331,8 +334,15 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       4 -> {
-                          getToast(context = context, "Nav to Update Profile")
-//                          navController.navigate(Routes.UpdateProfile.route)
+                          getToast(context = context, "Resending OTP code")
+                          val email = auth.currentUser?.email?.let { it1 -> EmailVerifyUIState(it1) }
+                          Log.d(TAG, "Resending OTP to: ${email?.to}")
+                          if (email != null) {
+                              verifyEmailViewModel.sendOTPToEmail(
+                                  email = email,
+                                  navController = navController,
+                                  type = "MFAVerifyEmail")
+                          }
                       }
                       5 -> {
                           navController.navigate(Routes.ChangePasswordVerifyEmail.route)

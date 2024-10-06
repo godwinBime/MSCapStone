@@ -49,8 +49,8 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollState: ScrollState,
-                                    signUpPageViewModel: SignUpPageViewModel, homeViewModel: HomeViewModel
-){
+                                    signUpPageViewModel: SignUpPageViewModel,
+                                    homeViewModel: HomeViewModel){
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val phoneNumber = stringResource(id = R.string.phone_number)

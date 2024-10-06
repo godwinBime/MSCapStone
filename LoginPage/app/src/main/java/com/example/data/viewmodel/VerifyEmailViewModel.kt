@@ -89,7 +89,7 @@ class VerifyEmailViewModel: ViewModel() {
     }
 
     private suspend fun updateOTPCode(actionType: String = "None"){
-        if(auth.currentUser != null || actionType == "ChangePasswordVerifyEmail") {
+        if(auth.currentUser != null) {
             viewModelScope.launch {
                 try {
                     val documentRef =
@@ -124,9 +124,9 @@ class VerifyEmailViewModel: ViewModel() {
 
     private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
         if (auth.currentUser == null){
-            otpCodeUpdate(actionType = "ChangePasswordVerifyEmail")
+//            otpCodeUpdate(actionType = "ChangePasswordVerifyEmail")
             Log.d(TAG, "Password reset request initiated...")
-            otpCode = generateVerificationCode()
+//            otpCode = generateVerificationCode()
             email.to = emailAddress
         }else{
             otpCodeUpdate()
