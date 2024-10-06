@@ -31,5 +31,6 @@ data class UserData(
     var userId: String? = "",
     var firstName: String = "",
     var lastName: String = "",
-    var phoneNumber: String = ""
+    var phoneNumber: String = "",
+    var email: String = " "
 )

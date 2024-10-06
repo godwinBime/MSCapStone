@@ -85,8 +85,8 @@ dependencies {
 
     // Datastore dependencies
 //    implementation(libs.androidx.datastore)
-    implementation("androidx.datastore:datastore:1.1.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.collections.immutable)
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation(libs.kotlinx.serialization.json)
 

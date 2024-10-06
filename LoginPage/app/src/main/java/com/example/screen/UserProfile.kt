@@ -1,7 +1,9 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +32,7 @@ import androidx.navigation.NavHostController
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenDrawerHeader
@@ -45,6 +49,7 @@ fun UserProfile(navController: NavHostController,
                 signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
+        .background(Color.Green)
         .fillMaxSize(),
         contentAlignment = Alignment.Center) {
         ScaffoldUserProfileWithTopBar(navController = navController, scrollState = scrollState)
@@ -59,16 +64,18 @@ fun ScaffoldUserProfileWithTopBar(
     signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState
 ){
     val context = LocalContext.current
-    val name = "User Profile"
+    val TAG = SignUpPageViewModel::class.simpleName
     val userProfile = stringResource(id = R.string.profile)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    val isEnable = FirebaseAuth.getInstance().currentUser != null
+    val user = FirebaseAuth.getInstance().currentUser
+    val providerId = signUpPageViewModel.checkUserProvider(user)
 
     homeViewModel.getUserData()
-
     Scaffold(
+        modifier = Modifier
+            .background(Color.Red),
         scaffoldState = scaffoldState,
         bottomBar = {
             GeneralBottomAppBar(navController)
@@ -105,23 +112,53 @@ fun ScaffoldUserProfileWithTopBar(
             )
         },
         content = {
+//            Card(
+//                modifier = Modifier
+//                    .background(Color.Red)
+//            ) {
+//                Spacer(modifier = Modifier.height(80.dp))
+//                NormalTextComponent(value = "Welcome, $name")
+//                Spacer(modifier = Modifier.height(80.dp))
+//                SubButton(navController = navController,
+//                    value = stringResource(R.string.update_profile),
+//                    rank = 6,
+//                    isEnable = isEnable,
+//                    originalPage = "UserProfile.kt"
+//                )
+//            }
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
+//                    .background(Color.Red)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Spacer(modifier = Modifier.height(80.dp))
-                NormalTextComponent(value = "Welcome, $name")
+                Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(80.dp))
-                SubButton(navController = navController,
-                    value = stringResource(R.string.update_profile),
-                    rank = 6,
-                    isEnable = isEnable,
-                    originalPage = "UserProfile.kt"
-                )
+                if (providerId == "password") {
+                    val isEnable = providerId != null
+                    Log.d(TAG, "ProviderId in UserProfile.kt: email/password")
+                    signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+                    NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
+                    DividerTextComponent()
+                    Spacer(modifier = Modifier.height(10.dp))
+                    NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
+                    Spacer(modifier = Modifier.height(80.dp))
+                    SubButton(
+                        navController = navController,
+                        value = stringResource(R.string.update_profile),
+                        rank = 6,
+                        isEnable = isEnable,
+                        originalPage = "UserProfile.kt"
+                    )
+                }else if (providerId == "google.com"){
+                    Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
+                    Spacer(modifier = Modifier.height(10.dp))
+                    NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
+                    DividerTextComponent()
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
             }
         }
     )

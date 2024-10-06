@@ -61,9 +61,7 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
             signUpPageViewModel.emailValidationsPassed.value &&
-            signUpPageViewModel.phoneNumberValidationsPassed.value &&
-            signUpPageViewModel.passwordValidationsPassed.value &&
-            signUpPageViewModel.privacyPolicyValidationPassed.value
+            signUpPageViewModel.phoneNumberValidationsPassed.value
 
     val updateProfileTitle = stringResource(id = R.string.update_profile)
     val updateButton = stringResource(id = R.string.update_button)

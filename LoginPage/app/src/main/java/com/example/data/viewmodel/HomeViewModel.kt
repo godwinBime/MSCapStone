@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName

@@ -345,7 +345,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.Home.route)
+                          navController.navigate(Routes.UserProfile.route)
                       }
                   }
             },
@@ -389,14 +389,6 @@ fun ButtonComponent(navController: NavHostController,
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 verifyEmailViewModel.passwordResetLink(email = verifyEmailViewModel.emailAddress)
                 navController.navigate(Routes.ContinueToPasswordChange.route)
-//                val auth = FirebaseAuth.getInstance()
-//                Log.d(TAG, "From $originalPage in ButtonComponent")
-//                verifyEmailViewModel.doesEmailExist(auth = auth,
-//                    email = verifyEmailViewModel.emailAddress)
-//                verifyEmailViewModel.sendOTPToEmail(
-//                    email = email,
-//                    navController = navController,
-//                    type = "ChangePasswordVerifyEmail")
             }
             3 -> {
                 onButtonClicked.invoke()
@@ -422,21 +414,21 @@ fun ButtonComponent(navController: NavHostController,
         }
     },
         modifier = Modifier
-            .fillMaxSize()
-            .heightIn(48.dp),
+            .fillMaxSize(0.9f)
+            .heightIn(),
             contentPadding = PaddingValues(),
         enabled = isEnable,
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ){
         Box(modifier = Modifier
             .fillMaxSize()
-            .heightIn(60.dp)
+            .heightIn(70.dp)
             .background(
                 brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
                 shape = RoundedCornerShape(50.dp)
             ),
             contentAlignment = Alignment.Center
-            ) {
+        ) {
             Text(
                 text = value,
                 fontSize = 18.sp,
@@ -444,6 +436,7 @@ fun ButtonComponent(navController: NavHostController,
                 color = Color.White
             )
         }
+
     }
 }
 
@@ -455,6 +448,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               originalPage: String = "None"){
     Card(modifier = Modifier
         .height(90.dp)
+        .background(Color.Blue)
         .fillMaxHeight(.9f),
         elevation = 0.dp
     ){
@@ -578,7 +572,7 @@ fun DesignMFASpace(navController: NavHostController,
 }
 
 @Composable
-fun DividerTextComponent(){
+fun DividerTextComponent(type: String = "None"){
     Row(modifier = Modifier
         .fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically) {
@@ -591,18 +585,23 @@ fun DividerTextComponent(){
             color = Color.Gray
         )
 
-        Text(modifier = Modifier
-            .padding(8.dp),
-            text = " or ",
-            fontWeight = FontWeight.Normal,
-            fontSize = 20.sp,
-        )
+        when(type){
+            "Login" -> {
+                Text(modifier = Modifier
+                    .padding(8.dp),
+                    text = " or ",
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                )
+            }
+        }
 
-        Divider(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f),
-            color = Color.Gray,
-            thickness = 1.dp
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            thickness = 1.dp,
+            color = Color.Gray
         )
     }
 }

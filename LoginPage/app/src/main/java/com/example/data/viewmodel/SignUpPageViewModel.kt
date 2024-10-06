@@ -2,6 +2,7 @@ package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
@@ -11,11 +12,15 @@ import com.example.data.uistate.UserData
 import com.example.data.uistate.auth
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.math.log
 
 class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
     private val firestore = FirebaseFirestore.getInstance()
+//    val isUserLoggedInWithGoogle : MutableLiveData<Boolean> = MutableLiveData()
 
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     var firstNameValidationsPassed = mutableStateOf(false)
@@ -27,6 +32,9 @@ class SignUpPageViewModel: ViewModel() {
     var verificationCodeValidationsPassed = mutableStateOf(false)
     var privacyPolicyValidationPassed = mutableStateOf(false)
     var signInSignUpInProgress = mutableStateOf(false)
+
+    var fullNames = ""
+    var phoneNumber = ""
 
     fun onSignUpEvent(signUpEvent: SignUpPageUIEvent, navController: NavHostController){
 //        validateSignUpDataWithRules()
@@ -226,6 +234,7 @@ class SignUpPageViewModel: ViewModel() {
                 Log.d(TAG, "Inside login addOnCompleteListener... by ${signUpPageUIState.value.email}")
                 Log.d(TAG, "Is Login Success: ${it.isSuccessful}")
                 if (it.isSuccessful){
+                    checkUserProvider(auth.currentUser)
                     Log.d(TAG, "Login-ID: ${auth.currentUser?.uid}")
                     Log.d(TAG, "Going to choose verification method with email: ${signUpPageUIState.value.email}")
                     navController.navigate(Routes.ChooseVerificationMethod.route)
@@ -268,6 +277,7 @@ class SignUpPageViewModel: ViewModel() {
                         signUpPageUIState.value.firstName,
                         signUpPageUIState.value.lastName,
                         signUpPageUIState.value.phoneNumber,
+                        signUpPageUIState.value.email,
                         navController = navController
                     )
                     signInSignUpInProgress.value = false
@@ -284,13 +294,15 @@ class SignUpPageViewModel: ViewModel() {
     private fun storeUserData(
         userId: String?, firstName: String,
         lastName: String, phoneNumber: String,
+        email: String,
         navController: NavHostController
     ){
         val userData = UserData(
             userId = userId,
             firstName = firstName,
             lastName = lastName,
-            phoneNumber = phoneNumber)
+            phoneNumber = phoneNumber,
+            email = email)
         try {
             firestore.collection("userdata").add(userData)
                 .addOnSuccessListener {
@@ -302,10 +314,78 @@ class SignUpPageViewModel: ViewModel() {
                     signInSignUpInProgress.value = false
                 }
                 .addOnFailureListener{
+                    signInSignUpInProgress.value = false
                    Log.d(TAG, "storeUserData Error: ${it.message}")
                 }
         }catch (e: Exception){
+            signInSignUpInProgress.value = false
             Log.d(TAG, "addStoreUserData Exception: ${e.message}")
         }
+    }
+
+    //  Fetch user data from firebase database
+    private fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
+                              userId: String?, onUserDataFetched: (UserData) -> Unit){
+        if (auth.currentUser != null){
+            signInSignUpInProgress.value = true
+            try {
+                val query = firestore.collection("userdata").whereEqualTo("userId", userId)
+                query.get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (!querySnapshot.isEmpty){
+                            val documentSnapshot = querySnapshot.documents[0]
+                            val user = documentSnapshot.toObject(UserData::class.java)
+                            if (user != null){
+                                onUserDataFetched(user)
+                            }else{
+                                signInSignUpInProgress.value = false
+                                Log.d(TAG, "fetchUserData Error: User with ID: $userId not found ")
+                            }
+                        }else{
+                            signInSignUpInProgress.value = false
+                            Log.d(TAG, "fetchUserData Error: No matching document found")
+                        }
+                    }
+            }catch (e: Exception){
+                signInSignUpInProgress.value = false
+                Log.d(TAG, "fetchUserData Exception: ${e.message} ")
+            }
+        }else{
+            signInSignUpInProgress.value = false
+            Log.d(TAG, "fetchUserData Error: No user logged in yet...")
+        }
+    }
+
+    fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel){
+        val userId = auth.currentUser?.uid
+//        Log.d(TAG,"Full Names: ${auth.currentUser?.displayName}")
+//        Log.d(TAG,"Cell: ${auth.currentUser?.phoneNumber}")
+        fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
+            fullNames = user.firstName + " " + user.lastName
+            phoneNumber = user.phoneNumber
+            Log.d(TAG,"FirstName: ${user.firstName}")
+            Log.d(TAG,"LastName: ${user.lastName}")
+            Log.d(TAG,"Cell: ${user.phoneNumber}")
+        }
+    }
+
+    fun checkUserProvider(user: FirebaseUser?): String{
+        user?.let {
+            val providerData = it.providerData
+            for (profile in providerData){
+                val providerId = profile.providerId
+                when(providerId){
+                    "password" -> {
+                        Log.d(TAG, "ProviderId: email/password")
+                        return "password"
+                    }
+                    "google.com" -> {
+                        Log.d(TAG, "ProviderId: google.com")
+                        return "google.com"
+                    }
+                }
+            }
+        }
+        return "None"
     }
 }
