@@ -107,13 +107,3 @@ fun GoogleSignInScreen(
         }
     }
 }
-
-@Composable
-fun HandleSignInResult(task: GoogleSignInAccount){
-    Column {
-//        Image(
-//            painter = rememberImagePainter(task.photoUrl),
-//            contentDescription = "Profile Picture"
-//        )
-    }
-}

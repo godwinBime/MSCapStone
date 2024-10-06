@@ -98,6 +98,6 @@ fun GeneralBottomAppBar(navController: NavHostController){
     }
 }
 
-fun getToast(context: Context, action: String, toastDuration: Int = Toast.LENGTH_SHORT) {
+fun getToast(context: Context, action: String, toastDuration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(context, action, toastDuration).show()
 }

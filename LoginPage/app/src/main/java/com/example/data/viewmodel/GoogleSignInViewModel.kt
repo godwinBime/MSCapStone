@@ -19,7 +19,6 @@ class GoogleSignInViewModel @Inject constructor(
         private val _googleState = mutableStateOf(GoogleSignInState())
         val googleState: State<GoogleSignInState> = _googleState
 
-
         fun googleSignIn(credential: AuthCredential, signUpPageViewModel: SignUpPageViewModel) = viewModelScope.launch {
             repository.googleSignIn(credential).collect{result ->
                 when(result){

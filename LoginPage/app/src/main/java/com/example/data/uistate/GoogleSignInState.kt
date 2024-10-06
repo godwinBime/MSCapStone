@@ -7,8 +7,3 @@ data class GoogleSignInState(
     val loading: Boolean = false,
     val error: String = ""
 )
-
-data class GoogleUserData(
-    val fullNames: String = "",
-    val profilePicture: String = ""
-)

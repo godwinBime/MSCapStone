@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -107,7 +107,7 @@ fun ScaffoldUserProfileWithTopBar(
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(id = R.string.profile),
+                headerTitle = stringResource(R.string.profile),
                 defaultTitle = 1
             )
         },

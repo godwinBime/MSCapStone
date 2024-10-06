@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,6 @@ import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
-import com.example.loginpage.ui.component.errorMessage
 
 @Composable
 fun MFAVerifyEmail(navController: NavHostController,
@@ -41,7 +40,7 @@ fun MFAVerifyEmail(navController: NavHostController,
     }
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+//@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                            homeViewModel: HomeViewModel,
@@ -56,10 +55,11 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
         topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
             true, action = "Enter Verification code sent to your email.",
             homeViewModel = homeViewModel) },
-        content = {
+        content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(20.dp)
+                    .padding(paddingValues = paddingValues)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally

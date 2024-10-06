@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.lifecycle.MutableLiveData
@@ -11,9 +12,9 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.data.uistate.auth
+import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
@@ -26,22 +27,32 @@ class HomeViewModel(): ViewModel() {
 
 
     val navigationItemList = listOf<NavigationItem>(
-        NavigationItem(title = "Home",
+        NavigationItem(
+            title = "Home",
             description = "Home Screen",
             itemId = "homeScreen",
             icon = Icons.Default.Home),
 
-        NavigationItem(title = "Profile",
+        NavigationItem(
+            title = "Profile",
             description = "Profile Screen",
             itemId = "profileScreen",
             icon = Icons.Default.Person),
 
-        NavigationItem(title = "Setting",
+        NavigationItem(
+            title = "Change Password",
+            description = "Change Password Screen",
+            itemId = "changePassword",
+            icon = Icons.Default.Password),
+
+        NavigationItem(
+            title = "Setting",
             description = "Setting Screen",
             itemId = "settingScreen",
             icon = Icons.Default.Settings),
 
-        NavigationItem(title = "Logout",
+        NavigationItem(
+            title = "Logout",
             description = "Logout Screen",
             itemId = "logoutScreen",
             icon = Icons.AutoMirrored.Filled.Logout
@@ -50,22 +61,26 @@ class HomeViewModel(): ViewModel() {
 
     fun logOut(navController: NavHostController){
 
-        val firebaseAuth = FirebaseAuth
-            .getInstance()
-        firebaseAuth.signOut()
+        val firebaseAuth = FirebaseAuth.getInstance()
+        if (firebaseAuth.currentUser != null) {
+            firebaseAuth.signOut()
 
-        val authStateListener = FirebaseAuth.AuthStateListener {
-            if (it.currentUser == null) {
-                isUserLoggedIn.value = false
-                isMFAComplete.value = false
-                navController.navigate(Routes.Login.route)
-                Log.d(TAG, "Inside sign out success state...")
-            } else {
-                Log.d(TAG, "Logged-In User: ${it.currentUser!!.displayName}")
-                Log.d(TAG, "Inside sign out is not complete state...wait")
+            val authStateListener = FirebaseAuth.AuthStateListener {
+                if (it.currentUser == null) {
+                    isUserLoggedIn.value = false
+                    isMFAComplete.value = false
+                    navController.navigate(Routes.Login.route)
+                    Log.d(TAG, "Inside sign out success state...")
+                } else {
+                    Log.d(TAG, "Logged-In User: ${it.currentUser!!.displayName}")
+                    Log.d(TAG, "Inside sign out is not complete state...wait")
+                }
             }
+            firebaseAuth.addAuthStateListener(authStateListener)
+        }else{
+            Log.d(TAG, "Error:-> No user is logged in...Login to continue")
+            navController.navigate(Routes.Login.route)
         }
-        firebaseAuth.addAuthStateListener(authStateListener)
     }
 
     fun checkForActiveSession(){
@@ -92,14 +107,14 @@ class HomeViewModel(): ViewModel() {
 //            }
                     it.displayName?.also {
                             name ->
-                        fullNames.value = name
+                        fullNames.value = name.substringBefore(" ")
                     }
                 }
                 "password" -> {
                     val userId = auth.currentUser?.uid
                     signUpPageViewModel.fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
                         user.firstName.also {
-                            fullNames.value = user.firstName + " " + user.lastName
+                            fullNames.value = user.firstName //+ " " + user.lastName
                         }
                     }
                 }

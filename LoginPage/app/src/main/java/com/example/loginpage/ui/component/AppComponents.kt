@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -51,7 +50,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -71,14 +69,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
-import com.example.data.uistate.SignUpPageUIState
 import com.example.data.uistate.auth
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -307,8 +303,6 @@ fun ClickableTextComponent(value: String = "", navController: NavHostController)
     })
 }
 
-var errorMessage = "->"
-
 @Composable
 fun GeneralClickableTextComponent(value: String, navController: NavHostController,
                                   rank: Int = 100,
@@ -387,7 +381,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.UserProfile.route)
+                          navController.navigate(Routes.ChooseVerificationMethod.route)
                       }
                   }
             },
@@ -558,15 +552,16 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                 containerColor = Color.White
             ),
             modifier = Modifier
-                .height(90.dp)
+                .height(80.dp)
+                .width(160.dp)
                 .align(Alignment.CenterEnd)
         ) {
             Box(modifier = Modifier
-                .heightIn(60.dp)
-                .width(128.dp)
+                .heightIn(50.dp)
+                .width(140.dp)
                 .background(
                     brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
-                    shape = RoundedCornerShape(50.dp)
+                    shape = RoundedCornerShape(95.dp)
                 ),
                 contentAlignment = Alignment.Center
             ) {
@@ -733,7 +728,9 @@ fun SwitchToggleButtonComponent(mainActivity: MainActivity){
 
 @Composable
 fun DrawerContentComponent(navController: NavHostController, homeViewModel: HomeViewModel,
-                           headerTitle: String, defaultTitle: Int = 0){
+                           headerTitle: String, defaultTitle: Int = 0,
+                           signUpPageViewModel: SignUpPageViewModel = viewModel()){
+    val context = LocalContext.current.applicationContext
     when(defaultTitle){
         0 -> {
             HomeScreenDrawerHeader(headerTitle)
@@ -749,6 +746,14 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                 "Profile" -> {
                     Log.d("Profile ", "Inside onNavigationItemClicked Profile = ${it.itemId}, ${it.title}")
                     navController.navigate(Routes.UserProfile.route)
+                }
+                "Change Password" -> {
+                    val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
+                    if (user == "google.com") {
+                        getToast(context = context, "Use Your Google Account for this action.")
+                    }else{
+                        navController.navigate(Routes.MFAVerifyEmail.route)
+                    }
                 }
                 "Setting" -> {
                     Log.d("Setting ", "Inside onNavigationItemClicked Settings = ${it.itemId}, ${it.title}")

@@ -62,13 +62,12 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  homeViewModel: HomeViewModel,
                                  scrollState: ScrollState,
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
+    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     val context = LocalContext.current
-    val name = "User + 1"
+    val name = homeViewModel.fullNames.value
     val home = stringResource(id = R.string.home)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
-    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,
