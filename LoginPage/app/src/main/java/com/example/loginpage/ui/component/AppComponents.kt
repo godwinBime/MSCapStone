@@ -381,7 +381,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.ChooseVerificationMethod.route)
+                          navController.navigate(Routes.UserProfile.route)
                       }
                   }
             },
@@ -751,9 +751,10 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                     val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
                     if (user == "google.com") {
                         getToast(context = context, "Use Your Google Account for this action.")
-                    }else{
+                    }else if (user == "password"){
                         navController.navigate(Routes.MFAVerifyEmail.route)
                     }
+                    getToast(context = context, "404 bad action.")
                 }
                 "Setting" -> {
                     Log.d("Setting ", "Inside onNavigationItemClicked Settings = ${it.itemId}, ${it.title}")
