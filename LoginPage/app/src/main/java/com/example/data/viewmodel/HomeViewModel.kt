@@ -20,11 +20,10 @@ class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
-    val isMFAComplete : MutableLiveData<Boolean> = MutableLiveData()
+    val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
 
 //    val emailId: MutableLiveData<String> = MutableLiveData()
     val fullNames: MutableLiveData<String> = MutableLiveData()
-
 
     val navigationItemList = listOf<NavigationItem>(
         NavigationItem(
@@ -68,7 +67,7 @@ class HomeViewModel(): ViewModel() {
             val authStateListener = FirebaseAuth.AuthStateListener {
                 if (it.currentUser == null) {
                     isUserLoggedIn.value = false
-                    isMFAComplete.value = false
+                    isSessionOver.value = false
                     navController.navigate(Routes.Login.route)
                     Log.d(TAG, "Inside sign out success state...")
                 } else {

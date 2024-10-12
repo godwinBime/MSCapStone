@@ -72,6 +72,7 @@ import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.uistate.auth
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
@@ -121,6 +122,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          onTextChanged:(String) -> Unit,
                          errorStatus: Boolean = false,
                          emailViewModel: VerifyEmailViewModel = viewModel(),
+                         updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                          action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
 
@@ -148,6 +150,21 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                     emailViewModel.sentOTPCode = textValue.value
                     Log.d(TAG, "Sent OTP Code: ${emailViewModel.sentOTPCode}")
                 }
+                "ChangePasswordVerifyEmail" -> {
+                    emailViewModel.sentOTPCode = textValue.value
+                }
+                "UpdatePhoneNumber" -> {
+                    Log.d(TAG, "Updated PhoneNumber: ${textValue.value}")
+                    updateProfileViewModel.updatedPhoneNumber = textValue.value
+                }
+                "UpdateFirstName" -> {
+                    Log.d(TAG, "Updated First name: ${textValue.value}")
+                    updateProfileViewModel.updatedFirstName = textValue.value
+                }
+                "UpdateLastName" -> {
+                    Log.d(TAG, "Updated Last name: ${textValue.value}")
+                    updateProfileViewModel.updatedLastName = textValue.value
+                }
             }
             onTextChanged(it)},
         leadingIcon = {
@@ -160,7 +177,8 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
 @Composable
 fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
                              onTextChanged: (String) -> Unit,
-                             errorStatus: Boolean = false){
+                             errorStatus: Boolean = false,
+                             updateProfileViewModel: UpdateProfileViewModel = viewModel()){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val showPassword = remember { mutableStateOf(false) }
 
@@ -183,6 +201,7 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
             /*imeAction = ImeAction.Next*/),
         onValueChange = {
             passwordValue.value = it
+            updateProfileViewModel.oldPassword = passwordValue.value
             onTextChanged(it)},
         trailingIcon = {
             if (showPassword.value){
@@ -210,7 +229,8 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
 @Composable
 fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter,
                                     onTextChanged: (String) -> Unit,
-                                    errorStatus: Boolean = false){
+                                    errorStatus: Boolean = false,
+                                    updateProfileViewModel: UpdateProfileViewModel = viewModel()){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val confirmShowPassword = remember { mutableStateOf(false) }
     TextField(
@@ -232,6 +252,7 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
             imeAction = ImeAction.Done),
         onValueChange = {
             passwordValue.value = it
+            updateProfileViewModel.newPassword = passwordValue.value
             onTextChanged(it)},
         trailingIcon = {
             if (confirmShowPassword.value){
@@ -381,7 +402,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
-                          navController.navigate(Routes.UserProfile.route)
+                          navController.navigate(Routes.ChangePasswordVerifyEmail.route)
                       }
                   }
             },
@@ -399,10 +420,12 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ButtonComponent(navController: NavHostController,
-                    value: String, rank: Int = 100,
+                    value: String,
                     homeViewModel: HomeViewModel = viewModel(),
+                    rank: Int = 100,
                     onButtonClicked: () -> Unit, isEnable: Boolean = false,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                    updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                     originalPage: String = "None"){
     val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
 
@@ -434,11 +457,12 @@ fun ButtonComponent(navController: NavHostController,
             4 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
-                navController.navigate(Routes.UserProfile.route)
+                updateProfileViewModel.updateUserProfile(navController = navController)
             }
             5 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
+                Log.d(TAG, "Inside VerifyAndGotoHomeScreen statement---")
                 verifyEmailViewModel.verifySentOTPCode(
                     navController = navController, destination = "VerifyAndGotoHomeScreen")
             }
@@ -446,6 +470,18 @@ fun ButtonComponent(navController: NavHostController,
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 navController.navigate(Routes.UpdateProfile.route)
+            }
+            7 -> {
+                onButtonClicked.invoke()
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                updateProfileViewModel.changeUserPassword(navController = navController)
+            }
+            8 ->{
+                onButtonClicked.invoke()
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                Log.d(TAG, "Inside ChangePasswordVerifyEmail statement---" )
+                verifyEmailViewModel.verifySentOTPCode(
+                    navController = navController, destination = "ChangePasswordVerifyEmail")
             }
         }
     },
@@ -491,7 +527,6 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
         ButtonComponent(navController = navController,
             value = value,
             rank = rank,
-            homeViewModel = homeViewModel,
             onButtonClicked = {
                 signUpPageViewModel.onSignUpEvent(
                     SignUpPageUIEvent.RegisterButtonClickedAfterFirebaseAuth,
@@ -542,7 +577,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     }
                     "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
-                        Log.d(TAG, "Going to Send MFA code sent to  ${verifyEmailViewModel.auth.currentUser?.email}")
+                        Log.d(TAG, "Going to Send MFA code sent to ${verifyEmailViewModel.auth.currentUser?.email}")
                         verifyEmailViewModel.sendOTPToEmail(email, type = "MFAVerifyEmail",
                             navController = navController)
                     }
@@ -729,6 +764,8 @@ fun SwitchToggleButtonComponent(mainActivity: MainActivity){
 @Composable
 fun DrawerContentComponent(navController: NavHostController, homeViewModel: HomeViewModel,
                            headerTitle: String, defaultTitle: Int = 0,
+                           verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                           originalPage: String = "None",
                            signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current.applicationContext
     when(defaultTitle){
@@ -752,9 +789,28 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                     if (user == "google.com") {
                         getToast(context = context, "Use Your Google Account for this action.")
                     }else if (user == "password"){
-                        navController.navigate(Routes.MFAVerifyEmail.route)
+                        val email = auth.currentUser?.email?.let { userEmail ->
+                            EmailVerifyUIState(
+                                userEmail
+                            )
+                        }
+                        Log.d(TAG, "Call to Change Password From ChangePassword DrawerContentComponent")
+                        if (email != null) {
+                            verifyEmailViewModel.sendOTPToEmail(
+                                email = email,
+                                navController = navController,
+                                type = "ChangePasswordVerifyEmail")
+                            if (verifyEmailViewModel.isOTPSent) {
+                                Log.d(TAG, "OTPSent...Navigating to verify OTP and Change Password...")
+                                navController.navigate(
+                                    Routes.MFAVerifyEmail.route)
+                            }
+                        }else {
+                            getToast(context = context, "No email provided.")
+                        }
+                    }else {
+                        getToast(context = context, "Error: Auth is neither Google or email/password")
                     }
-                    getToast(context = context, "404 bad action.")
                 }
                 "Setting" -> {
                     Log.d("Setting ", "Inside onNavigationItemClicked Settings = ${it.itemId}, ${it.title}")

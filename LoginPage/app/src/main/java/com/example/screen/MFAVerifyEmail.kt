@@ -1,6 +1,5 @@
 package com.example.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,16 +18,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
+import com.example.loginpage.R
 import com.example.loginpage.ui.component.GeneralClickableTextComponent
 import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
-import com.example.data.viewmodel.HomeViewModel
-import com.example.data.uievents.SignUpPageUIEvent
-import com.example.data.viewmodel.SignUpPageViewModel
-import com.example.data.viewmodel.VerifyEmailViewModel
-import com.example.loginpage.R
 
 @Composable
 fun MFAVerifyEmail(navController: NavHostController,

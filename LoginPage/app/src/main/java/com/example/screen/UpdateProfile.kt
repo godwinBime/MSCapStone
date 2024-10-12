@@ -27,6 +27,7 @@ import com.example.loginpage.ui.component.MyPasswordFieldComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.uistate.UpdateUserDataUIState
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
@@ -54,13 +55,15 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val phoneNumber = stringResource(id = R.string.phone_number)
+//    val email = stringResource(id = R.string.email)
 
     val personPainterResource = painterResource(id = R.drawable.person)
     val phoneNumberPainterResource = painterResource(id = R.drawable.phone)
+//    val emailPainterResource = painterResource(id = R.drawable.email)
 
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
-            signUpPageViewModel.emailValidationsPassed.value &&
+//            signUpPageViewModel.emailValidationsPassed.value &&
             signUpPageViewModel.phoneNumberValidationsPassed.value
 
     val updateProfileTitle = stringResource(id = R.string.update_profile)
@@ -93,7 +96,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                             SignUpPageUIEvent.FirstNameChanged(it),
                             navController = navController)
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError)
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError,
+                    action = "UpdateFirstName")
 
                 Spacer(modifier = Modifier
                     .height(20.dp))
@@ -105,7 +109,19 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError)
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError,
+                    action = "UpdateLastName")
+
+//                MyTextFieldComponent(labelValue = email,
+//                    painterResource = emailPainterResource,
+//                    onTextChanged = {
+//                        signUpPageViewModel.onSignUpEvent(
+//                            SignUpPageUIEvent.EmailChanged(it),
+//                            navController = navController)
+//                    },
+//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
+//                    action = "UpdateProfile"
+//                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,
@@ -116,7 +132,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
+                    action = "UpdatePhoneNumber"
                 )
 
                 Spacer(modifier = Modifier.height(60.dp))

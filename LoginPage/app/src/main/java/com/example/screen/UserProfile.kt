@@ -144,7 +144,9 @@ fun ScaffoldUserProfileWithTopBar(
                     DividerTextComponent()
                     Spacer(modifier = Modifier.height(10.dp))
                     NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
+                    NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+                    Spacer(modifier = Modifier.height(40.dp))
                     SubButton(
                         navController = navController,
                         value = stringResource(R.string.update_profile),

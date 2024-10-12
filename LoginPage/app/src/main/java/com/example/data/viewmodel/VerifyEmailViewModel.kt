@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -25,6 +27,8 @@ class VerifyEmailViewModel: ViewModel() {
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
     var errorMessage by mutableStateOf("")
+    private val _isMFAVerificationToLogin = MutableLiveData<Boolean>()// = MutableLiveData()
+    val isMFAVerificationToLogin: LiveData<Boolean> = _isMFAVerificationToLogin
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()
@@ -89,7 +93,7 @@ class VerifyEmailViewModel: ViewModel() {
         }
     }
 
-    private suspend fun updateOTPCode(actionType: String = "None"){
+    private fun updateOTPCode(actionType: String = "None"){
         if(auth.currentUser != null) {
             viewModelScope.launch {
                 try {
@@ -108,8 +112,9 @@ class VerifyEmailViewModel: ViewModel() {
                     Log.d(TAG, "updateOTPCode Exception: ${e.message}")
                 }
             }
+        }else {
+            Log.d(TAG, "No active user found when updateOTPCode() was called..")
         }
-        Log.d(TAG, "No active user found when updateOTPCode() was called..")
     }
 
     fun sendOTPToEmail(email: EmailVerifyUIState,
@@ -171,13 +176,17 @@ class VerifyEmailViewModel: ViewModel() {
         }
     }
 
-    fun verifySentOTPCode(navController: NavHostController, destination: String = "None"){
+
+    fun verifySentOTPCode(navController: NavHostController,
+                          destination: String = "None"){
         viewModelScope.launch {
-            verifyOTPCode(navController = navController, destination = destination)
+            verifyOTPCode(navController = navController,
+                destination = destination)
         }
     }
 
-    private suspend fun verifyOTPCode(navController: NavHostController, destination: String = "None"){
+    private suspend fun verifyOTPCode(navController: NavHostController,
+                                      destination: String = "None"){
         Log.d(TAG, verificationMessage)
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please enter the verification code sent to your email"
@@ -193,7 +202,7 @@ class VerifyEmailViewModel: ViewModel() {
                     }
                     "ChangePasswordVerifyEmail" -> {
                         isOTPSent = false
-                        verificationMessage = "Password change otp verified..."
+                        verificationMessage = "Logged-in User Password change request otp verified..."
                         Log.d(TAG, verificationMessage)
                         navController.navigate(Routes.NewPassword.route)
                     }

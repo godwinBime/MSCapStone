@@ -73,7 +73,8 @@ fun ScaffoldChangePassword(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError,
+                    action = "ChangePasswordVerifyEmail"
                 )
 
                 Spacer(modifier = Modifier
@@ -81,7 +82,7 @@ fun ScaffoldChangePassword(navController: NavHostController,
                 val verify = stringResource(id = R.string.verify)
                 SubButton(navController = navController,
                     value = verify,
-                    rank = 2,
+                    rank = 8,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,

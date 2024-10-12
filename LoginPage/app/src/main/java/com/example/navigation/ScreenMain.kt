@@ -1,5 +1,6 @@
 package com.example.navigation
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +48,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.ChooseVerificationMethod.route
+        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

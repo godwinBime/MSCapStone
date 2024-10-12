@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
 import com.example.data.uievents.SignUpPageUIEvent
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 import kotlin.math.log
 
 class SignUpPageViewModel: ViewModel() {
@@ -35,6 +37,7 @@ class SignUpPageViewModel: ViewModel() {
 
     var fullNames = ""
     var phoneNumber = ""
+    var userEmail = ""
 
     fun onSignUpEvent(signUpEvent: SignUpPageUIEvent, navController: NavHostController){
 //        validateSignUpDataWithRules()
@@ -363,6 +366,7 @@ class SignUpPageViewModel: ViewModel() {
         fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
             fullNames = user.firstName + " " + user.lastName
             phoneNumber = user.phoneNumber
+            userEmail = user.email
             Log.d(TAG,"FirstName: ${user.firstName}")
             Log.d(TAG,"LastName: ${user.lastName}")
             Log.d(TAG,"Cell: ${user.phoneNumber}")

@@ -25,6 +25,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.MyConfirmPasswordFieldComponent
 
 @Composable
 fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
@@ -45,12 +46,12 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
     val newPassword = stringResource(id = R.string.new_password)
     val resetPassword = stringResource(id = R.string.reset_password)
 
-    val passwordPainterResource = painterResource(id = R.drawable.password)
-
+    val oldPasswordPainterResource = painterResource(id = R.drawable.password)
+    val newPasswordPainterResource = painterResource(id = R.drawable.password)
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "New Password",
-            true, action = "Enter new password above.",
+            true, action = stringResource(R.string.enter_new_password),
             homeViewModel = homeViewModel) },
         content = {
             Column(
@@ -62,11 +63,11 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(20.dp))
-                HeadingTextComponent(value = "Enter new password")
+                HeadingTextComponent(value = stringResource(R.string.enter_new_password))
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyPasswordFieldComponent(labelValue = oldPassword,
-                    painterResource = passwordPainterResource,
+                    painterResource = oldPasswordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(
                             SignUpPageUIEvent.PasswordChanged(it),
@@ -77,26 +78,38 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                MyPasswordFieldComponent(labelValue = newPassword,
-                    painterResource = passwordPainterResource,
+                MyConfirmPasswordFieldComponent(labelValue = newPassword,
+                    painterResource = newPasswordPainterResource,
                     onTextChanged = {
                         signUpPageViewModel.onSignUpEvent(
-                            SignUpPageUIEvent.PasswordChanged(it),
+                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
                 )
+
+//                Spacer(modifier = Modifier.height(20.dp))
+//                MyPasswordFieldComponent(labelValue = newPassword,
+//                    painterResource = passwordPainterResource,
+//                    onTextChanged = {
+//                        signUpPageViewModel.onSignUpEvent(
+//                            SignUpPageUIEvent.PasswordChanged(it),
+//                            navController = navController
+//                        )
+//                    },
+//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+//                )
                 Spacer(modifier = Modifier.height(60.dp))
 
                 SubButton(
                     navController = navController,
                     value = resetPassword,
-                    rank = 4,
+                    rank = 7,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.passwordValidationsPassed.value,
-                    originalPage = "NewPassword"
+                    originalPage = "NewPassword.kt"
                 /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/
                 )
             }
