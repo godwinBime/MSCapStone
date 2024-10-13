@@ -27,12 +27,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.uistate.auth
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.navigation.Routes
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun GeneralBottomAppBar(navController: NavHostController){
+fun GeneralBottomAppBar(navController: NavHostController,
+                        signUpPageViewModel: SignUpPageViewModel = viewModel()){
 
     val context = LocalContext.current.applicationContext
     val selected = remember{mutableStateOf(Icons.Default.Home)}
@@ -47,6 +52,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
             horizontalArrangement = Arrangement.SpaceAround) {
 
             IconButton(onClick = {
+                navController.navigate(Routes.Home.route)
                 getToast(context, action = "Home Nav button clicked!")
                 selected.value = Icons.Default.Home
             }) {
@@ -61,8 +67,14 @@ fun GeneralBottomAppBar(navController: NavHostController){
                 }
             
             IconButton(onClick = {
-                selected.value = Icons.Default.Edit
-                getToast(context, action = "Edit Nav button clicked!")
+                val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
+                if (user == "password") {
+                    selected.value = Icons.Default.Edit
+                    navController.navigate(Routes.UserProfile.route)
+                    getToast(context, action = "Edit Nav button clicked!")
+                }else if (user == "google.com"){
+                    getToast(context = context, "Use Your Google Account for this action.")
+                }
             }) {
                 Icon(imageVector = Icons.Default.Edit,
                     contentDescription = "Edit",
@@ -79,6 +91,7 @@ fun GeneralBottomAppBar(navController: NavHostController){
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Person
+                navController.navigate(Routes.UserProfile.route)
                 getToast(context, action = "Person Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Person,

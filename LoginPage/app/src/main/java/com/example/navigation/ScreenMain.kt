@@ -1,6 +1,5 @@
 package com.example.navigation
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -8,12 +7,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.loginpage.ui.component.getToast
+import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
-import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.MainActivity
+import com.example.loginpage.ui.component.getToast
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
 import com.example.screen.ChooseVerificationMethod
@@ -48,8 +47,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-        startDestination = Routes.ChooseVerificationMethod.route
-//        startDestination = Routes.Home.route
+//        startDestination = Routes.ChooseVerificationMethod.route
+        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

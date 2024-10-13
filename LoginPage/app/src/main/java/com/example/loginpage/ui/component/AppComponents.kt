@@ -383,7 +383,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                               }
                           } else {
 //                              Log.d(TAG, "Request another code in 60 seconds.")
-                              verifyEmailViewModel.errorMessage = "Request another code in 60 seconds."
+                              verifyEmailViewModel.errorMessage = "Request another code in 20 seconds."
 //                              getToast(context = context, "Request another code in 60seconds.")
                               coroutineScope.launch {
                                   delay(20000)

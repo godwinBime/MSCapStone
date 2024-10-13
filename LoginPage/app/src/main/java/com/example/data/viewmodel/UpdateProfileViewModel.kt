@@ -10,10 +10,8 @@ import androidx.navigation.NavHostController
 import com.example.navigation.Routes
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class UpdateProfileViewModel: ViewModel() {
     private val auth = FirebaseAuth.getInstance()
@@ -39,42 +37,11 @@ class UpdateProfileViewModel: ViewModel() {
                 navController = navController
             )
         }
-//        updateProfile(
-//            signUpPageUIState.value.firstName,
-//            signUpPageUIState.value.lastName,
-//            signUpPageUIState.value.phoneNumber,
-//            signUpPageUIState.value.email,
-//            navController = navController
-//        )
-    }
-
-    fun getDocumentID():String{
-        val userId = auth.currentUser?.uid
-        var documentID = "empty-doc-id"
-        if (auth.currentUser != null){
-            val query = firestore.collection("userdata").whereEqualTo("userId", userId)
-            query.get()
-                .addOnSuccessListener { querySnapShot ->
-                    if (!querySnapShot.isEmpty){
-                        val documentSnapShot = querySnapShot.documents[0]
-                        documentID = documentSnapShot.id
-                        Log.d(TAG, "DocumentId inside getDocumentID(): $documentID")
-                    }else{
-                        Log.d(TAG, "No document ID Found...")
-                    }
-                }
-        }
-        return documentID
     }
 
     private suspend fun updateProfile(firstName: String, lastName: String,
                               phoneNumber: String, email: String = "",
                               navController: NavHostController){
-//        val updateUserData = UpdateUserDataUIState(
-//            firstName = firstName,
-//            lastName = lastName,
-//            phoneNumber = phoneNumber
-//        )
         if (auth.currentUser != null){
             Log.d(TAG, "Inside update user data call and user is found")
             val userId = auth.currentUser?.uid
@@ -162,6 +129,40 @@ class UpdateProfileViewModel: ViewModel() {
             Log.d(TAG, "No active user found when changePassword() was called..")
             callback(false, "No user is logged in")
         }
+    }
 
+    private fun deleteUsernamePassword(navController: NavHostController){
+
+    }
+
+    private fun deleteProfile(navController: NavHostController){
+        if (auth.currentUser != null) {
+            val userId = auth.currentUser?.uid
+            viewModelScope.launch {
+                try {
+                    val deleteQuery = firestore.collection("userdata").whereEqualTo("userId", userId)
+                    deleteQuery.get()
+                        .addOnSuccessListener { deleteDocumentQuerySnapshot ->
+                            if (!deleteDocumentQuerySnapshot.isEmpty){
+                                val deleteDocumentSnapshot = deleteDocumentQuerySnapshot.documents[0]
+                                Log.d(TAG, "DocumentId inside deleteProfile(): ${deleteDocumentSnapshot.id}")
+                                viewModelScope.launch {
+                                    firestore.collection("userdata").document(deleteDocumentSnapshot.id).delete()
+                                        .addOnSuccessListener {
+                                            Log.d(TAG, "User with ID ( ${deleteDocumentSnapshot.id}) successfully deleted")
+                                            navController.navigate(Routes.Home.route)
+                                        }
+                                }
+                            }else{
+                                Log.d(TAG, "Error: DocumentId Not found")
+                            }
+                        }
+                }catch (e: Exception){
+                    Log.d(TAG, "deleteUser Exception: ${e.message}")
+                }
+            }
+        }else{
+            Log.d(TAG, "No active user found when deleteUser() was called..")
+        }
     }
 }
