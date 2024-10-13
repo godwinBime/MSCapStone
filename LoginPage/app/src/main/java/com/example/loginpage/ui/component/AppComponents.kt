@@ -455,6 +455,7 @@ fun ButtonComponent(navController: NavHostController,
                 navController.navigate(Routes.NewPassword.route)
             }
             4 -> {
+                Log.d(TAG, "About to update user profile...")
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 updateProfileViewModel.updateUserProfile(navController = navController)

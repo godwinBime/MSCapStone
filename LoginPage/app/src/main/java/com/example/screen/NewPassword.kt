@@ -88,19 +88,9 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
                 )
-
-//                Spacer(modifier = Modifier.height(20.dp))
-//                MyPasswordFieldComponent(labelValue = newPassword,
-//                    painterResource = passwordPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.PasswordChanged(it),
-//                            navController = navController
-//                        )
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
-//                )
                 Spacer(modifier = Modifier.height(60.dp))
+
+                val isEnabled = signUpPageViewModel.passwordValidationsPassed.value && signUpPageViewModel.confirmPasswordValidationsPassed.value
 
                 SubButton(
                     navController = navController,
@@ -108,7 +98,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     rank = 7,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
-                    isEnable = signUpPageViewModel.passwordValidationsPassed.value,
+                    isEnable = isEnabled,
+//                    isEnable = signUpPageViewModel.passwordValidationsPassed.value,
                     originalPage = "NewPassword.kt"
                 /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/
                 )

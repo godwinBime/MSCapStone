@@ -254,7 +254,7 @@ class SignUpPageViewModel: ViewModel() {
 
     private fun signUp(navController: NavHostController){
         Log.d(TAG, "SignUp Button Clicked...")
-        printSignUpState("Auth to Firebase DB...")
+        printSignUpState("Auth to create user account in Firebase DB...")
         signInSignUpInProgress.value = true
         createUserInFireBase(
             email = signUpPageUIState.value.email,
@@ -266,32 +266,35 @@ class SignUpPageViewModel: ViewModel() {
     private fun createUserInFireBase(email: String,
                                      password: String,
                                      navController: NavHostController){
-        signInSignUpInProgress.value = true
-        FirebaseAuth
-            .getInstance()
-            .createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener{
-                Log.d(TAG, "Inside Firebase SignUp addOnCompleteListener")
-                Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
-                if (it.isSuccessful){
-                    val userId = auth.currentUser?.uid
-                    storeUserData(
-                        userId = userId,
-                        signUpPageUIState.value.firstName,
-                        signUpPageUIState.value.lastName,
-                        signUpPageUIState.value.phoneNumber,
-                        signUpPageUIState.value.email,
-                        navController = navController
-                    )
-                    signInSignUpInProgress.value = false
+        if (email.isNotEmpty() && password.isNotEmpty()) {
+            FirebaseAuth
+                .getInstance()
+                .createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    Log.d(TAG, "Inside Firebase SignUp addOnCompleteListener")
+                    Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
+                    if (it.isSuccessful) {
+                        val userId = auth.currentUser?.uid
+                        storeUserData(
+                            userId = userId,
+                            signUpPageUIState.value.firstName,
+                            signUpPageUIState.value.lastName,
+                            signUpPageUIState.value.phoneNumber,
+                            signUpPageUIState.value.email,
+                            navController = navController
+                        )
+                        signInSignUpInProgress.value = false
+                    }
                 }
-            }
-            .addOnFailureListener {
-                signInSignUpInProgress.value = false
-                Log.d(TAG, "Inside Firebase Signup addOnFailureListener")
-                Log.d(TAG, "SignUp Exception = ${it.message}")
-                Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")
-            }
+                .addOnFailureListener {
+                    signInSignUpInProgress.value = false
+                    Log.d(TAG, "Inside Firebase Signup addOnFailureListener")
+                    Log.d(TAG, "SignUp Exception = ${it.message}")
+                    Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")
+                }
+        }else{
+            Log.d(TAG, "SignUP UnSuccessful no email or password provided")
+        }
     }
 
     private fun storeUserData(
