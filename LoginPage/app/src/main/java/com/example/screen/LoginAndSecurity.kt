@@ -65,7 +65,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
     val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
+//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {

@@ -17,6 +17,7 @@ class UpdateProfileViewModel: ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val TAG = SignUpPageViewModel::class.simpleName
+    var displayUserProfileInProgress = mutableStateOf(false)
 
     var oldPassword by mutableStateOf("")
     var newPassword by mutableStateOf("")
@@ -29,6 +30,7 @@ class UpdateProfileViewModel: ViewModel() {
         Log.d(TAG, "To be updated First name: $updatedFirstName")
         Log.d(TAG, "To be updated Last name: $updatedLastName")
         Log.d(TAG, "To be updated Phone number: $updatedPhoneNumber")
+        displayUserProfileInProgress.value = true
         viewModelScope.launch {
             updateProfile(
                 firstName = updatedFirstName,
@@ -83,6 +85,8 @@ class UpdateProfileViewModel: ViewModel() {
                     }
                 }catch (e: Exception){
                     Log.d(TAG, "updateProfile Exception: ${e.message}")
+                }finally {
+                    displayUserProfileInProgress.value = false
                 }
             }
         }else{
@@ -94,7 +98,7 @@ class UpdateProfileViewModel: ViewModel() {
         changePassword(
             navController = navController
         ){ _, _ ->
-
+            displayUserProfileInProgress.value = true
         }
     }
 
@@ -102,32 +106,38 @@ class UpdateProfileViewModel: ViewModel() {
                                callback: (Boolean, String) -> Unit){
         val user = auth.currentUser
         Log.d(TAG, "Credentials received:\nEmail: ${user?.email} \nOld Password: $oldPassword New password: $newPassword")
-        user?.let {
-            //  Re-authenticate user before changing password
-            val credential = EmailAuthProvider.getCredential(user.email!!, oldPassword)
-            it.reauthenticate(credential)
-                .addOnCompleteListener{task ->
-                    if (task.isSuccessful){
-                        // if re-authentication is successful, update password
-                        user.updatePassword(newPassword)
-                            .addOnCompleteListener{updateTask ->
-                                if (updateTask.isSuccessful){
-                                    Log.d(TAG, "Password change successful")
-                                    callback(true, "Password change successful")
-                                    navController.navigate(Routes.UserProfile.route)
-                                }else{
-                                    Log.d(TAG, "Password change failed")
-                                    callback(false, "Password change failed")
+        try {
+            user?.let {
+                //  Re-authenticate user before changing password
+                val credential = EmailAuthProvider.getCredential(user.email!!, oldPassword)
+                it.reauthenticate(credential)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // if re-authentication is successful, update password
+                            user.updatePassword(newPassword)
+                                .addOnCompleteListener { updateTask ->
+                                    if (updateTask.isSuccessful) {
+                                        Log.d(TAG, "Password change successful")
+                                        callback(true, "Password change successful")
+                                        navController.navigate(Routes.UserProfile.route)
+                                    } else {
+                                        Log.d(TAG, "Password change failed")
+                                        callback(false, "Password change failed")
+                                    }
                                 }
-                            }
-                    }else{
-                        Log.d(TAG, "re-authentication failed...")
-                        callback(false, "re-authentication failed...")
+                        } else {
+                            Log.d(TAG, "re-authentication failed...")
+                            callback(false, "re-authentication failed...")
+                        }
                     }
-                }
-        }?: run {
-            Log.d(TAG, "No active user found when changePassword() was called..")
-            callback(false, "No user is logged in")
+            } ?: run {
+                Log.d(TAG, "No active user found when changePassword() was called..")
+                callback(false, "No user is logged in")
+            }
+        }catch (e: Exception){
+            Log.d(TAG, "changePassword() Exception was triggered.. ${e.message}")
+        }finally {
+            displayUserProfileInProgress.value = false
         }
     }
 
@@ -137,6 +147,7 @@ class UpdateProfileViewModel: ViewModel() {
 
     private fun deleteProfile(navController: NavHostController){
         if (auth.currentUser != null) {
+            displayUserProfileInProgress.value = true
             val userId = auth.currentUser?.uid
             viewModelScope.launch {
                 try {
@@ -159,6 +170,8 @@ class UpdateProfileViewModel: ViewModel() {
                         }
                 }catch (e: Exception){
                     Log.d(TAG, "deleteUser Exception: ${e.message}")
+                }finally {
+                    displayUserProfileInProgress.value = false
                 }
             }
         }else{

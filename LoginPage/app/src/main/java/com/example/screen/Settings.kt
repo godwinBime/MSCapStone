@@ -58,12 +58,12 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                                      scrollState: ScrollState,
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
-    val name = "\nSettings + 1"
+    val name = "\nSettings for ${signUpPageViewModel.fullNames.substringBefore(" ")}"
     val home = stringResource(id = R.string.settings)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
+//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,

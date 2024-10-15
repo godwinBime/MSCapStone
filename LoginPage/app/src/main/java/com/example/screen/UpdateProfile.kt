@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.loginpage.ui.component.ButtonComponent
 import com.example.loginpage.ui.component.CustomTopAppBar
@@ -28,20 +29,21 @@ import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.UpdateUserDataUIState
+import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 
 @Composable
 fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
-                  homeViewModel: HomeViewModel
-){
+                  homeViewModel: HomeViewModel, googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
+    val googleSignInState = googleSignInViewModel.googleState.value
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
         ScaffoldUpdateProfileWithTopBar(navController, scrollState, signUpPageViewModel = signUpPageViewModel,
             homeViewModel = homeViewModel)
-        if (signUpPageViewModel.signInSignUpInProgress.value) {
+        if (signUpPageViewModel.signInSignUpInProgress.value || googleSignInState.loading) {
             CircularProgressIndicator()
         }
     }

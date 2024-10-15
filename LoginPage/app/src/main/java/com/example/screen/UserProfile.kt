@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -27,10 +28,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
@@ -46,13 +50,20 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserProfile(navController: NavHostController,
                 homeViewModel: HomeViewModel = viewModel(),
-                signUpPageViewModel: SignUpPageViewModel = viewModel()){
+                signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                updateProfileViewModel: UpdateProfileViewModel = viewModel(),
+                googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()
+){
     val scrollState = rememberScrollState()
+    val googleSignInState = googleSignInViewModel.googleState.value
     Box(modifier = Modifier
         .background(Color.Green)
         .fillMaxSize(),
         contentAlignment = Alignment.Center) {
         ScaffoldUserProfileWithTopBar(navController = navController, scrollState = scrollState)
+        if (updateProfileViewModel.displayUserProfileInProgress.value || googleSignInState.loading){
+            CircularProgressIndicator()
+        }
     }
 }
 
@@ -72,7 +83,7 @@ fun ScaffoldUserProfileWithTopBar(
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user)
 
-    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
+//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         modifier = Modifier
             .background(Color.Red),
@@ -137,15 +148,17 @@ fun ScaffoldUserProfileWithTopBar(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 if (providerId == "password") {
-                    val isEnable = providerId != null
+                    val isEnable = true
                     Log.d(TAG, "ProviderId in UserProfile.kt: email/password")
                     signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+
                     NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
                     DividerTextComponent()
                     Spacer(modifier = Modifier.height(10.dp))
                     NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
                     Spacer(modifier = Modifier.height(20.dp))
                     NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+
                     Spacer(modifier = Modifier.height(40.dp))
                     SubButton(
                         navController = navController,
@@ -160,6 +173,9 @@ fun ScaffoldUserProfileWithTopBar(
                     NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
                     DividerTextComponent()
                     Spacer(modifier = Modifier.height(10.dp))
+                }else{
+                    Log.d(TAG, "No provider found")
+                    NormalTextComponent(value = "No user found...")
                 }
             }
         }

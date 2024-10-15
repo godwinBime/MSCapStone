@@ -11,6 +11,7 @@ import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.loginpage.MainActivity
 import com.example.loginpage.ui.component.getToast
 import com.example.screen.AuthenticatorAppVerification
@@ -30,6 +31,7 @@ import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
 import com.example.screen.UserProfile
+import com.example.screen.DeleteProfile
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -47,8 +49,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-//        startDestination = Routes.ChooseVerificationMethod.route
-        startDestination = Routes.Home.route
+        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -93,8 +95,12 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         }
 
         composable(Routes.UpdateProfile.route){
-            UpdateProfile(navController = navController, signUpPageViewModel = SignUpPageViewModel(),
-                homeViewModel = HomeViewModel()
+            UpdateProfile(navController = navController,
+                signUpPageViewModel = SignUpPageViewModel(),
+                homeViewModel = HomeViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                )
             )
         }
 
@@ -158,7 +164,17 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         }
 
         composable(Routes.UserProfile.route){
-            UserProfile(navController = navController)
+            UserProfile(navController = navController,
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                ))
+        }
+
+        composable(Routes.DeleteProfile.route){
+            DeleteProfile(navController = navController,
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                ))
         }
     }
 }

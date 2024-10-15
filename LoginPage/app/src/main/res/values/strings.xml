@@ -44,6 +44,8 @@
     <string name="go_and_change_password">Go and Change Password</string>
     <string name="profile">Profile</string>
     <string name="enter_new_password">Enter new password</string>
+    <string name="delete_profile">Delete Profile</string>
+    <string name="delete_warning">This action cannot be undone.</string>
 
 
     <string name="subject_confirm_your_ID">Confirm Your Identity</string>

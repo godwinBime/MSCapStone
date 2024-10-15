@@ -76,13 +76,14 @@ import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
+import com.example.screen.DeleteProfile
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private val TAG = VerifyEmailViewModel::class.simpleName
 var changePasswordEmail: String = ""
 @Composable
-fun NormalTextComponent(value: String){
+fun NormalTextComponent(value: String, action: String = "None"){
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,9 +94,43 @@ fun NormalTextComponent(value: String){
             fontWeight = FontWeight.Medium,
             fontStyle = FontStyle.Normal
         ),
-        color = Color.Black, //if (isSystemInDarkTheme()) Color.White else Color.Black,
+        color = if (action == "DeleteProfile") Color.Red else Color.Black, //if (isSystemInDarkTheme()) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
+    /*
+    when(action){
+        "DeleteProfile" -> {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 50.dp),
+                text = value,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontStyle = FontStyle.Normal
+                ),
+                color = Color.Red, //if (isSystemInDarkTheme()) Color.White else Color.Black,
+                textAlign = TextAlign.Center
+            )
+        }
+        "None" -> {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 50.dp),
+                text = value,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontStyle = FontStyle.Normal
+                ),
+                color = if (action == "DeleteProfile") Color.Red else Color.Black, //if (isSystemInDarkTheme()) Color.White else Color.Black,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+     */
 }
 
 @Composable
@@ -395,7 +430,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.ChangePasswordVerifyEmail.route)
                       }
                       6 -> {
-                          navController.navigate(Routes.LoginAndSecurity.route)
+                          navController.navigate(Routes.Home.route)
                       }
                       7 -> {
                           navController.navigate(Routes.UpdateProfile.route)
@@ -428,6 +463,7 @@ fun ButtonComponent(navController: NavHostController,
                     updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                     originalPage: String = "None"){
     val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
+    val context = LocalContext.current.applicationContext
 
     Button(onClick = {
         when(rank){
@@ -484,6 +520,10 @@ fun ButtonComponent(navController: NavHostController,
                 verifyEmailViewModel.verifySentOTPCode(
                     navController = navController, destination = "ChangePasswordVerifyEmail")
             }
+            9 -> {
+
+                getToast(context, action = "Round Delete Button clicked!")
+            }
         }
     },
         modifier = Modifier
@@ -497,7 +537,8 @@ fun ButtonComponent(navController: NavHostController,
             .fillMaxSize()
             .heightIn(70.dp)
             .background(
-                brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
+                brush = if(originalPage == "DeleteProfile.kt") Brush.horizontalGradient(listOf(Color.Gray, Color.Red, Color.Gray))
+                else Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
                 shape = RoundedCornerShape(50.dp)
             ),
             contentAlignment = Alignment.Center

@@ -114,6 +114,12 @@ class HomeViewModel(): ViewModel() {
                     signUpPageViewModel.fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
                         user.firstName.also {
                             fullNames.value = user.firstName //+ " " + user.lastName
+//                            if (fullNames.value!!.isEmpty()){
+//                                Log.d(TAG, "User's name is empty")
+//                                fullNames.value = user.firstName
+//                            }else{
+//                                Log.d(TAG, "User's name is not empty, name: ${fullNames.value}")
+//                            }
                         }
                     }
                 }

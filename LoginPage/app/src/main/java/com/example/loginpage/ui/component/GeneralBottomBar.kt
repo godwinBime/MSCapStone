@@ -70,8 +70,8 @@ fun GeneralBottomAppBar(navController: NavHostController,
                 val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
                 if (user == "password") {
                     selected.value = Icons.Default.Edit
-                    navController.navigate(Routes.UserProfile.route)
                     getToast(context, action = "Edit Nav button clicked!")
+                    navController.navigate(Routes.UserProfile.route)
                 }else if (user == "google.com"){
                     getToast(context = context, "Use Your Google Account for this action.")
                 }
@@ -83,7 +83,9 @@ fun GeneralBottomAppBar(navController: NavHostController,
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Delete
-                getToast(context, action = "Delete Nav button clicked!") }) {
+                getToast(context, action = "Delete Bottom Nav button clicked!")
+                navController.navigate(Routes.DeleteProfile.route)}
+            ) {
                 Icon(imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = if (selected.value == Icons.Default.Delete) Color.Blue else Color.Black)
@@ -101,6 +103,7 @@ fun GeneralBottomAppBar(navController: NavHostController,
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Settings
+                navController.navigate(Routes.Settings.route)
                 getToast(context, action = "Setting Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Settings,
