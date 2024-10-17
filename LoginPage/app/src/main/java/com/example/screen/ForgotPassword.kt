@@ -59,7 +59,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
 
-                HeadingTextComponent(value = "Enter your email.")
+                HeadingTextComponent(value = "Enter your email")
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -79,7 +79,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                     .height(20.dp))
 
                 SubButton(navController = navController,
-                    value = send, 2,
+                    value = send, rank = 2,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.emailValidationsPassed.value,

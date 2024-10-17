@@ -2,7 +2,7 @@ package com.example.data.uistate
 
 import com.google.firebase.auth.FirebaseAuth
 
-val auth = FirebaseAuth.getInstance()
+private val auth = FirebaseAuth.getInstance()
 data class EmailVerifyUIState(
     var to: String = auth.currentUser?.email.toString(),
     val subject: String = "Confirm Your Identity",

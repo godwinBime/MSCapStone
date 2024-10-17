@@ -40,6 +40,7 @@ import com.example.loginpage.ui.component.getToast
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -69,6 +70,8 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val home = stringResource(id = R.string.home)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+    val user = FirebaseAuth.getInstance().currentUser
+    val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -99,7 +102,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
 
         drawerContent = {
 //            HomeScreenDrawerHeader(homeViewModel.emailId.value)
-            HomeScreenDrawerHeader(name)
+//            HomeScreenDrawerHeader(value = name)
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
@@ -116,7 +119,21 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                NormalTextComponent(value = "Welcome, $name")
+                if (providerId == "password") {
+                    NormalTextComponent(
+                        value = "Welcome, ${
+                            signUpPageViewModel.fullNames.substringBefore(
+                                " "
+                            )
+                        }"
+                    )
+                }else if (providerId == "google.com"){
+                    NormalTextComponent(
+                        value = "Welcome, ${
+                            user?.displayName?.substringBefore(" ")
+                        }"
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(80.dp))
             }

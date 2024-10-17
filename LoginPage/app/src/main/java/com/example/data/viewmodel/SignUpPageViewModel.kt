@@ -2,27 +2,21 @@ package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.SignUpPageUIState
 import com.example.data.uistate.UserData
-import com.example.data.uistate.auth
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
     private val firestore = FirebaseFirestore.getInstance()
-//    val isUserLoggedInWithGoogle : MutableLiveData<Boolean> = MutableLiveData()
+    private val auth = FirebaseAuth.getInstance()
 
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     var firstNameValidationsPassed = mutableStateOf(false)
@@ -303,36 +297,43 @@ class SignUpPageViewModel: ViewModel() {
         email: String,
         navController: NavHostController
     ){
+        val userType = checkUserProvider(auth.currentUser)
         val userData = UserData(
             userId = userId,
             firstName = firstName,
             lastName = lastName,
             phoneNumber = phoneNumber,
             email = email)
-        try {
-            firestore.collection("userdata").add(userData)
-                .addOnSuccessListener {
-                    Log.d(TAG, "New User-ID: ${auth.currentUser?.uid}")
-                    Log.d(TAG, "New user firstName: $firstName")
-                    Log.d(TAG, "New user lastName: $lastName")
-                    Log.d(TAG, "New user phoneNumber: $phoneNumber")
-                    navController.navigate(Routes.Login.route)
-                    signInSignUpInProgress.value = false
-                }
-                .addOnFailureListener{
-                    signInSignUpInProgress.value = false
-                   Log.d(TAG, "storeUserData Error: ${it.message}")
-                }
-        }catch (e: Exception){
-            signInSignUpInProgress.value = false
-            Log.d(TAG, "addStoreUserData Exception: ${e.message}")
+        if (userType == "password") {
+            try {
+                firestore.collection("userdata").add(userData)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "New User-ID: ${auth.currentUser?.uid}")
+                        Log.d(TAG, "New user firstName: $firstName")
+                        Log.d(TAG, "New user lastName: $lastName")
+                        Log.d(TAG, "New user phoneNumber: $phoneNumber")
+                        navController.navigate(Routes.Login.route)
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "storeUserData Error: ${it.message}")
+                    }
+            } catch (e: Exception) {
+                Log.d(TAG, "addStoreUserData Exception: ${e.message}")
+            } finally {
+                signInSignUpInProgress.value = false
+            }
+        }else if (userType == "google.com"){
+            Log.d(TAG, "storeUserData Error: Login through 3rd party (google.com) credentials. \nNo data provided.")
+        }else{
+            Log.d(TAG, "storeUserData Error: No user logged in yet...")
         }
     }
 
     //  Fetch user data from firebase database
     fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
                               userId: String?, onUserDataFetched: (UserData) -> Unit){
-        if (auth.currentUser != null){
+        val userType = signUpPageViewModel.checkUserProvider(auth.currentUser)
+        if (auth.currentUser != null && userType == "password"){
             signInSignUpInProgress.value = true
             try {
                 val query = firestore.collection("userdata").whereEqualTo("userId", userId)
@@ -344,35 +345,40 @@ class SignUpPageViewModel: ViewModel() {
                             if (user != null){
                                 onUserDataFetched(user)
                             }else{
-                                signInSignUpInProgress.value = false
                                 Log.d(TAG, "fetchUserData Error: User with ID: $userId not found ")
                             }
                         }else{
-                            signInSignUpInProgress.value = false
                             Log.d(TAG, "fetchUserData Error: No matching document found")
                         }
                     }
             }catch (e: Exception){
-                signInSignUpInProgress.value = false
                 Log.d(TAG, "fetchUserData Exception: ${e.message} ")
+            }finally {
+                signInSignUpInProgress.value = false
             }
+        }else if (userType == "google.com"){
+            Log.d(TAG, "fetchUserData Error: \nLogin through 3rd party (google.com) credentials. \nNo data provided.")
         }else{
-            signInSignUpInProgress.value = false
             Log.d(TAG, "fetchUserData Error: No user logged in yet...")
         }
     }
 
     fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel){
         val userId = auth.currentUser?.uid
+        val userType = checkUserProvider(user = auth.currentUser)
 //        Log.d(TAG,"Full Names: ${auth.currentUser?.displayName}")
 //        Log.d(TAG,"Cell: ${auth.currentUser?.phoneNumber}")
-        fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
-            fullNames = user.firstName + " " + user.lastName
-            phoneNumber = user.phoneNumber
-            userEmail = user.email
-            Log.d(TAG,"FirstName: ${user.firstName}")
-            Log.d(TAG,"LastName: ${user.lastName}")
-            Log.d(TAG,"Cell: ${user.phoneNumber}")
+        if (userType == "password") {
+            fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId) { user ->
+                fullNames = user.firstName + " " + user.lastName
+                phoneNumber = user.phoneNumber
+                userEmail = user.email
+                Log.d(TAG, "FirstName: ${user.firstName}")
+                Log.d(TAG, "LastName: ${user.lastName}")
+                Log.d(TAG, "Cell: ${user.phoneNumber}")
+            }
+        }else if(userType == "google.com"){
+            Log.d(TAG, "fetchedUserData Error: \nLogin through 3rd party (google.com) credentials. \nNo data provided.")
         }
     }
 
@@ -383,11 +389,11 @@ class SignUpPageViewModel: ViewModel() {
                 val providerId = profile.providerId
                 when(providerId){
                     "password" -> {
-                        Log.d(TAG, "ProviderId: email/password")
+                        Log.d(TAG, "ProviderId call inside checkUserProvider(): email/password")
                         return "password"
                     }
                     "google.com" -> {
-                        Log.d(TAG, "ProviderId: google.com")
+                        Log.d(TAG, "ProviderId call inside checkUserProvider(): google.com")
                         return "google.com"
                     }
                 }

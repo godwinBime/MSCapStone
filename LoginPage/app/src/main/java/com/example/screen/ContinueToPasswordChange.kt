@@ -21,6 +21,7 @@ import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.loginpage.ui.component.changePasswordEmail
 
@@ -56,6 +57,15 @@ fun ScaffoldContinueToPasswordChangeWithTopBar(
                 NormalTextComponent(
                     value = stringResource(R.string.continue_to_password_change) +
                      "\n" + changePasswordEmail + "\n" + stringResource(R.string.password_reset_details))
+                Spacer(modifier = Modifier.height(40.dp))
+                SubButton(
+                    navController = navController,
+                    value = stringResource(R.string.acknowledge),
+                    rank = 10,
+                    isEnable = true,
+                    originalPage = "ContinueToPasswordChange.kt"
+                )
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     )

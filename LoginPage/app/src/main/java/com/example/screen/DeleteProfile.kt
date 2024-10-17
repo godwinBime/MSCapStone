@@ -35,10 +35,12 @@ import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
+import com.example.loginpage.ui.component.HomeScreenDrawerHeader
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 
@@ -69,9 +71,13 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
     val delete = stringResource(id = R.string.delete_profile)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
 //    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
-    signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+    if (userType == "password") {
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -120,11 +126,29 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                 NormalTextComponent(value = warning, action = "DeleteProfile")
                 DividerTextComponent()
                 Spacer(modifier = Modifier.height(20.dp))
-                NormalTextComponent(value = "Full Names: ${signUpPageViewModel.fullNames} ")
-                Spacer(modifier = Modifier.height(10.dp))
-                NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
-                Spacer(modifier = Modifier.height(20.dp))
-                NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+                when(userType) {
+                    "password" -> {
+                        NormalTextComponent(
+                            value =
+                            "Full Names: ${signUpPageViewModel.fullNames} "
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        NormalTextComponent(
+                            value =
+                            "Phone Number: ${signUpPageViewModel.phoneNumber}"
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+                    }
+                    "google.com" -> {
+                        NormalTextComponent(
+                            value =
+                            "Full Names: ${user.currentUser?.displayName} "
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        NormalTextComponent(value = "Email: ${user.currentUser?.email}")
+                    }
+                }
                 Spacer(modifier = Modifier.height(40.dp))
                 SubButton(
                     navController = navController,

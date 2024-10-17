@@ -11,19 +11,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
-import com.example.data.uistate.auth
-import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeViewModel(): ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
+//    private val auth = FirebaseAuth.getInstance()
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
     val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
 
 //    val emailId: MutableLiveData<String> = MutableLiveData()
-    val fullNames: MutableLiveData<String> = MutableLiveData()
+//    val fullNames: MutableLiveData<String> = MutableLiveData()
 
     val navigationItemList = listOf<NavigationItem>(
         NavigationItem(
@@ -59,15 +58,12 @@ class HomeViewModel(): ViewModel() {
     )
 
     fun logOut(navController: NavHostController){
-
         val firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null) {
             firebaseAuth.signOut()
-
             val authStateListener = FirebaseAuth.AuthStateListener {
                 if (it.currentUser == null) {
                     isUserLoggedIn.value = false
-                    isSessionOver.value = false
                     navController.navigate(Routes.Login.route)
                     Log.d(TAG, "Inside sign out success state...")
                 } else {
@@ -92,7 +88,7 @@ class HomeViewModel(): ViewModel() {
             isUserLoggedIn.value = false
         }
     }
-
+/*
     fun getUserData(signUpPageViewModel: SignUpPageViewModel){
         val user = FirebaseAuth.getInstance().currentUser
         val providerId = signUpPageViewModel.checkUserProvider(user)
@@ -104,16 +100,17 @@ class HomeViewModel(): ViewModel() {
 //                email ->
 //                    emailId.value = email
 //            }
-                    it.displayName?.also {
-                            name ->
-                        fullNames.value = name.substringBefore(" ")
-                    }
-                }
-                "password" -> {
-                    val userId = auth.currentUser?.uid
-                    signUpPageViewModel.fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
-                        user.firstName.also {
-                            fullNames.value = user.firstName //+ " " + user.lastName
+//                    it.displayName?.also {
+//                            name ->
+//                        fullNames.value = name.substringBefore(" ")
+//                    }
+//                }
+//                "password" -> {
+//                    val userId = auth.currentUser?.uid
+//                    val userId = user.uid
+//                    signUpPageViewModel.fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId){user ->
+//                        user.firstName.also {
+//                            fullNames.value = user.firstName //+ " " + user.lastName
 //                            if (fullNames.value!!.isEmpty()){
 //                                Log.d(TAG, "User's name is empty")
 //                                fullNames.value = user.firstName
@@ -137,4 +134,6 @@ class HomeViewModel(): ViewModel() {
 //            }
 //        }
     }
+
+ */
 }

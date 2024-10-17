@@ -44,6 +44,7 @@ import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
+import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -81,7 +82,7 @@ fun ScaffoldUserProfileWithTopBar(
     val coroutineScope = rememberCoroutineScope()
 
     val user = FirebaseAuth.getInstance().currentUser
-    val providerId = signUpPageViewModel.checkUserProvider(user)
+    val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
 //    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
@@ -93,7 +94,10 @@ fun ScaffoldUserProfileWithTopBar(
         },
 
         floatingActionButton = {
-            FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
+            FloatingActionButton(onClick = {
+                getToast(context, "Add floating button clicked!")
+                /*navController.navigate(Routes.SignUp.route)*/
+                                           },
                 shape = RoundedCornerShape(12.dp),
                 //containerColor = Color(0xff344ceb)
             ) {
@@ -114,7 +118,7 @@ fun ScaffoldUserProfileWithTopBar(
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {
 //            HomeScreenDrawerHeader(homeViewModel.emailId.value)
-            HomeScreenDrawerHeader(homeViewModel.fullNames.value)
+//            HomeScreenDrawerHeader(homeViewModel.fullNames.value)
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,

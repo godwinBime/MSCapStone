@@ -46,6 +46,7 @@
     <string name="enter_new_password">Enter new password</string>
     <string name="delete_profile">Delete Profile</string>
     <string name="delete_warning">This action cannot be undone.</string>
+    <string name="acknowledge">Acknowledge</string>
 
 
     <string name="subject_confirm_your_ID">Confirm Your Identity</string>

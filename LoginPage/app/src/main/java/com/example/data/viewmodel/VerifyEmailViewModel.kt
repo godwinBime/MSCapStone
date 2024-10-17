@@ -205,6 +205,12 @@ class VerifyEmailViewModel: ViewModel() {
                         Log.d(TAG, verificationMessage)
                         navController.navigate(Routes.NewPassword.route)
                     }
+                    "DeleteAccount" -> {
+                        isOTPSent = false
+                        verificationMessage = "Logged-in User account deletion request otp verified..."
+                        Log.d(TAG, verificationMessage)
+                        navController.navigate(Routes.Login.route)
+                    }
                 }
             }else{
                 verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${readOTPCode()}"

@@ -146,7 +146,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.home),
-                    navController = navController, 6)
+                    navController = navController, 7)
 
                 Spacer(modifier = Modifier.height(20.dp))
 

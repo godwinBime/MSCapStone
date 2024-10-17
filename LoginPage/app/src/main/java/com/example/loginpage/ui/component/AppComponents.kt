@@ -69,14 +69,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
-import com.example.data.uistate.auth
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
 import com.example.navigation.Routes
-import com.example.screen.DeleteProfile
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -366,6 +365,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
     val context = LocalContext.current
     var isClickableEnabled by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val auth = FirebaseAuth.getInstance()
 
     Box(modifier = Modifier
         .background(Color.Transparent)) {
@@ -433,7 +433,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       7 -> {
-                          navController.navigate(Routes.UpdateProfile.route)
+                          navController.navigate(Routes.ContinueToPasswordChange.route)
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
@@ -461,9 +461,11 @@ fun ButtonComponent(navController: NavHostController,
                     onButtonClicked: () -> Unit, isEnable: Boolean = false,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                     updateProfileViewModel: UpdateProfileViewModel = viewModel(),
+                    signUpPageViewModel: SignUpPageViewModel = viewModel(),
                     originalPage: String = "None"){
     val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
     val context = LocalContext.current.applicationContext
+    val googleContext = LocalContext.current
 
     Button(onClick = {
         when(rank){
@@ -521,8 +523,27 @@ fun ButtonComponent(navController: NavHostController,
                     navController = navController, destination = "ChangePasswordVerifyEmail")
             }
             9 -> {
+                onButtonClicked.invoke()
+                val auth = FirebaseAuth.getInstance()
+                val userType = signUpPageViewModel.checkUserProvider(user = auth.currentUser)
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                if (userType == "password") {
+                    updateProfileViewModel.deleteCurrentProfile(
+                        navController = navController,
+                        signUpPageViewModel = signUpPageViewModel
+                    )
+                }else if (userType == "google.com"){
 
+                    updateProfileViewModel.deleteGoogleCredentials(
+                        navController = navController, signUpPageViewModel = signUpPageViewModel,
+                        context = googleContext, homeViewModel = homeViewModel)
+                }
                 getToast(context, action = "Round Delete Button clicked!")
+            }
+            10 -> {
+                onButtonClicked.invoke()
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                navController.navigate(Routes.Login.route)
             }
         }
     },
@@ -810,9 +831,19 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                            originalPage: String = "None",
                            signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current.applicationContext
-    when(defaultTitle){
-        0 -> {
-            HomeScreenDrawerHeader(headerTitle)
+    val auth = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = auth.currentUser)
+//    when(defaultTitle){
+//        0 -> {
+//            HomeScreenDrawerHeader(headerTitle)
+//        }
+//    }
+    when(userType) {
+        "password" -> {
+            HomeScreenDrawerHeader(value = signUpPageViewModel.fullNames.substringBefore(" "))
+        }
+        "google.com" -> {
+            HomeScreenDrawerHeader(value = auth.currentUser?.displayName?.substringBefore(" "))
         }
     }
     NavigationDrawerBody(navigationDrawerItems = homeViewModel.navigationItemList,

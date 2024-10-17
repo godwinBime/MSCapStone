@@ -29,18 +29,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.data.uistate.auth
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
+import com.google.firebase.auth.FirebaseAuth
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun GeneralBottomAppBar(navController: NavHostController,
                         signUpPageViewModel: SignUpPageViewModel = viewModel()){
-
     val context = LocalContext.current.applicationContext
     val selected = remember{mutableStateOf(Icons.Default.Home)}
+    val auth = FirebaseAuth.getInstance()
     BottomAppBar(
         containerColor = Color.LightGray,
             modifier = Modifier
@@ -102,8 +102,8 @@ fun GeneralBottomAppBar(navController: NavHostController,
             }
 
             IconButton(onClick = {
-                selected.value = Icons.Default.Settings
                 navController.navigate(Routes.Settings.route)
+                selected.value = Icons.Default.Settings
                 getToast(context, action = "Setting Nav button clicked!")
             }) {
                 Icon(imageVector = Icons.Default.Settings,

@@ -62,7 +62,8 @@ fun GoogleSignInScreen(
         modifier = Modifier
             .height(60.dp),
         onClick = {
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            val gso = GoogleSignInOptions.Builder()
                 .requestEmail()
                 .requestIdToken(SERVERCLIENT)
                 .requestProfile()
