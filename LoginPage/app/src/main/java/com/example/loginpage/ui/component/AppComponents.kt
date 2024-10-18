@@ -406,8 +406,9 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           if (isClickableEnabled) {
                               isClickableEnabled = false
                               getToast(context = context, "Resending OTP code")
-                              val email =
-                                  auth.currentUser?.email?.let { it1 -> EmailVerifyUIState(it1) }
+                              val email = auth.currentUser?.email?.let { otpEmailTask ->
+                                      EmailVerifyUIState(otpEmailTask)
+                                  }
                               Log.d(TAG, "Resending OTP to: ${email?.to}")
                               if (email != null) {
                                   verifyEmailViewModel.sendOTPToEmail(
@@ -417,9 +418,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                                   )
                               }
                           } else {
-//                              Log.d(TAG, "Request another code in 60 seconds.")
                               verifyEmailViewModel.errorMessage = "Request another code in 20 seconds."
-//                              getToast(context = context, "Request another code in 60seconds.")
                               coroutineScope.launch {
                                   delay(20000)
                                   isClickableEnabled = true
@@ -609,21 +608,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 
     val context = LocalContext.current.applicationContext
     val email = EmailVerifyUIState()
-
-//    when(buttonType){
-//        "MFAVerifyEmail" -> {
-//            LaunchedEffect(key1 = Unit) {
-//                val email = EmailVerifyUIState()
-//                Log.d(TAG, "About to send MFAVerifyEmail to ${email.to}")
-//                verifyEmailViewModel.sendOTPEmail(email, type = "MFAVerifyEmail",
-//                    navController = navController)
-//            }
-//        }
-//        "No Btn click Detected" -> {
-//            Log.d(TAG, "Error: -> No Btn click Detected... Try again")
-//        }
-//    }
-
+    val auth = FirebaseAuth.getInstance()
     Box {
         Button(
             onClick = {
@@ -640,7 +625,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     }
                     "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
-                        Log.d(TAG, "Going to Send MFA code sent to ${verifyEmailViewModel.auth.currentUser?.email}")
+                        Log.d(TAG, "Going to Send MFA code sent to ${auth.currentUser?.email}")
                         verifyEmailViewModel.sendOTPToEmail(email, type = "MFAVerifyEmail",
                             navController = navController)
                     }
