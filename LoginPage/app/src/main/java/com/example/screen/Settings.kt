@@ -63,7 +63,8 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     if (providerId == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+            userType = "password")
     }
 //    val name = "\nSettings for ${signUpPageViewModel.fullNames.substringBefore(" ")}"
     val name = "\nSettings for ${
@@ -80,7 +81,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController)
+            GeneralBottomAppBar(navController = navController, providerId = providerId)
         },
 
         floatingActionButton = {

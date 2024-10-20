@@ -26,6 +26,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ChangePasswordVerifyEmail(navController: NavHostController,
@@ -47,6 +48,8 @@ fun ScaffoldChangePassword(navController: NavHostController,
     val verificationCode = stringResource(id = R.string.code)
 
     val painterVerificationCode = painterResource(id = R.drawable.confirmation_number)
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "Verify Email",
@@ -86,7 +89,8 @@ fun ScaffoldChangePassword(navController: NavHostController,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
-                    originalPage = "ChangePasswordVerifyEmail.kt"
+                    originalPage = "ChangePasswordVerifyEmail.kt",
+                    userType = userType
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

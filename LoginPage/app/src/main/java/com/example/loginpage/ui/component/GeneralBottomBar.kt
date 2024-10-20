@@ -37,10 +37,11 @@ import com.google.firebase.auth.FirebaseAuth
 @SuppressLint("RememberReturnType")
 @Composable
 fun GeneralBottomAppBar(navController: NavHostController,
-                        signUpPageViewModel: SignUpPageViewModel = viewModel()){
+                        signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                        providerId: String){
     val context = LocalContext.current.applicationContext
     val selected = remember{mutableStateOf(Icons.Default.Home)}
-    val auth = FirebaseAuth.getInstance()
+//    val auth = FirebaseAuth.getInstance()
     BottomAppBar(
         containerColor = Color.LightGray,
             modifier = Modifier
@@ -67,12 +68,12 @@ fun GeneralBottomAppBar(navController: NavHostController,
                 }
             
             IconButton(onClick = {
-                val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
-                if (user == "password") {
+//                val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
+                if (providerId == "password") {
                     selected.value = Icons.Default.Edit
                     getToast(context, action = "Edit Nav button clicked!")
                     navController.navigate(Routes.UserProfile.route)
-                }else if (user == "google.com"){
+                }else if (providerId == "google.com"){
                     getToast(context = context, "Use Your Google Account for this action.")
                 }
             }) {

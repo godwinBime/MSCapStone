@@ -330,9 +330,10 @@ class SignUpPageViewModel: ViewModel() {
     }
 
     //  Fetch user data from firebase database
-    fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
+    private fun fetchUserData(signUpPageViewModel: SignUpPageViewModel,
+                              userType: String,
                               userId: String?, onUserDataFetched: (UserData) -> Unit){
-        val userType = signUpPageViewModel.checkUserProvider(auth.currentUser)
+//        val userType = signUpPageViewModel.checkUserProvider(auth.currentUser)
         if (auth.currentUser != null && userType == "password"){
             signInSignUpInProgress.value = true
             try {
@@ -363,13 +364,14 @@ class SignUpPageViewModel: ViewModel() {
         }
     }
 
-    fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel){
+    fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel, userType: String?){
         val userId = auth.currentUser?.uid
-        val userType = checkUserProvider(user = auth.currentUser)
+//        val userType = checkUserProvider(user = auth.currentUser)
 //        Log.d(TAG,"Full Names: ${auth.currentUser?.displayName}")
 //        Log.d(TAG,"Cell: ${auth.currentUser?.phoneNumber}")
         if (userType == "password") {
-            fetchUserData(signUpPageViewModel = signUpPageViewModel, userId = userId) { user ->
+            fetchUserData(signUpPageViewModel = signUpPageViewModel, userType = userType,
+                userId = userId) { user ->
                 fullNames = user.firstName + " " + user.lastName
                 phoneNumber = user.phoneNumber
                 userEmail = user.email

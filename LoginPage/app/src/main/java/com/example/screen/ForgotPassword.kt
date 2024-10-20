@@ -25,6 +25,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ForgotPassword(navController: NavHostController,
@@ -44,6 +45,8 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
     val email = stringResource(id = R.string.email)
     val send = stringResource(id = R.string.send)
     val emailPainterResource = painterResource(id = R.drawable.email)
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.reset_password),
@@ -83,7 +86,8 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.emailValidationsPassed.value,
-                    originalPage = "ForgotPassword.kt"
+                    originalPage = "ForgotPassword.kt",
+                    userType = userType
                 )
             }
         }

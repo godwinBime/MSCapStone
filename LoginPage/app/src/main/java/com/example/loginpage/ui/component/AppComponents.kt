@@ -461,7 +461,7 @@ fun ButtonComponent(navController: NavHostController,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                     updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                     signUpPageViewModel: SignUpPageViewModel = viewModel(),
-                    originalPage: String = "None"){
+                    originalPage: String = "None", userType: String = ""){
     val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
     val context = LocalContext.current.applicationContext
     val googleContext = LocalContext.current
@@ -523,19 +523,20 @@ fun ButtonComponent(navController: NavHostController,
             }
             9 -> {
                 onButtonClicked.invoke()
-                val auth = FirebaseAuth.getInstance()
-                val userType = signUpPageViewModel.checkUserProvider(user = auth.currentUser)
+//                val auth = FirebaseAuth.getInstance()
+//                val userType = signUpPageViewModel.checkUserProvider(user = auth.currentUser)
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 if (userType == "password") {
                     updateProfileViewModel.deleteCurrentProfile(
                         navController = navController,
-                        signUpPageViewModel = signUpPageViewModel
+                        signUpPageViewModel = signUpPageViewModel,
+                        providerId = userType
                     )
                 }else if (userType == "google.com"){
-
                     updateProfileViewModel.deleteGoogleCredentials(
                         navController = navController, signUpPageViewModel = signUpPageViewModel,
-                        context = googleContext, homeViewModel = homeViewModel)
+                        context = googleContext, homeViewModel = homeViewModel,
+                        providerId = userType)
                 }
                 getToast(context, action = "Round Delete Button clicked!")
             }
@@ -579,7 +580,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               homeViewModel: HomeViewModel = viewModel(),
               signUpPageViewModel: SignUpPageViewModel = viewModel(),
               isEnable: Boolean = false,
-              originalPage: String = "None"){
+              originalPage: String = "None", userType: String = ""){
     Card(modifier = Modifier
         .height(90.dp)
         .background(Color.Blue)
@@ -596,7 +597,8 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
                 )
             },
             isEnable = isEnable,
-            originalPage = originalPage)
+            originalPage = originalPage,
+            userType = userType)
     }
 }
 
@@ -843,10 +845,9 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                     navController.navigate(Routes.UserProfile.route)
                 }
                 "Change Password" -> {
-                    val user = signUpPageViewModel.checkUserProvider(auth.currentUser)
-                    if (user == "google.com") {
+                    if (userType == "google.com") {
                         getToast(context = context, "Use Your Google Account for this action.")
-                    }else if (user == "password"){
+                    }else if (userType == "password"){
                         val email = auth.currentUser?.email?.let { userEmail ->
                             EmailVerifyUIState(
                                 userEmail

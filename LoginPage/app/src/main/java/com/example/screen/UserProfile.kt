@@ -80,9 +80,7 @@ fun ScaffoldUserProfileWithTopBar(
     val userProfile = stringResource(id = R.string.profile)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
     val user = FirebaseAuth.getInstance().currentUser
-
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     Scaffold(
@@ -90,7 +88,7 @@ fun ScaffoldUserProfileWithTopBar(
             .background(Color.Red),
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController)
+            GeneralBottomAppBar(navController = navController, providerId = providerId)
         },
 
         floatingActionButton = {
@@ -150,36 +148,40 @@ fun ScaffoldUserProfileWithTopBar(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(10.dp))
+                when(providerId){
+                    "password" -> {
+                        val isEnable = true
+                        Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
+                        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+                            userType = "password")
 
-                if (providerId == "password") {
-                    val isEnable = true
-                    Log.d(TAG, "ProviderId in UserProfile.kt: email/password")
-                    signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+                        NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
+                        DividerTextComponent()
+                        Spacer(modifier = Modifier.height(10.dp))
+                        NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
+                        Spacer(modifier = Modifier.height(20.dp))
+                        NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
 
-                    NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
-                    DividerTextComponent()
-                    Spacer(modifier = Modifier.height(10.dp))
-                    NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
-                    Spacer(modifier = Modifier.height(20.dp))
-                    NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
-
-                    Spacer(modifier = Modifier.height(40.dp))
-                    SubButton(
-                        navController = navController,
-                        value = stringResource(R.string.update_profile),
-                        rank = 6,
-                        isEnable = isEnable,
-                        originalPage = "UserProfile.kt"
-                    )
-                }else if (providerId == "google.com"){
-                    Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
-                    Spacer(modifier = Modifier.height(10.dp))
-                    NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
-                    DividerTextComponent()
-                    Spacer(modifier = Modifier.height(10.dp))
-                }else{
-                    Log.d(TAG, "No provider found")
-                    NormalTextComponent(value = "No user found...")
+                        Spacer(modifier = Modifier.height(40.dp))
+                        SubButton(
+                            navController = navController,
+                            value = stringResource(R.string.update_profile),
+                            rank = 6,
+                            isEnable = isEnable,
+                            originalPage = "UserProfile.kt"
+                        )
+                    }
+                    "google.com" -> {
+                        Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
+                        Spacer(modifier = Modifier.height(10.dp))
+                        NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
+                        DividerTextComponent()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    "None" -> {
+                        Log.d(TAG, "No provider found")
+                        NormalTextComponent(value = "No user found...")
+                    }
                 }
             }
         }

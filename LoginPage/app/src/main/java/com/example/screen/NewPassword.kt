@@ -26,6 +26,7 @@ import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.MyConfirmPasswordFieldComponent
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
@@ -48,6 +49,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
 
     val oldPasswordPainterResource = painterResource(id = R.drawable.password)
     val newPasswordPainterResource = painterResource(id = R.drawable.password)
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "New Password",
@@ -100,7 +103,8 @@ fun ScaffoldNewPasswordTopBar(navController: NavHostController,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = isEnabled,
 //                    isEnable = signUpPageViewModel.passwordValidationsPassed.value,
-                    originalPage = "NewPassword.kt"
+                    originalPage = "NewPassword.kt",
+                    userType = userType
                 /*&& signUpPageViewModel.confirmPasswordValidationsPassed.value*/
                 )
             }

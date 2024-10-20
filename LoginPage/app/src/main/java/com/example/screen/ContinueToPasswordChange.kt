@@ -24,6 +24,7 @@ import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.loginpage.ui.component.changePasswordEmail
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ContinueToPasswordChange(navController: NavHostController,
@@ -32,7 +33,8 @@ fun ContinueToPasswordChange(navController: NavHostController,
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldContinueToPasswordChangeWithTopBar(navController)
+        ScaffoldContinueToPasswordChangeWithTopBar(navController = navController,
+            signUpPageViewModel = signUpPageViewModel)
         if (signUpPageViewModel.signInSignUpInProgress.value){
             CircularProgressIndicator()
         }
@@ -43,8 +45,11 @@ fun ContinueToPasswordChange(navController: NavHostController,
 @Composable
 fun ScaffoldContinueToPasswordChangeWithTopBar(
     navController: NavHostController,
-    verifyEmailViewModel: VerifyEmailViewModel = viewModel()
+    verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+    signUpPageViewModel: SignUpPageViewModel = viewModel()
 ){
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, stringResource(id = R.string.reset_password),
             true, action = "Change Password Instructions") },
@@ -63,7 +68,8 @@ fun ScaffoldContinueToPasswordChangeWithTopBar(
                     value = stringResource(R.string.acknowledge),
                     rank = 10,
                     isEnable = true,
-                    originalPage = "ContinueToPasswordChange.kt"
+                    originalPage = "ContinueToPasswordChange.kt",
+                    userType = userType
                 )
                 Spacer(modifier = Modifier.height(80.dp))
             }

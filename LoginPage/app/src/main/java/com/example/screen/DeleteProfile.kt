@@ -76,13 +76,14 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
 
 //    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     if (userType == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+            userType = "password")
     }
 
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController)
+            GeneralBottomAppBar(navController = navController, providerId = userType)
         },
 
         floatingActionButton = {
@@ -155,7 +156,8 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     value = stringResource(R.string.delete_profile),
                     rank = 9,
                     isEnable = true,
-                    originalPage = "DeleteProfile.kt"
+                    originalPage = "DeleteProfile.kt",
+                    userType = userType
                 )
                 Spacer(modifier = Modifier.height(80.dp))
             }

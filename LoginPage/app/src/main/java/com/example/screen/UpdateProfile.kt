@@ -32,6 +32,7 @@ import com.example.data.uistate.UpdateUserDataUIState
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
@@ -70,6 +71,9 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
 
     val updateProfileTitle = stringResource(id = R.string.update_profile)
     val updateButton = stringResource(id = R.string.update_button)
+
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, updateProfileTitle, true,
@@ -151,7 +155,8 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                             )
                         },
                         isEnable = isEnabled,
-                        originalPage = "UpdateProfile.kt"
+                        originalPage = "UpdateProfile.kt",
+                        userType = userType
                     )
                 }
             }

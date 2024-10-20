@@ -24,7 +24,7 @@ import kotlinx.coroutines.tasks.await
 class UpdateProfileViewModel: ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val TAG = SignUpPageViewModel::class.simpleName
+    private val TAG = UpdateProfileViewModel::class.simpleName
     var displayUserProfileInProgress = mutableStateOf(false)
 
     var oldPassword by mutableStateOf("")
@@ -150,19 +150,22 @@ class UpdateProfileViewModel: ViewModel() {
     }
 
     fun deleteCurrentProfile(navController: NavHostController,
-                             signUpPageViewModel: SignUpPageViewModel){
-        val user = auth.currentUser
-        val providerId = signUpPageViewModel.checkUserProvider(user = user)
+                             signUpPageViewModel: SignUpPageViewModel,
+                             providerId: String){
+//        val user = auth.currentUser
+//        val providerId = signUpPageViewModel.checkUserProvider(user = user)
         displayUserProfileInProgress.value = true
         if (providerId == "password") {
-            deleteProfile(navController = navController, signUpPageViewModel = signUpPageViewModel)
+            deleteProfile(navController = navController, signUpPageViewModel = signUpPageViewModel,
+                userType = providerId)
         }
     }
 
     private fun deleteUsernamePassword(navController: NavHostController,
-                                       signUpPageViewModel: SignUpPageViewModel){
+                                       signUpPageViewModel: SignUpPageViewModel,
+                                       userType: String){
         val user = auth.currentUser
-        val userType = signUpPageViewModel.checkUserProvider(user = user)
+//        val userType = signUpPageViewModel.checkUserProvider(user = user)
         try{
             if (user != null){
                 Log.d(TAG, "About to delete logged-in user...")
@@ -194,7 +197,8 @@ class UpdateProfileViewModel: ViewModel() {
     }
 
     private fun deleteProfile(navController: NavHostController,
-                              signUpPageViewModel: SignUpPageViewModel){
+                              signUpPageViewModel: SignUpPageViewModel,
+                              userType: String){
         if (auth.currentUser != null) {
             displayUserProfileInProgress.value = true
             val userId = auth.currentUser?.uid
@@ -208,12 +212,28 @@ class UpdateProfileViewModel: ViewModel() {
                                 Log.d(TAG, "DocumentId inside deleteProfile(): ${deleteDocumentSnapshot.id}")
                                 viewModelScope.launch {
                                     firestore.collection("userdata").document(deleteDocumentSnapshot.id).delete()
-                                        .addOnSuccessListener {
-                                            Log.d(TAG, "Data of User with ID ( ${deleteDocumentSnapshot.id}) successfully deleted")
-                                            deleteUsernamePassword(
-                                                navController = navController,
-                                                signUpPageViewModel = signUpPageViewModel
-                                            )
+                                        .addOnCompleteListener{task ->
+                                            if (task.isSuccessful){
+                                                Log.d(TAG, "Data of User with ID ( ${deleteDocumentSnapshot.id}) successfully deleted")
+                                                deleteUsernamePassword(
+                                                    navController = navController,
+                                                    signUpPageViewModel = signUpPageViewModel,
+                                                    userType = userType
+                                                )
+                                            }else{
+                                                Log.d(TAG, "Call from deleteProfile(): task to delete user profile failed")
+                                            }
+                                        }
+//                                        .addOnSuccessListener {
+//                                            Log.d(TAG, "Data of User with ID ( ${deleteDocumentSnapshot.id}) successfully deleted")
+//                                            deleteUsernamePassword(
+//                                                navController = navController,
+//                                                signUpPageViewModel = signUpPageViewModel,
+//                                                userType = userType
+//                                            )
+//                                        }
+                                        .addOnFailureListener{
+                                            Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed")
                                         }
                                 }
                             }else{
@@ -233,9 +253,10 @@ class UpdateProfileViewModel: ViewModel() {
 
     fun deleteGoogleCredentials(navController: NavHostController,
                                 signUpPageViewModel: SignUpPageViewModel,
-                                context: Context, homeViewModel: HomeViewModel){
+                                context: Context, homeViewModel: HomeViewModel,
+                                providerId: String){
         val user = auth.currentUser
-        val providerId = signUpPageViewModel.checkUserProvider(user = user)
+//        val providerId = signUpPageViewModel.checkUserProvider(user = user)
         if (providerId == "google.com"){
             viewModelScope.launch {
                 deleteGoogleUser(navController = navController, providerId = providerId,
@@ -273,27 +294,6 @@ class UpdateProfileViewModel: ViewModel() {
             }
         }else{
             Log.d(TAG, "No active user found when deleteGoogleUser() was called..")
-        }
-    }
-
-    private fun deleteGoogleAccount(navController: NavHostController){
-        val user = auth.currentUser
-        if (user != null && user.providerData.any {it.providerId == "google.com"}){
-            Log.d(TAG, "User not null -- provider is google.com")
-            user.delete()
-                .addOnCompleteListener{task ->
-                    if (task.isSuccessful){
-                        Log.d(TAG, "Google account successfully deleted...")
-                        navController.navigate(Routes.Login.route)
-                    }else{
-                        Log.d(TAG, "Google account deletion failed...")
-                    }
-                }
-                .addOnFailureListener{
-                    Log.d(TAG, "In addOnFailureListener -- Google account deletion failed...")
-                }
-        }else{
-            Log.d(TAG, "No active user found when deleteGoogleAccount() was called..")
         }
     }
 }

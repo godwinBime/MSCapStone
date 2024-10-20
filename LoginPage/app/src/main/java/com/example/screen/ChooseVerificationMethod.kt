@@ -38,6 +38,7 @@ import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ChooseVerificationMethod(navController: NavHostController,
@@ -56,6 +57,8 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
                                      signUpPageViewModel: SignUpPageViewModel,
                                      homeViewModel: HomeViewModel){
+//    val user = FirebaseAuth.getInstance()
+//    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "MFA",
             true, action = "Choose Verification Method then proceed.",

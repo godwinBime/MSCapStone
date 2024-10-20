@@ -63,7 +63,6 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  homeViewModel: HomeViewModel,
                                  scrollState: ScrollState,
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
-    signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
     val context = LocalContext.current
     val home = stringResource(id = R.string.home)
     val scaffoldState = rememberScaffoldState()
@@ -72,13 +71,14 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     if (providerId == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+            userType = "password")
     }
 
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController)
+            GeneralBottomAppBar(navController = navController, providerId = providerId)
         },
 
         floatingActionButton = {

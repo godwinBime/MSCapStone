@@ -25,6 +25,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SMSVerification(navController: NavHostController,
@@ -44,6 +45,8 @@ fun ScaffoldSMSVerification(navController: NavHostController,
 ){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
     Scaffold(
@@ -79,7 +82,8 @@ fun ScaffoldSMSVerification(navController: NavHostController,
                     value = verify, rank = 4,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
-                    originalPage = "SMSVerification"
+                    originalPage = "SMSVerification",
+                    userType = userType
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

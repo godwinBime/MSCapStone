@@ -37,6 +37,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.MainActivity
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,11 +66,13 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
     val home = stringResource(id = R.string.login_and_security)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
+    val user = FirebaseAuth.getInstance()
+    val providerId = signUpPageViewModel.checkUserProvider(user = user.currentUser)
 //    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController)
+            GeneralBottomAppBar(navController = navController, providerId = providerId)
         },
 
         floatingActionButton = {

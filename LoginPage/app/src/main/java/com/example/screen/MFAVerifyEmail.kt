@@ -28,6 +28,7 @@ import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun MFAVerifyEmail(navController: NavHostController,
@@ -49,7 +50,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val verify = stringResource(id = R.string.verify)
 
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
-
+    val user = FirebaseAuth.getInstance()
+    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
             true, action = "Enter Verification code sent to your email.",
@@ -85,7 +87,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                     homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
-                    originalPage = "MFAVerifyEmail.kt"
+                    originalPage = "MFAVerifyEmail.kt",
+                    userType = userType
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

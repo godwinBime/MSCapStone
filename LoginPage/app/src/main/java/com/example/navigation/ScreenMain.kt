@@ -42,15 +42,15 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
     var startDestination = Routes.Login.route
     homeViewModel.checkForActiveSession()
     val user = FirebaseAuth.getInstance().currentUser
-    val providerId = signUpPageViewModel.checkUserProvider(user)
+    val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     if (homeViewModel.isUserLoggedIn.value == true && providerId == "google.com"){
         getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-        startDestination = Routes.ChooseVerificationMethod.route
-//        startDestination = Routes.Home.route
+//        startDestination = Routes.ChooseVerificationMethod.route
+        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
