@@ -82,9 +82,9 @@ fun ScaffoldUserProfileWithTopBar(
     val coroutineScope = rememberCoroutineScope()
 
     val user = FirebaseAuth.getInstance().currentUser
+
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
-//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     Scaffold(
         modifier = Modifier
             .background(Color.Red),

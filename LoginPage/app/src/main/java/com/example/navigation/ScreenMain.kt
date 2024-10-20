@@ -49,8 +49,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-//        startDestination = Routes.ChooseVerificationMethod.route
-        startDestination = Routes.Home.route
+        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

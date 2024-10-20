@@ -35,6 +35,7 @@ import com.example.loginpage.ui.component.getToast
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,12 +59,23 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                                      scrollState: ScrollState,
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
-    val name = "\nSettings for ${signUpPageViewModel.fullNames.substringBefore(" ")}"
+    val user = FirebaseAuth.getInstance().currentUser
+    val providerId = signUpPageViewModel.checkUserProvider(user = user)
+
+    if (providerId == "password") {
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+    }
+//    val name = "\nSettings for ${signUpPageViewModel.fullNames.substringBefore(" ")}"
+    val name = "\nSettings for ${
+        if (providerId == "password") {
+            signUpPageViewModel.fullNames.substringBefore(" ")
+        }else{
+            user?.displayName?.substringBefore(" ")
+        }
+    }"
     val home = stringResource(id = R.string.settings)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
-//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -107,7 +119,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                NormalTextComponent(value = "Welcome, $name")
+                NormalTextComponent(value = name)
 
                 Spacer(modifier = Modifier.height(80.dp))
             }

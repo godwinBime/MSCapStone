@@ -63,15 +63,17 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  homeViewModel: HomeViewModel,
                                  scrollState: ScrollState,
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
-//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
     signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
     val context = LocalContext.current
-    val name = signUpPageViewModel.fullNames.substringBefore(" ")
     val home = stringResource(id = R.string.home)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
+
+    if (providerId == "password") {
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel)
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,

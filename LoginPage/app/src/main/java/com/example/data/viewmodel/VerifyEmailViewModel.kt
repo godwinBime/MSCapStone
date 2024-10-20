@@ -141,7 +141,7 @@ class VerifyEmailViewModel: ViewModel() {
             "to" to email.to,
             "message" to hashMapOf(
                 "subject" to email.subject,
-                "text" to email.body + " " + otpCode + "\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
+                "text" to email.body + "\n\n" + otpCode + "\n\n" + email.codeExpiration + "\n" + email.motivation + "\n" + email.sincerely + "\n" + email.capstoneTeam
             )
         )
         if (emailData.isEmpty()){
