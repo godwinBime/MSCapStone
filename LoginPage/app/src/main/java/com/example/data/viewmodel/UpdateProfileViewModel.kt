@@ -237,6 +237,11 @@ class UpdateProfileViewModel: ViewModel() {
                                         }
                                 }
                             }else{
+//                                deleteUsernamePassword(
+//                                    navController = navController,
+//                                    signUpPageViewModel = signUpPageViewModel,
+//                                    userType = userType
+//                                )
                                 Log.d(TAG, "Error: DocumentId Not found")
                             }
                         }

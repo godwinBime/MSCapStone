@@ -36,4 +36,6 @@ sealed class Routes(val route: String) {
     object UserProfile: Routes("UserProfile")
 
     object DeleteProfile: Routes("DeleteProfile")
+
+    object DeleteProfileVerifyEmail: Routes("DeleteProfileVerifyEmail")
 }

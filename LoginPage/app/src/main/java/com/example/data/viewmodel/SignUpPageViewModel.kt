@@ -17,7 +17,6 @@ class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
     var signUpPageUIState = mutableStateOf(SignUpPageUIState())
     var firstNameValidationsPassed = mutableStateOf(false)
     var lastNameValidationsPassed = mutableStateOf(false)
@@ -28,7 +27,6 @@ class SignUpPageViewModel: ViewModel() {
     var verificationCodeValidationsPassed = mutableStateOf(false)
     var privacyPolicyValidationPassed = mutableStateOf(false)
     var signInSignUpInProgress = mutableStateOf(false)
-
     var fullNames = ""
     var phoneNumber = ""
     var userEmail = ""

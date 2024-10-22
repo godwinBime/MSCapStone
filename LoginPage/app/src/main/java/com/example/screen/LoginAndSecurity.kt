@@ -111,8 +111,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                RadioButtonSpace(value = stringResource(id = R.string.extend_login_session),
-                    mainActivity = mainActivity)
+                RadioButtonSpace(value = stringResource(id = R.string.extend_login_session))
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }

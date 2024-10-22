@@ -2,6 +2,7 @@ package com.example.loginpage.ui.component
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
@@ -38,9 +41,11 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun GeneralBottomAppBar(navController: NavHostController,
                         signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                        verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                         providerId: String){
     val context = LocalContext.current.applicationContext
     val selected = remember{mutableStateOf(Icons.Default.Home)}
+    val TAG = VerifyEmailViewModel::class.simpleName
 //    val auth = FirebaseAuth.getInstance()
     BottomAppBar(
         containerColor = Color.LightGray,
@@ -84,8 +89,37 @@ fun GeneralBottomAppBar(navController: NavHostController,
 
             IconButton(onClick = {
                 selected.value = Icons.Default.Delete
+                val auth = FirebaseAuth.getInstance()
                 getToast(context, action = "Delete Bottom Nav button clicked!")
-                navController.navigate(Routes.DeleteProfile.route)}
+                val email = auth.currentUser?.email?.let { userEmail ->
+                    EmailVerifyUIState(
+                        userEmail
+                    )
+                }
+                if (email != null) {
+                    verifyEmailViewModel.sendOTPToEmail(
+                        email = email,
+                        navController = navController,
+                        type = "DeleteProfile")
+                    if (verifyEmailViewModel.isOTPSent) {
+                        Log.d(TAG, "OTPSent...Navigating to verify OTP and DeleteProfile...")
+                        navController.navigate(
+                            Routes.MFAVerifyEmail.route)
+                    }
+                }else {
+                    getToast(context = context, "No email provided.")
+                }
+
+//                if (providerId == "google.com") {
+//                    getToast(context = context, "Use Your Google Account for this action.")
+//                }else if (providerId == "password"){
+//                    Log.d(TAG, "Call to Change Password From ChangePassword DrawerContentComponent")
+//
+//                }else {
+//                    getToast(context = context, "Error: Auth is neither Google or email/password")
+//                }
+//                navController.navigate(Routes.DeleteProfile.route)
+            }
             ) {
                 Icon(imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",

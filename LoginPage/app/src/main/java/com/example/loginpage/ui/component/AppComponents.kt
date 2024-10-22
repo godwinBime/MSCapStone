@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,6 +72,7 @@ import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
@@ -159,7 +161,6 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                          action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
-
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -198,6 +199,10 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                 "UpdateLastName" -> {
                     Log.d(TAG, "Updated Last name: ${textValue.value}")
                     updateProfileViewModel.updatedLastName = textValue.value
+                }
+                "DeleteProfile" -> {
+                    emailViewModel.sentOTPCode = textValue.value
+                    Log.d(TAG, "Sent OTP Code to validate DeleteProfile action: ${emailViewModel.sentOTPCode}")
                 }
             }
             onTextChanged(it)},
@@ -361,12 +366,20 @@ fun ClickableTextComponent(value: String = "", navController: NavHostController)
 @Composable
 fun GeneralClickableTextComponent(value: String, navController: NavHostController,
                                   rank: Int = 100,
-                                  verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+                                  verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                                  timerViewModel: TimerViewModel = viewModel(),
+                                  type: String = "None"){
     val context = LocalContext.current
     var isClickableEnabled by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val auth = FirebaseAuth.getInstance()
+    var time by remember { mutableStateOf(timerViewModel.timeLeft.value) }
 
+//    LaunchedEffect(key1 = timerViewModel.isRunning.value) {
+//        Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value}")
+//        timerViewModel.startTimer(timerDuration = 1000)
+//        time = timerViewModel.timeLeft.value
+//    }
     Box(modifier = Modifier
         .background(Color.Transparent)) {
         ClickableText(
@@ -403,26 +416,31 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       4 -> {
-                          if (isClickableEnabled) {
-                              isClickableEnabled = false
+                          if (timerViewModel.isFinished.value) {
                               getToast(context = context, "Resending OTP code")
                               val email = auth.currentUser?.email?.let { otpEmailTask ->
                                       EmailVerifyUIState(otpEmailTask)
                                   }
                               Log.d(TAG, "Resending OTP to: ${email?.to}")
                               if (email != null) {
+                                  timerViewModel.isFinished.value = false
+                                  timerViewModel.isRunning.value = false
+                                  timerViewModel.timeLeft.value = 60L
                                   verifyEmailViewModel.sendOTPToEmail(
                                       email = email,
                                       navController = navController,
-                                      type = "MFAVerifyEmail"
+                                      type = type
                                   )
                               }
-                          } else {
-                              verifyEmailViewModel.errorMessage = "Request another code in 20 seconds."
-                              coroutineScope.launch {
-                                  delay(20000)
-                                  isClickableEnabled = true
-                              }
+                          } else /*if (timerViewModel.isRunning.value)*/ {
+                              Log.d(TAG, "Timer triggered")
+                              timerViewModel.startTimer(timerDuration = 1000)
+                              Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value}")
+//                              coroutineScope.launch {
+//                                  Log.d(TAG, "Timer triggered")
+////                                  delay(20000)
+//                                  timerViewModel.startTimer(timerDuration = 1000)
+//                              }
                           }
                       }
                       5 -> {
@@ -545,6 +563,12 @@ fun ButtonComponent(navController: NavHostController,
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 navController.navigate(Routes.Login.route)
             }
+            11 -> {
+                Log.d(TAG, "From $originalPage in ButtonComponent")
+                Log.d(TAG, "Inside DeleteProfileVerifyEmail statement---" )
+                verifyEmailViewModel.verifySentOTPCode(
+                    navController = navController, destination = "DeleteProfile")
+            }
         }
     },
         modifier = Modifier
@@ -583,7 +607,6 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
               originalPage: String = "None", userType: String = ""){
     Card(modifier = Modifier
         .height(90.dp)
-        .background(Color.Blue)
         .fillMaxHeight(.9f),
         elevation = 0.dp
     ){
@@ -765,7 +788,7 @@ fun ClickableLoginOrLogOutText(navController: NavHostController,
 }
 
 @Composable
-fun RadioButtonSpace(value: String, mainActivity: MainActivity){
+fun RadioButtonSpace(value: String){
     Card(modifier = Modifier
         .height(100.dp)
         .fillMaxWidth(),
@@ -781,12 +804,12 @@ fun RadioButtonSpace(value: String, mainActivity: MainActivity){
             color = Color.Black,
             textAlign = TextAlign.Justify
         )
-        SwitchToggleButtonComponent(mainActivity = mainActivity)
+        SwitchToggleButtonComponent()
     }
 }
 
 @Composable
-fun SwitchToggleButtonComponent(mainActivity: MainActivity){
+fun SwitchToggleButtonComponent(){
     var isCheckedButton by rememberSaveable { mutableStateOf(
         false)}
     val scope = rememberCoroutineScope()

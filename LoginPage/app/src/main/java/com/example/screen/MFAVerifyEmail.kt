@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.GeneralClickableTextComponent
@@ -45,7 +46,8 @@ fun MFAVerifyEmail(navController: NavHostController,
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                            homeViewModel: HomeViewModel,
                            signUpPageViewModel: SignUpPageViewModel,
-                           emailVerifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+                           emailVerifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                           timerViewModel: TimerViewModel = viewModel()){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
 
@@ -53,7 +55,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val user = FirebaseAuth.getInstance()
     val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     Scaffold(
-        topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
+        topBar = { TopAppBarBeforeLogin(navController, "Login MFA Email Verify",
             true, action = "Enter Verification code sent to your email.",
             homeViewModel = homeViewModel) },
         content = { paddingValues ->
@@ -92,10 +94,18 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-
+                if(timerViewModel.isRunning.value){
+                    Text(
+                        text = stringResource(R.string.request_code) + " " +
+                        timerViewModel.timeLeft.value + " " + stringResource(R.string.timer_type),
+                        color = Color.Red
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.resend_code),
-                    navController = navController, rank = 4)
+                    navController = navController, rank = 4,
+                    type = "ResendOTP")
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(text = emailVerifyEmailViewModel.errorMessage, color = Color.Red)
 //                Text(text = errorMessage)

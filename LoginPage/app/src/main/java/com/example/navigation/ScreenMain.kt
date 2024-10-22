@@ -23,6 +23,7 @@ import com.example.screen.Home
 import com.example.screen.Login
 import com.example.screen.LoginAndSecurity
 import com.example.screen.MFAVerifyEmail
+import com.example.screen.DeleteProfileVerifyEmail
 import com.example.screen.NewPassword
 import com.example.screen.PrivacyPolicy
 import com.example.screen.SMSVerification
@@ -49,8 +50,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-//        startDestination = Routes.ChooseVerificationMethod.route
-        startDestination = Routes.Home.route
+        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -175,6 +176,13 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
                 googleSignInViewModel = GoogleSignInViewModel(
                     repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
                 ))
+        }
+
+        composable(Routes.DeleteProfileVerifyEmail.route){
+            DeleteProfileVerifyEmail(navController = navController,
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel()
+            )
         }
     }
 }

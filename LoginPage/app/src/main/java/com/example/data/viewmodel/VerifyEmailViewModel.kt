@@ -162,6 +162,13 @@ class VerifyEmailViewModel: ViewModel() {
                             Log.d(TAG, "MFAVerifyEmail code sent to ${email.to}")
                             navController.navigate(Routes.MFAVerifyEmail.route)
                         }
+                        "DeleteProfile" ->{
+                            Log.d(TAG, "DeleteProfile code sent to ${email.to}")
+                            navController.navigate(Routes.DeleteProfileVerifyEmail.route)
+                        }
+                        "ResendOTP" -> {
+                            Log.d(TAG, "OTP code resent to ${email.to}")
+                        }
                     }
                 }
                 .addOnFailureListener{
@@ -205,11 +212,11 @@ class VerifyEmailViewModel: ViewModel() {
                         Log.d(TAG, verificationMessage)
                         navController.navigate(Routes.NewPassword.route)
                     }
-                    "DeleteAccount" -> {
+                    "DeleteProfile" -> {
                         isOTPSent = false
                         verificationMessage = "Logged-in User account deletion request otp verified..."
                         Log.d(TAG, verificationMessage)
-                        navController.navigate(Routes.Login.route)
+                        navController.navigate(Routes.DeleteProfile.route)
                     }
                 }
             }else{
