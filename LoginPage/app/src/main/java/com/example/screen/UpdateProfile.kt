@@ -32,6 +32,7 @@ import com.example.data.uistate.UpdateUserDataUIState
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -73,7 +74,88 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
     val updateButton = stringResource(id = R.string.update_button)
 
     val user = FirebaseAuth.getInstance()
-    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+    val providerId = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+
+    /*
+    GeneralBottomAppBar(navController = navController)
+    Column(
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        HeadingTextComponent(value = updateProfileTitle)
+
+        Spacer(modifier = Modifier
+            .height(20.dp))
+        MyTextFieldComponent(labelValue = firstName,
+            painterResource = personPainterResource,
+            onTextChanged = {
+                signUpPageViewModel.onSignUpEvent(
+                    SignUpPageUIEvent.FirstNameChanged(it),
+                    navController = navController)
+            },
+            errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError,
+            action = "UpdateFirstName")
+
+        Spacer(modifier = Modifier
+            .height(20.dp))
+        MyTextFieldComponent(labelValue = lastName,
+            painterResource = personPainterResource,
+            onTextChanged = {
+                signUpPageViewModel.onSignUpEvent(
+                    SignUpPageUIEvent.LastNameChanged(it),
+                    navController = navController
+                )
+            },
+            errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError,
+            action = "UpdateLastName")
+
+//                MyTextFieldComponent(labelValue = email,
+//                    painterResource = emailPainterResource,
+//                    onTextChanged = {
+//                        signUpPageViewModel.onSignUpEvent(
+//                            SignUpPageUIEvent.EmailChanged(it),
+//                            navController = navController)
+//                    },
+//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
+//                    action = "UpdateProfile"
+//                )
+
+        Spacer(modifier = Modifier.height(20.dp))
+        MyTextFieldComponent(labelValue = phoneNumber,
+            painterResource = phoneNumberPainterResource,
+            onTextChanged = {
+                signUpPageViewModel.onSignUpEvent(
+                    SignUpPageUIEvent.PhoneNumberChanged(it),
+                    navController = navController
+                )
+            },
+            errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
+            action = "UpdatePhoneNumber"
+        )
+
+        Spacer(modifier = Modifier.height(60.dp))
+        Box(modifier = Modifier
+            .padding(55.dp, 0.dp, 55.dp, 0.dp)){
+            ButtonComponent(navController,
+                value = updateButton, rank = 4,
+                homeViewModel = homeViewModel,
+                onButtonClicked = {
+                    signUpPageViewModel.onSignUpEvent(
+                        SignUpPageUIEvent.RegisterButtonClicked,
+                        navController = navController
+                    )
+                },
+                isEnable = isEnabled,
+                originalPage = "UpdateProfile.kt",
+                userType = providerId
+            )
+        }
+    }
+    */
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, updateProfileTitle, true,
@@ -156,7 +238,7 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                         },
                         isEnable = isEnabled,
                         originalPage = "UpdateProfile.kt",
-                        userType = userType
+                        userType = providerId
                     )
                 }
             }

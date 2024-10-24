@@ -26,6 +26,7 @@ class UpdateProfileViewModel: ViewModel() {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val TAG = UpdateProfileViewModel::class.simpleName
     var displayUserProfileInProgress = mutableStateOf(false)
+    var message by mutableStateOf("")
 
     var oldPassword by mutableStateOf("")
     var newPassword by mutableStateOf("")
@@ -33,6 +34,7 @@ class UpdateProfileViewModel: ViewModel() {
     var updatedLastName by mutableStateOf("")
     var updatedPhoneNumber by mutableStateOf("")
     var updatedEmail by mutableStateOf("")
+
 
     fun updateUserProfile(navController: NavHostController) {
         Log.d(TAG, "To be updated First name: $updatedFirstName")
@@ -261,14 +263,35 @@ class UpdateProfileViewModel: ViewModel() {
                                 context: Context, homeViewModel: HomeViewModel,
                                 providerId: String){
         val user = auth.currentUser
-//        val providerId = signUpPageViewModel.checkUserProvider(user = user)
         if (providerId == "google.com"){
+//            refreshToken(context = context)
             viewModelScope.launch {
                 deleteGoogleUser(navController = navController, providerId = providerId,
                     context = context, homeViewModel = homeViewModel)
             }
         }
     }
+/*
+    private fun refreshToken(context: Context){
+        val user = auth.currentUser
+        try {
+            user?.getIdToken(true)?.addOnCompleteListener { newTokenTask ->
+                if (newTokenTask.isSuccessful) {
+                    Log.d(TAG, "refreshToken() New token obtained...")
+                    val account = GoogleSignIn.getLastSignedInAccount(context)
+                    val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+//                    val credential = GoogleAuthProvider.getCredential(newTokenTask.result?.token, null)
+                    user.reauthenticate(credential)
+                    Log.d(TAG, "reAuthenticated with New token...")
+                }
+            }
+                ?.addOnFailureListener {
+                    Log.d(TAG, "Failed to get new token...")
+                }
+        }catch (e: Exception){
+            Log.d(TAG, "refreshToken() Exception: ${e.message}")
+        }
+    }*/
 
     private suspend fun deleteGoogleUser(navController: NavHostController, providerId: String,
                                          context: Context, homeViewModel: HomeViewModel){
@@ -292,9 +315,11 @@ class UpdateProfileViewModel: ViewModel() {
                         }
                     }
                     .addOnFailureListener{
+                        message = "Token expired, re-authenticate and try again."
                         Log.d(TAG, "In addOnFailureListener -- Google account deletion failed...")
                     }
             }catch (e: Exception){
+                message = "Token expired, re-authenticate and try again."
                 Log.d(TAG, "deleteGoogleUser() Exception: ${e.message}")
             }
         }else{

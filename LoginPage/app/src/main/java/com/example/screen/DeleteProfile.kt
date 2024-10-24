@@ -1,6 +1,7 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -18,19 +21,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.UpdateProfileViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
@@ -65,25 +75,85 @@ fun DeleteProfile(navController: NavHostController, homeViewModel: HomeViewModel
 fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                                      homeViewModel: HomeViewModel,
                                      scrollState: ScrollState,
-                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
+                                    updateProfileViewModel: UpdateProfileViewModel = viewModel(),
+                                    signUpPageViewModel: SignUpPageViewModel = viewModel()) {
     val context = LocalContext.current
     val warning = "\n${stringResource(R.string.delete_warning)}"
-    val delete = stringResource(id = R.string.delete_profile)
+    val deleteTitle = stringResource(id = R.string.delete_profile)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val user = FirebaseAuth.getInstance()
-    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+    val user = FirebaseAuth.getInstance().currentUser
+    val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
-//    homeViewModel.getUserData(signUpPageViewModel = signUpPageViewModel)
-    if (userType == "password") {
+    if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
             userType = "password")
     }
+/*
+    GeneralBottomAppBar(navController = navController, providerId = providerId)
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(20.dp))
+        NormalTextComponent(value = warning, action = "DeleteProfile")
+        DividerTextComponent()
+        Spacer(modifier = Modifier.height(20.dp))
+        when(providerId) {
+            "password" -> {
+                NormalTextComponent(
+                    value =
+                    "Full Names: ${signUpPageViewModel.fullNames} "
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                NormalTextComponent(
+                    value =
+                    "Phone Number: ${signUpPageViewModel.phoneNumber}"
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+            }
+            "google.com" -> {
+                Spacer(modifier = Modifier.height(20.dp))
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        model = user?.photoUrl,
+                    ),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .clip(CircleShape)
+//                            .padding(2.dp)
+                        .size(120.dp),
+                    contentScale = ContentScale.Crop
+                )
+                NormalTextComponent(
+                    value =
+                    "Full Names: ${user?.displayName} "
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                NormalTextComponent(value = "Email: ${user?.email}")
+            }
+        }
+        Spacer(modifier = Modifier.height(40.dp))
+        SubButton(
+            navController = navController,
+            value = stringResource(R.string.delete_profile),
+            rank = 9,
+            isEnable = true,
+            originalPage = "DeleteProfile.kt",
+            userType = providerId
+        )
+        Spacer(modifier = Modifier.height(80.dp))
+    }
+    */
 
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController = navController, providerId = userType)
+            GeneralBottomAppBar(navController = navController, providerId = providerId)
         },
 
         floatingActionButton = {
@@ -99,7 +169,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
             }
         },
         topBar = {
-            HomeScreenTopAppBar(navController, delete, action = "DeleteProfile Screen",
+            HomeScreenTopAppBar(navController, title = deleteTitle, action = "DeleteProfile Screen",
                 navigationIconClicked = {
                     coroutineScope.launch {
                         scaffoldState.drawerState.open()
@@ -127,7 +197,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                 NormalTextComponent(value = warning, action = "DeleteProfile")
                 DividerTextComponent()
                 Spacer(modifier = Modifier.height(20.dp))
-                when(userType) {
+                when(providerId) {
                     "password" -> {
                         NormalTextComponent(
                             value =
@@ -142,14 +212,28 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                         NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
                     }
                     "google.com" -> {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = user?.photoUrl,
+                            ),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .clip(CircleShape)
+//                            .padding(2.dp)
+                                .size(120.dp),
+                            contentScale = ContentScale.Crop
+                        )
                         NormalTextComponent(
                             value =
-                            "Full Names: ${user.currentUser?.displayName} "
+                            "Full Names: ${user?.displayName} "
                         )
                         Spacer(modifier = Modifier.height(20.dp))
-                        NormalTextComponent(value = "Email: ${user.currentUser?.email}")
+                        NormalTextComponent(value = "Email: ${user?.email}")
                     }
                 }
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(text = updateProfileViewModel.message, color = Color.Red)
                 Spacer(modifier = Modifier.height(40.dp))
                 SubButton(
                     navController = navController,
@@ -157,7 +241,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     rank = 9,
                     isEnable = true,
                     originalPage = "DeleteProfile.kt",
-                    userType = userType
+                    userType = providerId
                 )
                 Spacer(modifier = Modifier.height(80.dp))
             }

@@ -24,7 +24,7 @@ class GoogleSignInViewModel @Inject constructor(
                 when(result){
                     is Resource.Success -> {
                         val user = FirebaseAuth.getInstance().currentUser
-                        signUpPageViewModel.checkUserProvider(user)
+//                        signUpPageViewModel.checkUserProvider(user)
                         _googleState.value = GoogleSignInState(success = result.data)
                     }
                     is Resource.Loading -> {

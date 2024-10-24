@@ -67,6 +67,10 @@ dependencies {
 
     implementation(libs.androidx.material.icons.extended)
 
+
+    //  coil
+    implementation(libs.coil.compose)
+
     //Firebase SDK
     implementation(libs.firebase.auth.ktx)
     implementation(platform(libs.firebase.bom))

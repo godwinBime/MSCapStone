@@ -2,6 +2,7 @@ package com.example.screen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -24,13 +27,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
@@ -83,6 +89,67 @@ fun ScaffoldUserProfileWithTopBar(
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
+    /*
+    GeneralBottomAppBar(navController = navController)
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+//                    .background(Color.Red)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Spacer(modifier = Modifier.height(10.dp))
+        when(providerId){
+            "password" -> {
+                val isEnable = true
+                Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
+                signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+                    userType = "password")
+
+                NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
+                DividerTextComponent()
+                Spacer(modifier = Modifier.height(10.dp))
+                NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
+                Spacer(modifier = Modifier.height(20.dp))
+                NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+
+                Spacer(modifier = Modifier.height(40.dp))
+                SubButton(
+                    navController = navController,
+                    value = stringResource(R.string.update_profile),
+                    rank = 6,
+                    isEnable = isEnable,
+                    originalPage = "UserProfile.kt"
+                )
+            }
+            "google.com" -> {
+                Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
+                Spacer(modifier = Modifier.height(20.dp))
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        model = user?.photoUrl,
+                    ),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .clip(CircleShape)
+//                            .padding(2.dp)
+                        .size(120.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
+                DividerTextComponent()
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+            "None" -> {
+                Log.d(TAG, "No provider found")
+                NormalTextComponent(value = "No user found...")
+            }
+        }
+    }
+    */
+
     Scaffold(
         modifier = Modifier
             .background(Color.Red),
@@ -115,8 +182,6 @@ fun ScaffoldUserProfileWithTopBar(
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {
-//            HomeScreenDrawerHeader(homeViewModel.emailId.value)
-//            HomeScreenDrawerHeader(homeViewModel.fullNames.value)
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
@@ -173,7 +238,19 @@ fun ScaffoldUserProfileWithTopBar(
                     }
                     "google.com" -> {
                         Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = user?.photoUrl,
+                            ),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .clip(CircleShape)
+//                            .padding(2.dp)
+                                .size(120.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
                         NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
@@ -186,5 +263,4 @@ fun ScaffoldUserProfileWithTopBar(
             }
         }
     )
-
 }

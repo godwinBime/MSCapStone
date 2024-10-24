@@ -45,7 +45,9 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldSettingsScreenWithTopBar(navController, homeViewModel, scrollState)
+        ScaffoldSettingsScreenWithTopBar(
+            navController = navController,
+            scrollState = scrollState)
         if (signUpPageViewModel.signInSignUpInProgress.value){
             CircularProgressIndicator()
         }
@@ -55,18 +57,15 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
-                                     homeViewModel: HomeViewModel,
                                      scrollState: ScrollState,
+                                     homeViewModel: HomeViewModel = viewModel(),
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
-    val context = LocalContext.current
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
+    val context = LocalContext.current
 
-    if (providerId == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            userType = "password")
-    }
-//    val name = "\nSettings for ${signUpPageViewModel.fullNames.substringBefore(" ")}"
+    /*
+    GeneralBottomAppBar(navController = navController)
     val name = "\nSettings for ${
         if (providerId == "password") {
             signUpPageViewModel.fullNames.substringBefore(" ")
@@ -74,7 +73,32 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
             user?.displayName?.substringBefore(" ")
         }
     }"
-    val home = stringResource(id = R.string.settings)
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Spacer(modifier = Modifier.height(80.dp))
+        NormalTextComponent(value = name)
+
+        Spacer(modifier = Modifier.height(80.dp))
+    }
+    */
+
+    if (providerId == "password") {
+        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+            userType = "password")
+    }
+    val name = "\nSettings for ${
+        if (providerId == "password") {
+            signUpPageViewModel.fullNames.substringBefore(" ")
+        }else{
+            user?.displayName?.substringBefore(" ")
+        }
+    }"
+    val settingTitle = stringResource(id = R.string.settings)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -95,7 +119,8 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 )
             }
         },
-        topBar = { HomeScreenTopAppBar(navController, home, action = "Settings Screen",
+        topBar = { HomeScreenTopAppBar(navController, title = settingTitle,
+            action = "Settings Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
