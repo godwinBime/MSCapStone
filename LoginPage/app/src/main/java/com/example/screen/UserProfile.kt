@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -45,12 +46,11 @@ import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
-import com.example.loginpage.ui.component.HomeScreenDrawerHeader
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.ProfilePictureComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
-import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -59,8 +59,7 @@ fun UserProfile(navController: NavHostController,
                 homeViewModel: HomeViewModel = viewModel(),
                 signUpPageViewModel: SignUpPageViewModel = viewModel(),
                 updateProfileViewModel: UpdateProfileViewModel = viewModel(),
-                googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()
-){
+                googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
     val googleSignInState = googleSignInViewModel.googleState.value
     Box(modifier = Modifier
@@ -79,8 +78,7 @@ fun UserProfile(navController: NavHostController,
 fun ScaffoldUserProfileWithTopBar(
     navController: NavHostController,
     homeViewModel: HomeViewModel = viewModel(),
-    signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState
-){
+    signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState) {
     val context = LocalContext.current
     val TAG = SignUpPageViewModel::class.simpleName
     val userProfile = stringResource(id = R.string.profile)
@@ -155,16 +153,19 @@ fun ScaffoldUserProfileWithTopBar(
             .background(Color.Red),
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController = navController, providerId = providerId)
+            GeneralBottomAppBar(
+                navController = navController, providerId = providerId,
+                trueIndex = 3)
         },
 
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                getToast(context, "Add floating button clicked!")
-                /*navController.navigate(Routes.SignUp.route)*/
-                                           },
+            FloatingActionButton(
+                onClick = {
+                    getToast(context, "Add floating button clicked!")
+                    /*navController.navigate(Routes.SignUp.route)*/
+                },
                 shape = RoundedCornerShape(12.dp),
-                //containerColor = Color(0xff344ceb)
+                containerColor = Color(0xFF838282)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -172,13 +173,14 @@ fun ScaffoldUserProfileWithTopBar(
                 )
             }
         },
-        topBar = { HomeScreenTopAppBar(navController, userProfile, action = "UserProfile Screen",
-            navigationIconClicked = {
-                coroutineScope.launch {
-                    scaffoldState.drawerState.open()
+        topBar = {
+            HomeScreenTopAppBar(navController, userProfile, action = "UserProfile Screen",
+                navigationIconClicked = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
                 }
-            }
-        )
+            )
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {

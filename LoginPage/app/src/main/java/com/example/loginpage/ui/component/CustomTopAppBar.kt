@@ -1,8 +1,10 @@
 package com.example.loginpage.ui.component
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -39,6 +42,7 @@ import com.example.data.local.entities.NavigationItem
 import com.example.data.viewmodel.HomeViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
+import com.google.firebase.auth.FirebaseUser
 
 private val TAG = HomeViewModel::class.simpleName
 @Composable
@@ -104,7 +108,9 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                             }
                         }
                         "DefaultScreen" -> {
+                            getToast(context, "Using DefaultScreen...")
                             navController.navigateUp()
+//                            navController.navigate(Routes.Home.route)
                         }
                         "ChangePassword" -> {
                             navController.navigate(Routes.Login.route)
@@ -121,6 +127,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                 }
             }
         }else{
+
             /**
              * TODO: Make sure if the user clicks the back button
              * right to the login page after clicking the logout button,
@@ -175,16 +182,34 @@ fun HomeScreenTopAppBar(navController: NavHostController, title: String,
 }
 
 @Composable
-fun HomeScreenDrawerHeader(value: String?){
+fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String,
+                           context: Context){
     Box(modifier = Modifier
         .background(Color.LightGray)
         .fillMaxWidth()
-        .padding(30.dp),
+        .padding(15.dp),
         ){
-        NavigationDrawerText(
-            title = value?: stringResource(id = R.string.master_title),
-            textUnit = 25.sp
-        )
+        Row(
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            NavigationDrawerText(
+                title = value?: stringResource(id = R.string.master_title),
+                textUnit = 25.sp
+            )
+            when(provider){
+                "google.com" -> {
+                    ProfilePictureComponent(user = user, size = 70.dp)
+                }
+                "password" -> {
+                    getToast(context = context, "Coming soon...")
+                }
+            }
+        }
+
     }
 }
 

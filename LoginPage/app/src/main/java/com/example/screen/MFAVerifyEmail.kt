@@ -55,7 +55,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val user = FirebaseAuth.getInstance()
     val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     Scaffold(
-        topBar = { TopAppBarBeforeLogin(navController, "Login MFA Email Verify",
+        topBar = { TopAppBarBeforeLogin(navController, "MFA Email Verify",
             true, action = "Enter Verification code sent to your email.",
             homeViewModel = homeViewModel) },
         content = { paddingValues ->

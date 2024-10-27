@@ -56,6 +56,13 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
 fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollState: ScrollState,
                                     signUpPageViewModel: SignUpPageViewModel,
                                     homeViewModel: HomeViewModel){
+/*
+    GeneralBottomAppBar(
+        navController = navController, scrollState = scrollState,
+        pageType = "UpdateProfileScreen",
+        pageTitle = stringResource(R.string.update_profile)
+    )*/
+
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val phoneNumber = stringResource(id = R.string.phone_number)
@@ -199,17 +206,18 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError,
                     action = "UpdateLastName")
-
-//                MyTextFieldComponent(labelValue = email,
-//                    painterResource = emailPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.EmailChanged(it),
-//                            navController = navController)
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
-//                    action = "UpdateProfile"
-//                )
+/*
+                MyTextFieldComponent(labelValue = email,
+                    painterResource = emailPainterResource,
+                    onTextChanged = {
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.EmailChanged(it),
+                            navController = navController)
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
+                    action = "UpdateProfile"
+                )
+                */
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,

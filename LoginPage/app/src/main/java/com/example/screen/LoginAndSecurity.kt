@@ -72,7 +72,8 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController = navController, providerId = providerId)
+            GeneralBottomAppBar(navController = navController, providerId = providerId,
+                trueIndex = 5)
         },
 
         floatingActionButton = {

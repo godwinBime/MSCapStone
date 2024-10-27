@@ -1,6 +1,7 @@
 package com.example.navigation
 
 import android.widget.Toast
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -11,19 +12,19 @@ import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
-import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.loginpage.MainActivity
 import com.example.loginpage.ui.component.getToast
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
 import com.example.screen.ChooseVerificationMethod
 import com.example.screen.ContinueToPasswordChange
+import com.example.screen.DeleteProfile
+import com.example.screen.DeleteProfileVerifyEmail
 import com.example.screen.ForgotPassword
 import com.example.screen.Home
 import com.example.screen.Login
 import com.example.screen.LoginAndSecurity
 import com.example.screen.MFAVerifyEmail
-import com.example.screen.DeleteProfileVerifyEmail
 import com.example.screen.NewPassword
 import com.example.screen.PrivacyPolicy
 import com.example.screen.SMSVerification
@@ -32,7 +33,6 @@ import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
 import com.example.screen.UserProfile
-import com.example.screen.DeleteProfile
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -44,6 +44,7 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
     homeViewModel.checkForActiveSession()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
+    val scrollState = rememberScrollState()
 
     if (homeViewModel.isUserLoggedIn.value == true && providerId == "google.com"){
         getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
@@ -85,8 +86,7 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         
         composable(Routes.Home.route){
             Home(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel()
-            )
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.NewPassword.route){
@@ -146,8 +146,7 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
 
         composable(Routes.Settings.route){
             Settings(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel()
-            )
+                signUpPageViewModel = SignUpPageViewModel())
         }
 
         composable(Routes.LoginAndSecurity.route){

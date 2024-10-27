@@ -2,7 +2,6 @@ package com.example.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,13 +14,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -40,12 +41,10 @@ import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.UpdateProfileViewModel
-import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
-import com.example.loginpage.ui.component.HomeScreenDrawerHeader
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.SubButton
@@ -77,6 +76,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                                      scrollState: ScrollState,
                                     updateProfileViewModel: UpdateProfileViewModel = viewModel(),
                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
+
     val context = LocalContext.current
     val warning = "\n${stringResource(R.string.delete_warning)}"
     val deleteTitle = stringResource(id = R.string.delete_profile)
@@ -153,14 +153,15 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController = navController, providerId = providerId)
+            GeneralBottomAppBar(navController = navController, providerId = providerId,
+                trueIndex = 2)
         },
 
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
-                //containerColor = Color(0xff344ceb)
+                containerColor = Color(0xFFE1B0B0)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -185,7 +186,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                 headerTitle = stringResource(id = R.string.delete_profile)
             )
         },
-        content = {
+       content = {
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)

@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -49,12 +50,10 @@ import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.ProfilePictureComponent
 import com.example.loginpage.ui.component.getToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-
-import coil.compose.rememberImagePainter
-import com.example.data.viewmodel.VerifyEmailViewModel
 
 @Composable
 fun Home(navController: NavHostController,
@@ -92,13 +91,15 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            GeneralBottomAppBar(navController = navController, providerId = providerId)
+            GeneralBottomAppBar(
+                navController = navController, providerId = providerId,
+                trueIndex = 0)
         },
 
         floatingActionButton = {
             FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
-                //containerColor = Color(0xff344ceb)
+                containerColor = Color(0xFF838282)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -168,49 +169,4 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
             }
         }
     )
-
-    /*
-    val user = FirebaseAuth.getInstance().currentUser
-    val providerId = signUpPageViewModel.checkUserProvider(user = user)
-    GeneralBottomAppBar(navController = navController)
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Spacer(modifier = Modifier.height(80.dp))
-        if (providerId == "password") {
-            NormalTextComponent(
-                value = "Welcome, ${
-                    signUpPageViewModel.fullNames.substringBefore(
-                        " "
-                    )
-                }"
-            )
-        }else if (providerId == "google.com"){
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = user?.photoUrl,
-                ),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .clip(CircleShape)
-//                            .padding(2.dp)
-                    .size(120.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            NormalTextComponent(
-                value = "Welcome, ${
-                    user?.displayName?.substringBefore(" ")
-                }"
-            )
-        }
-
-        Spacer(modifier = Modifier.height(80.dp))
-    }
-
-     */
 }

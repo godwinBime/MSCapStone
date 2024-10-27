@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +35,11 @@ fun ForgotPassword(navController: NavHostController,
     Box(modifier = Modifier.fillMaxSize()){
         ScaffoldWithTopBarForgotPassword(navController,
             homeViewModel, signUpPageViewModel)
+        if (signUpPageViewModel.signInSignUpInProgress.value){
+            CircularProgressIndicator()
+        }
     }
+
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")

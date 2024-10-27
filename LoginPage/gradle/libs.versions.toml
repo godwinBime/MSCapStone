@@ -1,6 +1,7 @@
 [versions]
 activityComposeVersion = "1.9.3"
 agp = "8.7.0"
+androidxNavigationCompose = "2.8.3"
 coilCompose = "2.0.0"
 datastore = "1.1.1"
 firebaseAuthKtx = "23.0.0"
@@ -42,6 +43,7 @@ androidx-material = { module = "androidx.compose.material:material", version.ref
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-v282 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+androidx-navigation-compose-v283 = { module = "androidx.navigation:navigation-compose", version.ref = "androidxNavigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

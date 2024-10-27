@@ -27,7 +27,6 @@ class VerifyEmailViewModel: ViewModel() {
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
     var errorMessage by mutableStateOf("")
-    private val _isMFAVerificationToLogin = MutableLiveData<Boolean>()// = MutableLiveData()
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()

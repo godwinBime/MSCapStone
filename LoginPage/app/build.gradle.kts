@@ -60,6 +60,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose.v283)
     implementation(libs.androidx.material)
 
     implementation(libs.androidx.activity.ktx)

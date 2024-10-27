@@ -223,6 +223,7 @@ class UpdateProfileViewModel: ViewModel() {
                                                     userType = userType
                                                 )
                                             }else{
+                                                message = "Token expired, re-authenticate and try again."
                                                 Log.d(TAG, "Call from deleteProfile(): task to delete user profile failed")
                                             }
                                         }
@@ -235,15 +236,18 @@ class UpdateProfileViewModel: ViewModel() {
 //                                            )
 //                                        }
                                         .addOnFailureListener{
+                                            message = "Token expired, re-authenticate and try again."
                                             Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed")
                                         }
                                 }
+                            }else if (auth.currentUser != null){
+                                Log.d(TAG, "Call from deleteProfile()...Logged-in user with no data...")
+                                deleteUsernamePassword(
+                                    navController = navController,
+                                    signUpPageViewModel = signUpPageViewModel,
+                                    userType = userType
+                                )
                             }else{
-//                                deleteUsernamePassword(
-//                                    navController = navController,
-//                                    signUpPageViewModel = signUpPageViewModel,
-//                                    userType = userType
-//                                )
                                 Log.d(TAG, "Error: DocumentId Not found")
                             }
                         }
