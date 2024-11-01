@@ -202,10 +202,11 @@ fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String
             )
             when(provider){
                 "google.com" -> {
-                    ProfilePictureComponent(user = user, size = 70.dp)
+//                    PhotoPickerComponent()
+                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
                 }
                 "password" -> {
-                    getToast(context = context, "Coming soon...")
+                    PhotoPickerComponent()
                 }
             }
         }

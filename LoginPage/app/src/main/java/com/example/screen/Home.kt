@@ -48,9 +48,9 @@ import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
+import com.example.loginpage.ui.component.GoogleAccountProfilePictureComponent
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
-import com.example.loginpage.ui.component.ProfilePictureComponent
 import com.example.loginpage.ui.component.getToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
@@ -146,18 +146,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                         }"
                     )
                 }else if (providerId == "google.com"){
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = user?.photoUrl,
-                        ),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .clip(CircleShape)
-//                            .padding(2.dp)
-                            .size(120.dp),
-                        contentScale = ContentScale.Crop
-                    )
-
+                    GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                     NormalTextComponent(
                         value = "Welcome, ${
                             user?.displayName?.substringBefore(" ")

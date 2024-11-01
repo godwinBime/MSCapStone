@@ -227,14 +227,6 @@ class UpdateProfileViewModel: ViewModel() {
                                                 Log.d(TAG, "Call from deleteProfile(): task to delete user profile failed")
                                             }
                                         }
-//                                        .addOnSuccessListener {
-//                                            Log.d(TAG, "Data of User with ID ( ${deleteDocumentSnapshot.id}) successfully deleted")
-//                                            deleteUsernamePassword(
-//                                                navController = navController,
-//                                                signUpPageViewModel = signUpPageViewModel,
-//                                                userType = userType
-//                                            )
-//                                        }
                                         .addOnFailureListener{
                                             message = "Token expired, re-authenticate and try again."
                                             Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed")

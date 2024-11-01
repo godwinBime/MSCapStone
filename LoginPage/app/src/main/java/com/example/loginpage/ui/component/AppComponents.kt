@@ -2,11 +2,16 @@ package com.example.loginpage.ui.component
 
 //noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.provider.ContactsContract.Profile
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +42,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,6 +63,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -73,6 +80,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -84,6 +92,7 @@ import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.UpdateProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.MainActivity
+import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -459,7 +468,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       7 -> {
-                          navController.navigate(Routes.ContinueToPasswordChange.route)
+                          navController.navigate(Routes.Home.route)
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
@@ -921,7 +930,7 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
 }
 
 @Composable
-fun ProfilePictureComponent(user: FirebaseUser?, size: Dp = 120.dp){
+fun GoogleAccountProfilePictureComponent(user: FirebaseUser?, size: Dp = 120.dp){
     Image(
         painter = rememberAsyncImagePainter(
             model = user?.photoUrl,
@@ -933,4 +942,117 @@ fun ProfilePictureComponent(user: FirebaseUser?, size: Dp = 120.dp){
             .size(size = size),
         contentScale = ContentScale.Crop
     )
+}
+
+@Composable
+private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
+                                               size: Dp = 120.dp,
+                                               onClick: () -> Unit){
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+    val defaultProfileImageUri: Uri = Uri.parse("android.resource://com.example.loginpage/drawable/default_profile_picture")
+    Box(modifier = Modifier
+        .size(size = size)
+        .clickable { showDialog = true }
+        .clip(CircleShape)){
+        val painter = rememberAsyncImagePainter(
+            model = imageUri?: defaultProfileImageUri
+        )
+        Image(
+            painter = painter,
+            contentDescription = "Profile Picture",
+            modifier = Modifier
+                .size(100.dp)
+                .fillMaxSize())
+
+        if (showDialog){
+            Dialog(onDismissRequest = {/*showDialog = false*/}) {
+                Surface(modifier = Modifier
+                    .padding(10.dp)) {
+                    Box(modifier = Modifier
+                        .clip(CircleShape),
+                        contentAlignment = Alignment.Center){
+                        Image(
+                            painter = painter,
+                            contentDescription = "Update Profile picture",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(65.dp)
+                                .clip(CircleShape)
+                                .size(250.dp)
+                                .clickable(onClick = onClick),
+                            contentScale = ContentScale.Fit
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Box(modifier = Modifier
+                            .padding(60.dp)
+                            .size(65.dp)
+                            .background(Color.Gray, shape = CircleShape)
+                            .align(Alignment.BottomEnd)){
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_add_a_photo_24),
+                                contentDescription = "Change profile picture",
+                                modifier = Modifier
+                                    .clickable (onClick = onClick)
+                                    .align(Alignment.Center)
+                                    .size(45.dp),
+                                tint = Color.LightGray
+                            )
+                        }
+                    }
+
+                    Button(modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .padding(5.dp)
+                        .align(Alignment.BottomCenter),
+                        colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent),
+                        onClick = {showDialog = false}) {
+                        Box(modifier = Modifier
+                            .heightIn(45.dp)
+                            .width(160.dp)
+                            .background(
+                                brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
+                                shape = RoundedCornerShape(95.dp)
+                            ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Dismiss",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PhotoPickerComponent(){
+    var selectedImageUri by rememberSaveable() {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = {
+            selectedImageUri = it
+        }
+    )
+
+    Box(
+        modifier = Modifier
+            .size(80.dp),
+        contentAlignment = Alignment.Center){
+        TraditionalAccountProfilePictureComponent(imageUri = selectedImageUri) {
+            photoPickerLauncher.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                )
+            )
+        }
+    }
 }

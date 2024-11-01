@@ -48,7 +48,7 @@ import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
-import com.example.loginpage.ui.component.ProfilePictureComponent
+import com.example.loginpage.ui.component.GoogleAccountProfilePictureComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
 import com.google.firebase.auth.FirebaseAuth
@@ -241,17 +241,7 @@ fun ScaffoldUserProfileWithTopBar(
                     "google.com" -> {
                         Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
                         Spacer(modifier = Modifier.height(20.dp))
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                model = user?.photoUrl,
-                            ),
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier
-                                .clip(CircleShape)
-//                            .padding(2.dp)
-                                .size(120.dp),
-                            contentScale = ContentScale.Crop
-                        )
+                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                         Spacer(modifier = Modifier.height(20.dp))
                         NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
                         DividerTextComponent()
