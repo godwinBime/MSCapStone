@@ -86,7 +86,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
                     value = verify, rank = 5,
-                    homeViewModel = homeViewModel,
+//                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
                     originalPage = "MFAVerifyEmail.kt",

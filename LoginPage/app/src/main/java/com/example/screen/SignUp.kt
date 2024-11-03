@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.loginpage.ui.component.ButtonComponent
 import com.example.loginpage.ui.component.CheckBoxComponent
@@ -30,12 +31,15 @@ import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.LoadingScreenComponent
 
 @Composable
 fun SignUp(navController: NavHostController,
            homeViewModel: HomeViewModel,
+           googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
            signUpPageViewModel: SignUpPageViewModel
 ){
     val scrollState = rememberScrollState()
@@ -45,9 +49,8 @@ fun SignUp(navController: NavHostController,
         ScaffoldSignUpWithTopBar(navController,
             homeViewModel,
             scrollState, signUpPageViewModel = signUpPageViewModel)
-        if (signUpPageViewModel.signInSignUpInProgress.value) {
-            CircularProgressIndicator()
-        }
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
     }
 }
 
@@ -61,16 +64,16 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
     val email = stringResource(id = R.string.email)
     val phoneNumber = stringResource(id = R.string.phone_number)
     val password = stringResource(id = R.string.password)
-    val confirmPassword = stringResource(id = R.string.confirm_password)
+//    val confirmPassword = stringResource(id = R.string.confirm_password)
 
     val emailPainterResource = painterResource(id = R.drawable.email)
     val personPainterResource = painterResource(id = R.drawable.person)
     val phoneNumberPainterResource = painterResource(id = R.drawable.phone)
     val passwordPainterResource = painterResource(id = R.drawable.password)
-    val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
-    val googlePaintResource = "painterResource(id = R.drawable.ic_google)"
-    val gitHubPaintResource = "painterResource(id = R.drawable.ic_gitHub)"
-    val facebookPaintResource = "painterResource(id = R.drawable.ic_facebook)"
+//    val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
+//    val googlePaintResource = "painterResource(id = R.drawable.ic_google)"
+//    val gitHubPaintResource = "painterResource(id = R.drawable.ic_gitHub)"
+//    val facebookPaintResource = "painterResource(id = R.drawable.ic_facebook)"
 
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
@@ -145,17 +148,19 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                 )
 
-//                Spacer(modifier = Modifier.height(20.dp))
-//                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
-//                    painterResource = confirmPasswordPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
-//                            navController = navController
-//                        )
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
-//                )
+                /*
+                Spacer(modifier = Modifier.height(20.dp))
+                MyConfirmPasswordFieldComponent(labelValue = confirmPassword,
+                    painterResource = confirmPasswordPainterResource,
+                    onTextChanged = {
+                        signUpPageViewModel.onSignUpEvent(
+                            SignUpPageUIEvent.ConfirmPasswordChanged(it),
+                            navController = navController
+                        )
+                    },
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.confirmPasswordError
+                )
+                */
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = phoneNumber,

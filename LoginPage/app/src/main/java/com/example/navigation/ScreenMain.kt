@@ -73,6 +73,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         composable(Routes.SignUp.route){
             SignUp(navController = navController,
                 homeViewModel = HomeViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())),
                 signUpPageViewModel = SignUpPageViewModel()
             )
         }
@@ -85,7 +87,9 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         
         composable(Routes.Home.route){
             Home(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())))
         }
 
         composable(Routes.NewPassword.route){
@@ -145,7 +149,9 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
 
         composable(Routes.Settings.route){
             Settings(navController = navController, homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel())
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())))
         }
 
         composable(Routes.LoginAndSecurity.route){

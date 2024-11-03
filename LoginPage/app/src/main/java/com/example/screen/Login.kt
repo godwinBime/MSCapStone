@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -38,6 +40,7 @@ import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.GeneralClickableTextComponent
 import com.example.loginpage.ui.component.GoogleSignInScreen
 import com.example.loginpage.ui.component.HeadingTextComponent
+import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.example.loginpage.ui.component.MyPasswordFieldComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.NormalTextComponent
@@ -50,7 +53,6 @@ fun Login(navController: NavHostController,
           signUpPageViewModel: SignUpPageViewModel = hiltViewModel()){
 
     val scrollState = rememberScrollState()
-    val googleSignInState = googleSignInViewModel.googleState.value
 
     Box(modifier = Modifier
         .fillMaxSize(),
@@ -59,10 +61,8 @@ fun Login(navController: NavHostController,
             homeViewModel = homeViewModel,
             googleSignInViewModel = googleSignInViewModel,
             scrollState, signUpPageViewModel)
-        if (signUpPageViewModel.signInSignUpInProgress.value ||
-            googleSignInState.loading) {
-            CircularProgressIndicator()
-        }
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
     }
 }
 

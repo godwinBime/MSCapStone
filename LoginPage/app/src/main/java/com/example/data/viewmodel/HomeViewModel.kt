@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
@@ -19,7 +20,9 @@ class HomeViewModel(): ViewModel() {
 //    private val auth = FirebaseAuth.getInstance()
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
-    val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
+    var logOutInProgress = mutableStateOf(false)
+    var checkActiveSessionInProgress = mutableStateOf(false)
+//    val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
 
 //    val emailId: MutableLiveData<String> = MutableLiveData()
 //    val fullNames: MutableLiveData<String> = MutableLiveData()
@@ -58,12 +61,14 @@ class HomeViewModel(): ViewModel() {
     )
 
     fun logOut(navController: NavHostController){
+        logOutInProgress.value = true
         val firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null) {
             firebaseAuth.signOut()
             val authStateListener = FirebaseAuth.AuthStateListener {
                 if (it.currentUser == null) {
                     isUserLoggedIn.value = false
+                    logOutInProgress.value = false
                     navController.navigate(Routes.Login.route)
                     Log.d(TAG, "Inside sign out success state...")
                 } else {
@@ -74,18 +79,22 @@ class HomeViewModel(): ViewModel() {
             firebaseAuth.addAuthStateListener(authStateListener)
         }else{
             Log.d(TAG, "Error:-> No user is logged in...Login to continue")
+            logOutInProgress.value = false
             navController.navigate(Routes.Login.route)
         }
     }
 
     fun checkForActiveSession(){
+        checkActiveSessionInProgress.value = true
         if (FirebaseAuth.getInstance().currentUser != null){
             Log.d(TAG, "Valid Session")
             isUserLoggedIn.value = true
+            checkActiveSessionInProgress.value = false
         }else{
             Log.d(TAG, "User is not logged in")
             Log.d(TAG, "User Login-State: ${FirebaseAuth.getInstance().currentUser != null}")
             isUserLoggedIn.value = false
+            checkActiveSessionInProgress.value = true
         }
     }
 /*

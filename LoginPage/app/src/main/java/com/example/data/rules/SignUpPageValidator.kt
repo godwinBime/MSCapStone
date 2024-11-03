@@ -3,13 +3,13 @@ package com.example.data.rules
 object SignUpPageValidator {
     fun validateFirstName(firstName: String): SignUpValidationResult{
         return SignUpValidationResult(
-            (!firstName.isNullOrEmpty() && firstName.length > 1)
+            (firstName.isNotEmpty() && firstName.length > 1)
         )
     }
 
     fun validateLastName(lastName: String): SignUpValidationResult{
         return SignUpValidationResult(
-            (!lastName.isNullOrEmpty() && lastName.length > 1)
+            (lastName.isNotEmpty() && lastName.length > 1)
         )
     }
 
@@ -28,7 +28,7 @@ object SignUpPageValidator {
 
     fun validatePhoneNumber(phoneNumber: String): SignUpValidationResult{
         return SignUpValidationResult(
-            (!phoneNumber.isNullOrEmpty() && phoneNumber.length > 7)
+            (phoneNumber.isNotEmpty() && phoneNumber.length > 7)
         )
     }
 
@@ -48,7 +48,7 @@ object SignUpPageValidator {
 
     fun validateVerificationCode(verificationCode: String): SignUpValidationResult{
         return SignUpValidationResult(
-            (!verificationCode.isNullOrEmpty() && verificationCode.length > 2)
+            (verificationCode.isNotEmpty() && verificationCode.length > 2)
         )
     }
 

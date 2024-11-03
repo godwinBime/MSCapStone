@@ -27,8 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
@@ -37,12 +39,15 @@ import com.example.loginpage.ui.component.getToast
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
+import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
-fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
-             signUpPageViewModel: SignUpPageViewModel = viewModel()){
+fun Settings(navController: NavHostController,
+             homeViewModel: HomeViewModel = viewModel(),
+             signUpPageViewModel: SignUpPageViewModel = viewModel(),
+             googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
@@ -50,9 +55,8 @@ fun Settings(navController: NavHostController, homeViewModel: HomeViewModel = vi
         ScaffoldSettingsScreenWithTopBar(
             navController = navController,
             scrollState = scrollState)
-        if (signUpPageViewModel.signInSignUpInProgress.value){
-            CircularProgressIndicator()
-        }
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
     }
 }
 
@@ -142,7 +146,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(id = R.string.settings)
+//                headerTitle = stringResource(id = R.string.settings)
             )
         },
         content = {
@@ -154,8 +158,11 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(80.dp))
-                NormalTextComponent(value = name)
-
+                if (user != null) {
+                    NormalTextComponent(value = name)
+                }else{
+                    NormalTextComponent(value = "No user found...")
+                }
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }

@@ -27,6 +27,7 @@ class VerifyEmailViewModel: ViewModel() {
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
     var errorMessage by mutableStateOf("")
+    var authenticationInProgress = mutableStateOf(false)
 
     private fun generateVerificationCode(): String{
         val char = ('0'..'9').toList()
@@ -36,6 +37,7 @@ class VerifyEmailViewModel: ViewModel() {
     }
 
     fun passwordResetLink(email: String){
+        authenticationInProgress.value = true
         viewModelScope.launch {
             sendPasswordResetLink(email = email){
             }
@@ -53,6 +55,7 @@ class VerifyEmailViewModel: ViewModel() {
                     if (task.isSuccessful){
                         Log.d(TAG, "Email ($email) Exist")
                         callback(true)
+                        authenticationInProgress.value = false
                     }else{
                         if (task.exception is FirebaseAuthInvalidUserException) {
                             Log.d(TAG, "Error: Email $email does not exist.")
@@ -63,20 +66,28 @@ class VerifyEmailViewModel: ViewModel() {
                         }
                     }
                 }
+                .addOnFailureListener{
+                    callback(false)
+                }
         }catch (e: Exception){
             Log.d(TAG, "sendPasswordResetEmail Exception: ${e.message}")
         }
     }
 
     private suspend fun readOTPCode():String?{
+        var otpCode: String? = ""
         if (auth.currentUser != null) {
+            authenticationInProgress.value = true
             try {
                 val document =
                     firestore.collection("authuser").document("qM1Zd2xkkJSGNxGp6vyT").get().await()
                 Log.d(TAG, "OTPCode from db:-> ${document.get("otpcode") as? String }")
-                return document.getString("otpcode")
+                otpCode = document.getString("otpcode")
+                authenticationInProgress.value = false
+                return otpCode
             } catch (e: Exception) {
                 Log.d(TAG, "readOTPCode Exception: ${e.message}")
+                authenticationInProgress.value = false
                 return "Exception: No value read from db by readOTPCode()"
             }
         }else{
@@ -87,6 +98,7 @@ class VerifyEmailViewModel: ViewModel() {
 
     private fun otpCodeUpdate(actionType: String = "None"){
         viewModelScope.launch {
+            authenticationInProgress.value = true
             updateOTPCode()
         }
     }
@@ -101,12 +113,15 @@ class VerifyEmailViewModel: ViewModel() {
                         "otpcode" to generateVerificationCode()
                     )
                     documentRef.update(updateData).await()
-
-                    // Read otpcode from db
-//                val updateAndRead = documentRef.get().await()
-//                generatedCode = (updateAndRead.get("otpcode") as? String).toString()
-//                Log.d(TAG, "New OTPCode:-> ${readOTPCode()}")
+                    authenticationInProgress.value = false
+                    /*
+                     Read otpcode from db
+                val updateAndRead = documentRef.get().await()
+                generatedCode = (updateAndRead.get("otpcode") as? String).toString()
+                Log.d(TAG, "New OTPCode:-> ${readOTPCode()}")
+                    */
                 } catch (e: Exception) {
+                    authenticationInProgress.value = false
                     Log.d(TAG, "updateOTPCode Exception: ${e.message}")
                 }
             }
@@ -119,6 +134,7 @@ class VerifyEmailViewModel: ViewModel() {
                        navController: NavHostController,
                        type: String){
         viewModelScope.launch {
+            authenticationInProgress.value = true
             sendOTPEmail(
                 email = email,
                 type = type,
@@ -169,6 +185,7 @@ class VerifyEmailViewModel: ViewModel() {
                             Log.d(TAG, "OTP code resent to ${email.to}")
                         }
                     }
+                    authenticationInProgress.value = false
                 }
                 .addOnFailureListener{
                     isOTPSent = false
@@ -192,6 +209,7 @@ class VerifyEmailViewModel: ViewModel() {
 
     private suspend fun verifyOTPCode(navController: NavHostController,
                                       destination: String = "None"){
+        authenticationInProgress.value = true
         Log.d(TAG, verificationMessage)
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please enter the verification code sent to your email"
@@ -203,18 +221,21 @@ class VerifyEmailViewModel: ViewModel() {
                         isOTPSent = false
                         verificationMessage = "OTP Verified...Navigating to home screen..."
                         Log.d(TAG, verificationMessage)
+                        authenticationInProgress.value = false
                         navController.navigate(Routes.Home.route)
                     }
                     "ChangePasswordVerifyEmail" -> {
                         isOTPSent = false
                         verificationMessage = "Logged-in User Password change request otp verified..."
                         Log.d(TAG, verificationMessage)
+                        authenticationInProgress.value = false
                         navController.navigate(Routes.NewPassword.route)
                     }
                     "DeleteProfile" -> {
                         isOTPSent = false
                         verificationMessage = "Logged-in User account deletion request otp verified..."
                         Log.d(TAG, verificationMessage)
+                        authenticationInProgress.value = false
                         navController.navigate(Routes.DeleteProfile.route)
                     }
                 }

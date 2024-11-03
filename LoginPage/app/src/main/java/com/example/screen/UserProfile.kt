@@ -2,7 +2,6 @@ package com.example.screen
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,10 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -28,20 +24,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
-import com.example.data.viewmodel.UpdateProfileViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
@@ -49,6 +42,9 @@ import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.GoogleAccountProfilePictureComponent
+import com.example.loginpage.ui.component.LoadingScreenComponent
+import com.example.loginpage.ui.component.PhotoPickerComponent
+import com.example.loginpage.ui.component.PopUpMessageComposable
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
 import com.google.firebase.auth.FirebaseAuth
@@ -58,18 +54,16 @@ import kotlinx.coroutines.launch
 fun UserProfile(navController: NavHostController,
                 homeViewModel: HomeViewModel = viewModel(),
                 signUpPageViewModel: SignUpPageViewModel = viewModel(),
-                updateProfileViewModel: UpdateProfileViewModel = viewModel(),
+                updateProfileViewModel: ProfileViewModel = viewModel(),
                 googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
-    val googleSignInState = googleSignInViewModel.googleState.value
     Box(modifier = Modifier
         .background(Color.Green)
         .fillMaxSize(),
         contentAlignment = Alignment.Center) {
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
         ScaffoldUserProfileWithTopBar(navController = navController, scrollState = scrollState)
-        if (updateProfileViewModel.displayUserProfileInProgress.value || googleSignInState.loading){
-            CircularProgressIndicator()
-        }
     }
 }
 
@@ -78,7 +72,8 @@ fun UserProfile(navController: NavHostController,
 fun ScaffoldUserProfileWithTopBar(
     navController: NavHostController,
     homeViewModel: HomeViewModel = viewModel(),
-    signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState) {
+    signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState,
+    profileViewModel: ProfileViewModel = viewModel()) {
     val context = LocalContext.current
     val TAG = SignUpPageViewModel::class.simpleName
     val userProfile = stringResource(id = R.string.profile)
@@ -86,67 +81,6 @@ fun ScaffoldUserProfileWithTopBar(
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-
-    /*
-    GeneralBottomAppBar(navController = navController)
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-//                    .background(Color.Red)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Spacer(modifier = Modifier.height(10.dp))
-        when(providerId){
-            "password" -> {
-                val isEnable = true
-                Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
-                signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-                    userType = "password")
-
-                NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
-                DividerTextComponent()
-                Spacer(modifier = Modifier.height(10.dp))
-                NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
-                Spacer(modifier = Modifier.height(20.dp))
-                NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
-
-                Spacer(modifier = Modifier.height(40.dp))
-                SubButton(
-                    navController = navController,
-                    value = stringResource(R.string.update_profile),
-                    rank = 6,
-                    isEnable = isEnable,
-                    originalPage = "UserProfile.kt"
-                )
-            }
-            "google.com" -> {
-                Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
-                Spacer(modifier = Modifier.height(20.dp))
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = user?.photoUrl,
-                    ),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .clip(CircleShape)
-//                            .padding(2.dp)
-                        .size(120.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
-                DividerTextComponent()
-                Spacer(modifier = Modifier.height(10.dp))
-            }
-            "None" -> {
-                Log.d(TAG, "No provider found")
-                NormalTextComponent(value = "No user found...")
-            }
-        }
-    }
-    */
 
     Scaffold(
         modifier = Modifier
@@ -187,11 +121,12 @@ fun ScaffoldUserProfileWithTopBar(
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(R.string.profile),
-                defaultTitle = 1
+//                headerTitle = stringResource(R.string.profile),
+//                defaultTitle = 1
             )
         },
         content = {
+            /*
 //            Card(
 //                modifier = Modifier
 //                    .background(Color.Red)
@@ -206,6 +141,7 @@ fun ScaffoldUserProfileWithTopBar(
 //                    originalPage = "UserProfile.kt"
 //                )
 //            }
+            */
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
@@ -221,7 +157,7 @@ fun ScaffoldUserProfileWithTopBar(
                         Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
                         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
                             userType = "password")
-
+                        PhotoPickerComponent(navController = navController)
                         NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
@@ -239,9 +175,16 @@ fun ScaffoldUserProfileWithTopBar(
                         )
                     }
                     "google.com" -> {
+                        /*
+                        if (profileViewModel.isProfilePictureSuccessfullyChanged.value == true){
+                            PopUpMessageComposable(isClicked = true,
+                                action = "Profile Picture Update",
+                                message = stringResource(id = R.string.profile_picture_change_notice),
+                                navController = navController)
+                        }*/
                         Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
-                        Spacer(modifier = Modifier.height(20.dp))
-                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
+                        PhotoPickerComponent(navController = navController)
+//                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                         Spacer(modifier = Modifier.height(20.dp))
                         NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
                         DividerTextComponent()

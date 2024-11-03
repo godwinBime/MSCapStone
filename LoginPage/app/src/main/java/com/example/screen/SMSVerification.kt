@@ -78,7 +78,7 @@ fun ScaffoldSMSVerification(navController: NavHostController,
 
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
-                    homeViewModel = homeViewModel,
+//                    homeViewModel = homeViewModel,
                     value = verify, rank = 4,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,

@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -40,12 +39,13 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
-import com.example.data.viewmodel.UpdateProfileViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
 import com.example.loginpage.ui.component.HomeScreenTopAppBar
+import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.getToast
@@ -58,23 +58,21 @@ fun DeleteProfile(navController: NavHostController, homeViewModel: HomeViewModel
                   signUpPageViewModel: SignUpPageViewModel = viewModel(),
                   googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
-    val googleSignInState = googleSignInViewModel.googleState.value
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
         ScaffoldDeleteProfileWithTopBar(navController, homeViewModel, scrollState)
-        if (signUpPageViewModel.signInSignUpInProgress.value || googleSignInState.loading){
-            CircularProgressIndicator()
-        }
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
-                                     homeViewModel: HomeViewModel,
-                                     scrollState: ScrollState,
-                                    updateProfileViewModel: UpdateProfileViewModel = viewModel(),
+                                    homeViewModel: HomeViewModel,
+                                    scrollState: ScrollState,
+                                    updateProfileViewModel: ProfileViewModel = viewModel(),
                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
 
     val context = LocalContext.current
@@ -183,7 +181,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(id = R.string.delete_profile)
+//                headerTitle = stringResource(id = R.string.delete_profile)
             )
         },
        content = {

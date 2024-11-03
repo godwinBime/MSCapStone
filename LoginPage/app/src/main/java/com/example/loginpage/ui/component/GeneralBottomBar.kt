@@ -3,6 +3,8 @@ package com.example.loginpage.ui.component
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -19,8 +22,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.uistate.EmailVerifyUIState
@@ -36,10 +41,8 @@ private val TAG = VerifyEmailViewModel::class.simpleName
 @Composable
 fun GeneralBottomAppBar(
     navController: NavHostController,
-    signUpPageViewModel: SignUpPageViewModel = viewModel(),
     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel(),
-    providerId: String, pageType: String = "Home", trueIndex: Int){
+    providerId: String, trueIndex: Int){
     var selectedIndex by rememberSaveable { mutableIntStateOf(trueIndex) }
     val context = LocalContext.current.applicationContext
     val navItemList = listOf(
@@ -57,26 +60,12 @@ fun GeneralBottomAppBar(
                     selectedIndex = index
                     bottomNavbarContentScreen(
                         navController = navController,
-                        signUpPageViewModel = signUpPageViewModel,
                         verifyEmailViewModel = verifyEmailViewModel,
                         selectedIndex = index,
                         providerId = providerId,
                         context = context)
                 },
                 icon = {
-                    /*
-                    Box(modifier = Modifier
-                        .shadow(
-                            elevation  = if (selectedIndex == index) 8.dp else 0.dp,
-                            shape = MaterialTheme.shapes.small,
-                            spotColor = if (selectedIndex == index) Color.Gray else Color.Transparent
-                        )) {
-                        Icon(
-                            imageVector = navItem.icon,
-                            contentDescription = "Icon",
-                            tint = if (selectedIndex == index) Color.Blue else Color.Black
-                        )
-                    }*/
                     Icon(
                         imageVector = navItem.icon,
                         contentDescription = "Icon",
@@ -92,16 +81,14 @@ fun GeneralBottomAppBar(
 }
 
 fun bottomNavbarContentScreen(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
-    signUpPageViewModel: SignUpPageViewModel,
     verifyEmailViewModel: VerifyEmailViewModel,
     selectedIndex: Int, providerId: String, context: Context){
     Log.d(TAG, "selectedIndex in bottomNavbarContentScreen(): $selectedIndex...")
 
     when(selectedIndex){
         0 -> {
-            getToast(context, action = "Home Nav button clicked!")
+//            getToast(context, action = "Home Nav button clicked!")
             Log.d(TAG, "Navigating to Home...")
             navController.navigate(Routes.Home.route)
         }
@@ -111,11 +98,13 @@ fun bottomNavbarContentScreen(
                 navController.navigate(Routes.UserProfile.route)
             }else if (providerId == "google.com"){
                 getToast(context = context, "Use Your Google Account for this action.")
+            }else{
+                getToast(context = context, "No email provided for edit action.")
             }
         }
         2 -> {
             val auth = FirebaseAuth.getInstance()
-            getToast(context, action = "Delete Bottom Nav button clicked!")
+//            getToast(context, action = "Delete Bottom Nav button clicked!")
             val email = auth.currentUser?.email?.let { userEmail ->
                 EmailVerifyUIState(
                     userEmail
@@ -131,16 +120,16 @@ fun bottomNavbarContentScreen(
                     navController.navigate(Routes.MFAVerifyEmail.route)
                 }
             }else {
-                getToast(context = context, "No email provided.")
+                getToast(context = context, "No email provided for delete action.")
             }
         }
         3 -> {
-            getToast(context, action = "Profiles Nav button clicked!")
+//            getToast(context, action = "Profiles Nav button clicked!")
             Log.d(TAG, "Navigating to UserProfile...")
             navController.navigate(Routes.UserProfile.route)
         }
         4 -> {
-            getToast(context, action = "Setting Nav button clicked!")
+//            getToast(context, action = "Setting Nav button clicked!")
             Log.d(TAG, "Navigating to Settings...")
             navController.navigate(Routes.Settings.route)
         }

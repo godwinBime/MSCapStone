@@ -1,32 +1,39 @@
 package com.example.data.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.example.data.local.entities.Constant.SERVERCLIENT
 import com.example.navigation.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class UpdateProfileViewModel: ViewModel() {
+class ProfileViewModel: ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val TAG = UpdateProfileViewModel::class.simpleName
-    var displayUserProfileInProgress = mutableStateOf(false)
+    private val storage: FirebaseStorage = Firebase.storage
+    private val TAG = ProfileViewModel::class.simpleName
     var message by mutableStateOf("")
+    val isShowDialogClicked : MutableLiveData<Boolean> = MutableLiveData()
+    val profilePictureExist : MutableLiveData<Boolean> = MutableLiveData(false)
+    val isUploadSuccessful : MutableLiveData<Boolean> = MutableLiveData()
+    val isDownloadSuccessful : MutableLiveData<Boolean> = MutableLiveData()
+    val isProfilePictureSuccessfullyChanged : MutableLiveData<Boolean> = MutableLiveData()
+    var updateProfileInProgress = mutableStateOf(false)
 
     var oldPassword by mutableStateOf("")
     var newPassword by mutableStateOf("")
@@ -35,12 +42,11 @@ class UpdateProfileViewModel: ViewModel() {
     var updatedPhoneNumber by mutableStateOf("")
     var updatedEmail by mutableStateOf("")
 
-
     fun updateUserProfile(navController: NavHostController) {
         Log.d(TAG, "To be updated First name: $updatedFirstName")
         Log.d(TAG, "To be updated Last name: $updatedLastName")
         Log.d(TAG, "To be updated Phone number: $updatedPhoneNumber")
-        displayUserProfileInProgress.value = true
+        updateProfileInProgress.value = true
         viewModelScope.launch {
             updateProfile(
                 firstName = updatedFirstName,
@@ -51,9 +57,10 @@ class UpdateProfileViewModel: ViewModel() {
         }
     }
 
-    private suspend fun updateProfile(firstName: String, lastName: String,
+    private fun updateProfile(firstName: String, lastName: String,
                               phoneNumber: String, email: String = "",
                               navController: NavHostController){
+        updateProfileInProgress.value = true
         if (auth.currentUser != null){
             Log.d(TAG, "Inside update user data call and user is found")
             val userId = auth.currentUser?.uid
@@ -86,6 +93,7 @@ class UpdateProfileViewModel: ViewModel() {
                                             }
                                     }
                                 }
+                                updateProfileInProgress.value = false
                             }
                             .addOnFailureListener{
                                 Log.d(TAG, "Failed to find documentID...")
@@ -95,8 +103,6 @@ class UpdateProfileViewModel: ViewModel() {
                     }
                 }catch (e: Exception){
                     Log.d(TAG, "updateProfile Exception: ${e.message}")
-                }finally {
-                    displayUserProfileInProgress.value = false
                 }
             }
         }else{
@@ -105,10 +111,11 @@ class UpdateProfileViewModel: ViewModel() {
     }
 
     fun changeUserPassword(navController: NavHostController){
+        updateProfileInProgress.value = true
         changePassword(
             navController = navController
         ){ _, _ ->
-            displayUserProfileInProgress.value = true
+            updateProfileInProgress.value = true
         }
     }
 
@@ -139,6 +146,10 @@ class UpdateProfileViewModel: ViewModel() {
                             Log.d(TAG, "re-authentication failed...")
                             callback(false, "re-authentication failed...")
                         }
+                        updateProfileInProgress.value = false
+                    }
+                    .addOnFailureListener{
+                        callback(false, "re-authentication failed...")
                     }
             } ?: run {
                 Log.d(TAG, "No active user found when changePassword() was called..")
@@ -146,17 +157,13 @@ class UpdateProfileViewModel: ViewModel() {
             }
         }catch (e: Exception){
             Log.d(TAG, "changePassword() Exception was triggered.. ${e.message}")
-        }finally {
-            displayUserProfileInProgress.value = false
         }
     }
 
     fun deleteCurrentProfile(navController: NavHostController,
                              signUpPageViewModel: SignUpPageViewModel,
                              providerId: String){
-//        val user = auth.currentUser
-//        val providerId = signUpPageViewModel.checkUserProvider(user = user)
-        displayUserProfileInProgress.value = true
+        updateProfileInProgress.value = true
         if (providerId == "password") {
             deleteProfile(navController = navController, signUpPageViewModel = signUpPageViewModel,
                 userType = providerId)
@@ -167,7 +174,6 @@ class UpdateProfileViewModel: ViewModel() {
                                        signUpPageViewModel: SignUpPageViewModel,
                                        userType: String){
         val user = auth.currentUser
-//        val userType = signUpPageViewModel.checkUserProvider(user = user)
         try{
             if (user != null){
                 Log.d(TAG, "About to delete logged-in user...")
@@ -184,6 +190,7 @@ class UpdateProfileViewModel: ViewModel() {
                                 Log.d(TAG, "Error: Undefined user...")
                             }
                         }
+                        updateProfileInProgress.value = false
                     }
                     .addOnFailureListener{
                         Log.d(TAG, "Error: addOnFailureListener:-> Email and password not deleted...")
@@ -193,8 +200,6 @@ class UpdateProfileViewModel: ViewModel() {
             }
         }catch (e: Exception){
             Log.d(TAG, "deleteUsernamePassword Exception: ${e.message}")
-        }finally {
-            displayUserProfileInProgress.value = false
         }
     }
 
@@ -202,7 +207,7 @@ class UpdateProfileViewModel: ViewModel() {
                               signUpPageViewModel: SignUpPageViewModel,
                               userType: String){
         if (auth.currentUser != null) {
-            displayUserProfileInProgress.value = true
+            updateProfileInProgress.value = true
             val userId = auth.currentUser?.uid
             viewModelScope.launch {
                 try {
@@ -226,6 +231,7 @@ class UpdateProfileViewModel: ViewModel() {
                                                 message = "Token expired, re-authenticate and try again."
                                                 Log.d(TAG, "Call from deleteProfile(): task to delete user profile failed")
                                             }
+                                            updateProfileInProgress.value = false
                                         }
                                         .addOnFailureListener{
                                             message = "Token expired, re-authenticate and try again."
@@ -234,19 +240,19 @@ class UpdateProfileViewModel: ViewModel() {
                                 }
                             }else if (auth.currentUser != null){
                                 Log.d(TAG, "Call from deleteProfile()...Logged-in user with no data...")
+                                /*
                                 deleteUsernamePassword(
                                     navController = navController,
                                     signUpPageViewModel = signUpPageViewModel,
                                     userType = userType
                                 )
+                                */
                             }else{
                                 Log.d(TAG, "Error: DocumentId Not found")
                             }
                         }
                 }catch (e: Exception){
                     Log.d(TAG, "deleteUser Exception: ${e.message}")
-                }finally {
-                    displayUserProfileInProgress.value = false
                 }
             }
         }else{
@@ -258,9 +264,8 @@ class UpdateProfileViewModel: ViewModel() {
                                 signUpPageViewModel: SignUpPageViewModel,
                                 context: Context, homeViewModel: HomeViewModel,
                                 providerId: String){
-        val user = auth.currentUser
+        updateProfileInProgress.value = true
         if (providerId == "google.com"){
-//            refreshToken(context = context)
             viewModelScope.launch {
                 deleteGoogleUser(navController = navController, providerId = providerId,
                     context = context, homeViewModel = homeViewModel)
@@ -296,7 +301,7 @@ class UpdateProfileViewModel: ViewModel() {
             val account = GoogleSignIn.getLastSignedInAccount(context)
             val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
             try {
-                // Reauthenticate user
+                // Re-authenticate user
                 user.reauthenticate(credential).await()
                 user.delete()
                     .addOnCompleteListener{task ->
@@ -309,6 +314,7 @@ class UpdateProfileViewModel: ViewModel() {
                             }
                             Log.d(TAG, "Any active user after account deletion?: ${auth.currentUser != null}")
                         }
+                        updateProfileInProgress.value = false
                     }
                     .addOnFailureListener{
                         message = "Token expired, re-authenticate and try again."
@@ -320,6 +326,118 @@ class UpdateProfileViewModel: ViewModel() {
             }
         }else{
             Log.d(TAG, "No active user found when deleteGoogleUser() was called..")
+        }
+    }
+
+    fun uploadProfilePicture(uri: Uri?, isCallValid: Boolean = false, onSuccess: () -> Unit,
+                                     onFailure: (Exception) -> Unit){
+        updateProfileInProgress.value = true
+        viewModelScope.launch {
+            try {
+                if (uri != null && auth.currentUser?.uid != null && isCallValid) {
+                    val storageRef =
+                        storage.reference.child("ProfilePictures/${auth.currentUser?.uid}")
+                    storageRef.putFile(uri)
+                        .addOnCompleteListener { uploadTask ->
+                            if (uploadTask.isSuccessful){
+                                isUploadSuccessful.value = true
+                                Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
+                                onSuccess()
+                                updateProfileInProgress.value = false
+                            }
+                        }
+                        .addOnFailureListener{
+                            isUploadSuccessful.value = false
+                            Log.d(TAG, "Upload Failed...")
+                            onFailure(it)
+                        }
+                }else{
+                    isUploadSuccessful.value = false
+                    Log.d(TAG, "Upload Failed No image provided...")
+                }
+            }catch (e: Exception){
+                isUploadSuccessful.value = false
+                Log.d(TAG, "Upload Exception: ${e.message}")
+                onFailure(e)
+            }finally {
+                Log.d(TAG, "Is Upload Success...: ${isUploadSuccessful.value}")
+            }
+        }
+
+    }
+
+    fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
+                                       onFailure: (Exception) -> Unit){
+        updateProfileInProgress.value = true
+        viewModelScope.launch {
+            try {
+                if (!imagePath.isNullOrEmpty() && isCallValid) {
+                    val storageRef = storage.reference.child(imagePath)
+                    storageRef.downloadUrl
+                        .addOnSuccessListener {
+                            isDownloadSuccessful.value = true
+                            Log.d(TAG, "Download Success...Path: ${storageRef.path}")
+                            onSuccess(it)
+                            updateProfileInProgress.value = false
+                        }
+                        .addOnFailureListener {
+                            isDownloadSuccessful.value = false
+                            Log.d(TAG, "Call from downloadProfilePicture()...Download Failed")
+                            onFailure(it)
+                        }
+                }else{
+                    isDownloadSuccessful.value = false
+                    Log.d(TAG, "Download Failed No image provided...")
+                }
+            }catch (e: Exception){
+                isDownloadSuccessful.value = false
+                Log.d(TAG, "Upload Exception: ${e.message}")
+                onFailure(e)
+            }finally {
+                Log.d(TAG, "Is Download Success...: ${isDownloadSuccessful.value}")
+            }
+        }
+    }
+
+    fun isPictureExistInDatabase(imagePath: String?, onSuccess: (Uri) -> Unit,
+                                 onFailure: (Exception) -> Unit){
+        if (!imagePath.isNullOrEmpty()){
+            viewModelScope.launch {
+                try {
+                    updateProfileInProgress.value = true
+                    val storeRef = storage.reference.child(imagePath)
+                    storeRef.metadata
+                        .addOnSuccessListener {
+                            profilePictureExist.value = true
+                            storeRef.downloadUrl
+                                .addOnSuccessListener {uri ->
+                                    updateProfileInProgress.value = false
+                                    onSuccess(uri)
+                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Profile Picture exist...")
+                                }
+                                .addOnFailureListener{
+                                    updateProfileInProgress.value = false
+                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Download URI error")
+                                    onFailure(it)
+                                }
+                            updateProfileInProgress.value = false
+                        }
+                        .addOnFailureListener{
+                            updateProfileInProgress.value = false
+                            if (it.message?.contains("Object does not exist") == true) {
+                                Log.d(TAG, "Call from isPictureExistInDatabase() ... Profile Picture does not exist..")
+                                profilePictureExist.value = false
+                                onFailure(Exception("File does not exist"))
+                            }else{
+                                profilePictureExist.value = false
+                                onFailure(it)
+                            }
+                        }
+                } catch (e: Exception) {
+                    updateProfileInProgress.value = false
+                    onFailure(e)
+                }
+            }
         }
     }
 }

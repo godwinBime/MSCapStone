@@ -23,7 +23,7 @@ class GoogleSignInViewModel @Inject constructor(
             repository.googleSignIn(credential).collect{result ->
                 when(result){
                     is Resource.Success -> {
-                        val user = FirebaseAuth.getInstance().currentUser
+//                        val user = FirebaseAuth.getInstance().currentUser
 //                        signUpPageViewModel.checkUserProvider(user)
                         _googleState.value = GoogleSignInState(success = result.data)
                     }

@@ -99,7 +99,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
             DrawerContentComponent(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                headerTitle = stringResource(id = R.string.login_and_security)
+//                headerTitle = stringResource(id = R.string.login_and_security)
             )
         },
         content = {

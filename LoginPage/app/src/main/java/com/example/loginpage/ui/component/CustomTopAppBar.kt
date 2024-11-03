@@ -13,9 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -183,7 +184,7 @@ fun HomeScreenTopAppBar(navController: NavHostController, title: String,
 
 @Composable
 fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String,
-                           context: Context){
+                           context: Context, navController: NavHostController){
     Box(modifier = Modifier
         .background(Color.LightGray)
         .fillMaxWidth()
@@ -202,11 +203,13 @@ fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String
             )
             when(provider){
                 "google.com" -> {
-//                    PhotoPickerComponent()
-                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
+                    PhotoPickerComponent(navController = navController,
+                        pageSource = "HomeScreenDrawerHeader")
+//                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
                 }
                 "password" -> {
-                    PhotoPickerComponent()
+                    PhotoPickerComponent(navController = navController,
+                        pageSource = "HomeScreenDrawerHeader")
                 }
             }
         }
@@ -227,7 +230,8 @@ fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
 }
 
 @Composable
-fun NavigationItemRow(item: NavigationItem, onNavigationItemClicked: (NavigationItem) -> Unit){
+fun NavigationItemRow(item: NavigationItem,
+                      onNavigationItemClicked: (NavigationItem) -> Unit){
     Row(modifier = Modifier
         .clickable {
             onNavigationItemClicked.invoke(item)

@@ -88,7 +88,7 @@ fun ScaffoldWithTopBarForgotPassword(navController: NavHostController,
 
                 SubButton(navController = navController,
                     value = send, rank = 2,
-                    homeViewModel = homeViewModel,
+//                    homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.emailValidationsPassed.value,
                     originalPage = "ForgotPassword.kt",
