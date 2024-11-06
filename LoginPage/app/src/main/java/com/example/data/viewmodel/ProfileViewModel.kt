@@ -268,7 +268,8 @@ class ProfileViewModel: ViewModel() {
         if (providerId == "google.com"){
             viewModelScope.launch {
                 deleteGoogleUser(navController = navController, providerId = providerId,
-                    context = context, homeViewModel = homeViewModel)
+                    context = context, homeViewModel = homeViewModel,
+                    signUpPageViewModel = signUpPageViewModel)
             }
         }
     }
@@ -295,7 +296,8 @@ class ProfileViewModel: ViewModel() {
     }*/
 
     private suspend fun deleteGoogleUser(navController: NavHostController, providerId: String,
-                                         context: Context, homeViewModel: HomeViewModel){
+                                         context: Context, homeViewModel: HomeViewModel,
+                                         signUpPageViewModel: SignUpPageViewModel){
         val user = auth.currentUser
         if (user != null && user.providerData.any{it.providerId == "google.com"}){
             val account = GoogleSignIn.getLastSignedInAccount(context)
@@ -307,7 +309,9 @@ class ProfileViewModel: ViewModel() {
                     .addOnCompleteListener{task ->
                         if (task.isSuccessful){
                             homeViewModel.checkForActiveSession()
-                            homeViewModel.logOut(navController = navController)
+                            homeViewModel.logOut(navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context)
                             navController.navigate(Routes.Login.route)
                             if (auth.currentUser == null) {
                                 Log.d(TAG, "Google account successfully deleted...")

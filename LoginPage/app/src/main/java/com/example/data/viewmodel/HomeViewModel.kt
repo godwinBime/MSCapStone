@@ -1,5 +1,6 @@
 package com.example.data.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -11,17 +12,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.data.local.entities.Constant.SERVERCLIENT
 import com.example.data.local.entities.NavigationItem
 import com.example.navigation.Routes
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
-class HomeViewModel(): ViewModel() {
+class HomeViewModel: ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
-//    private val auth = FirebaseAuth.getInstance()
 
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
     var logOutInProgress = mutableStateOf(false)
     var checkActiveSessionInProgress = mutableStateOf(false)
+
 //    val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
 
 //    val emailId: MutableLiveData<String> = MutableLiveData()
@@ -60,7 +65,53 @@ class HomeViewModel(): ViewModel() {
         )
     )
 
-    fun logOut(navController: NavHostController){
+    fun googleSignInOptions(): GoogleSignInOptions {
+        val gso = GoogleSignInOptions.Builder()
+            .requestEmail()
+            .requestIdToken(SERVERCLIENT)
+            .requestProfile()
+            .build()
+        return gso
+    }
+
+    /**
+     * Signs out the current signed-in user if any.
+     * It also clears the account previously selected by
+     * the user and a future sign in attempt will require
+     * the user pick an account again.
+     */
+    private fun googleLogout(context: Context, navController: NavHostController){
+        val gso = googleSignInOptions()
+        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+        googleSignInClient.signOut()
+            .addOnCompleteListener{signOutTask ->
+                if(signOutTask.isSuccessful){
+                    Log.d(TAG, "Successfully signed out from Google.")
+                    navController.navigate(Routes.Login.route)
+                }else{
+                    Log.d(TAG, "Sign out failed: ${signOutTask.exception?.message}")
+                }
+            }
+            .addOnFailureListener{
+                Log.d(TAG, "SignOut addOnFailureListener Sign out failed:")
+            }
+    }
+
+    fun logOut(navController: NavHostController,
+               signUpPageViewModel: SignUpPageViewModel, context: Context){
+        val providerId = signUpPageViewModel.checkUserProvider(user = FirebaseAuth.getInstance().currentUser)
+        if (providerId == "google.com"){
+            signOut(navController = navController)
+            Log.d(TAG, "Inside sign out google account....")
+            googleLogout(context = context, navController = navController)
+        }else if (providerId == "password"){
+            signOut(navController = navController)
+        }else{
+            Log.d(TAG, "Invalid logout call...")
+        }
+    }
+    
+    private fun signOut(navController: NavHostController){
         logOutInProgress.value = true
         val firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null) {
@@ -70,6 +121,7 @@ class HomeViewModel(): ViewModel() {
                     isUserLoggedIn.value = false
                     logOutInProgress.value = false
                     navController.navigate(Routes.Login.route)
+//                    navController.popBackStack()
                     Log.d(TAG, "Inside sign out success state...")
                 } else {
                     Log.d(TAG, "Logged-In User: ${it.currentUser!!.displayName}")

@@ -14,7 +14,7 @@ import com.example.loginpage.ui.theme.LoginPageTheme
 import com.example.navigation.ScreenMain
 
 class MainActivity : ComponentActivity() {
-    private val TAG = MainActivity::class.simpleName
+//    private val TAG = MainActivity::class.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

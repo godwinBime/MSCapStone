@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.uistate.GoogleSignInState
 import com.example.data.repository.AuthenticationRepository
 import com.example.util.Resource
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,4 +38,13 @@ class GoogleSignInViewModel @Inject constructor(
                 }
         }
     }
+
+//    private lateinit var googleSignInClient: GoogleSignInClient
+//
+//    fun googleSignOut(){
+//        googleSignInClient.signOut()
+//            .addOnCompleteListener{
+//                    googleSignOut()
+//                }
+//    }
 }

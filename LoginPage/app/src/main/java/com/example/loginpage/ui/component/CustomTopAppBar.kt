@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseUser
@@ -85,6 +86,7 @@ fun CustomTopAppBar(navController: NavHostController,
 fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                          showBackIcon: Boolean, action: String,
                          homeViewModel: HomeViewModel = viewModel(),
+                         signUpPageViewModel: SignUpPageViewModel = viewModel(),
                          screenName: String = "DefaultScreen"){
     val context = LocalContext.current
     TopAppBar(
@@ -103,8 +105,11 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                             homeViewModel.checkForActiveSession()
                             if(homeViewModel.isUserLoggedIn.value == true){
                                 Log.d(TAG, "User was logged-in...logging user out...")
-                                homeViewModel.logOut(navController = navController)
+                                homeViewModel.logOut(navController = navController,
+                                    signUpPageViewModel = signUpPageViewModel,
+                                    context = context)
                                 navController.navigate(Routes.Login.route)
+//                                navController.popBackStack()
                                 getToast(context, "Please Login to continue.")
                             }
                         }
@@ -118,7 +123,9 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                             getToast(context, "(ChangePassword) Please Login to continue.")
                         }
                         "Login" -> {
-                            homeViewModel.logOut(navController = navController)
+                            homeViewModel.logOut(navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context)
                             getToast(context, "(Login) Please Login to continue.")
                         }
                     }
@@ -203,9 +210,9 @@ fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String
             )
             when(provider){
                 "google.com" -> {
-                    PhotoPickerComponent(navController = navController,
-                        pageSource = "HomeScreenDrawerHeader")
-//                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
+//                    PhotoPickerComponent(navController = navController,
+//                        pageSource = "HomeScreenDrawerHeader")
+                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
                 }
                 "password" -> {
                     PhotoPickerComponent(navController = navController,

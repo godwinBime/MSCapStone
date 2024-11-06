@@ -49,7 +49,6 @@ fun GoogleSignInScreen(
             val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
             try {
                 val result = account.getResult(ApiException::class.java)
-//                handleSignInResult(result)
                 val  credentials = GoogleAuthProvider.getCredential(result.idToken, null)
                 googleSignInViewModel.googleSignIn(
                     credential =  credentials,
@@ -59,17 +58,21 @@ fun GoogleSignInScreen(
             }
         }
 
+
     val context = LocalContext.current
     OutlinedButton (
         modifier = Modifier
             .height(60.dp),
         onClick = {
+            val gso = homeViewModel.googleSignInOptions()
+            /*
 //            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             val gso = GoogleSignInOptions.Builder()
                 .requestEmail()
                 .requestIdToken(SERVERCLIENT)
                 .requestProfile()
                 .build()
+            */
 
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
 //            val googleSignInIntent = googleSignInClient.signInIntent
@@ -84,8 +87,8 @@ fun GoogleSignInScreen(
             painter = painterResource(R.drawable.google),
             contentDescription = "Google"
         )
-        Spacer(modifier = Modifier.width(3.dp))
-        Text(text = "\t" + value,
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(text = value,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black)
@@ -95,7 +98,6 @@ fun GoogleSignInScreen(
                 if(googleSignInState.success != null){
                     getToast(context, "Google Sign In Success",
                         Toast.LENGTH_LONG)
-
                     navController.navigate(Routes.Home.route)
                 }
             }

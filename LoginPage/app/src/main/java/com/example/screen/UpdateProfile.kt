@@ -16,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,13 +57,6 @@ fun UpdateProfile(navController: NavHostController, signUpPageViewModel: SignUpP
 fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollState: ScrollState,
                                     signUpPageViewModel: SignUpPageViewModel,
                                     homeViewModel: HomeViewModel){
-/*
-    GeneralBottomAppBar(
-        navController = navController, scrollState = scrollState,
-        pageType = "UpdateProfileScreen",
-        pageTitle = stringResource(R.string.update_profile)
-    )*/
-
     val firstName = stringResource(id = R.string.first_name)
     val lastName = stringResource(id = R.string.last_name)
     val phoneNumber = stringResource(id = R.string.phone_number)
@@ -82,92 +76,14 @@ fun ScaffoldUpdateProfileWithTopBar(navController: NavHostController, scrollStat
 
     val user = FirebaseAuth.getInstance()
     val providerId = signUpPageViewModel.checkUserProvider(user = user.currentUser)
-
-    /*
-    GeneralBottomAppBar(navController = navController)
-    Column(
-        modifier = Modifier
-            .padding(20.dp)
-            .fillMaxSize()
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        HeadingTextComponent(value = updateProfileTitle)
-
-        Spacer(modifier = Modifier
-            .height(20.dp))
-        MyTextFieldComponent(labelValue = firstName,
-            painterResource = personPainterResource,
-            onTextChanged = {
-                signUpPageViewModel.onSignUpEvent(
-                    SignUpPageUIEvent.FirstNameChanged(it),
-                    navController = navController)
-            },
-            errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError,
-            action = "UpdateFirstName")
-
-        Spacer(modifier = Modifier
-            .height(20.dp))
-        MyTextFieldComponent(labelValue = lastName,
-            painterResource = personPainterResource,
-            onTextChanged = {
-                signUpPageViewModel.onSignUpEvent(
-                    SignUpPageUIEvent.LastNameChanged(it),
-                    navController = navController
-                )
-            },
-            errorStatus = signUpPageViewModel.signUpPageUIState.value.lastNameError,
-            action = "UpdateLastName")
-
-//                MyTextFieldComponent(labelValue = email,
-//                    painterResource = emailPainterResource,
-//                    onTextChanged = {
-//                        signUpPageViewModel.onSignUpEvent(
-//                            SignUpPageUIEvent.EmailChanged(it),
-//                            navController = navController)
-//                    },
-//                    errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
-//                    action = "UpdateProfile"
-//                )
-
-        Spacer(modifier = Modifier.height(20.dp))
-        MyTextFieldComponent(labelValue = phoneNumber,
-            painterResource = phoneNumberPainterResource,
-            onTextChanged = {
-                signUpPageViewModel.onSignUpEvent(
-                    SignUpPageUIEvent.PhoneNumberChanged(it),
-                    navController = navController
-                )
-            },
-            errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
-            action = "UpdatePhoneNumber"
-        )
-
-        Spacer(modifier = Modifier.height(60.dp))
-        Box(modifier = Modifier
-            .padding(55.dp, 0.dp, 55.dp, 0.dp)){
-            ButtonComponent(navController,
-                value = updateButton, rank = 4,
-                homeViewModel = homeViewModel,
-                onButtonClicked = {
-                    signUpPageViewModel.onSignUpEvent(
-                        SignUpPageUIEvent.RegisterButtonClicked,
-                        navController = navController
-                    )
-                },
-                isEnable = isEnabled,
-                originalPage = "UpdateProfile.kt",
-                userType = providerId
-            )
-        }
-    }
-    */
+    val context = LocalContext.current
 
     Scaffold(
         topBar = { CustomTopAppBar(navController, updateProfileTitle, true,
             logoutButtonClicked = {
-                homeViewModel.logOut(navController = navController)
+                homeViewModel.logOut(navController = navController,
+                    signUpPageViewModel = signUpPageViewModel,
+                    context = context)
             }
         )
         },

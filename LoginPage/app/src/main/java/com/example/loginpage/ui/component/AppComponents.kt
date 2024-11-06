@@ -891,6 +891,7 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                                 navController.navigate(
                                     Routes.MFAVerifyEmail.route)
                             }
+                            navController.popBackStack()
                         }else {
                             getToast(context = context, "No email provided.")
                         }
@@ -904,7 +905,9 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                 }
                 "Logout" -> {
                     Log.d("Logout", "Inside onNavigationItemClicked Logout = ${it.itemId}, ${it.title}")
-                    homeViewModel.logOut(navController = navController)
+                    homeViewModel.logOut(navController = navController,
+                        signUpPageViewModel = signUpPageViewModel,
+                        context = context)
                 }
             }
         }

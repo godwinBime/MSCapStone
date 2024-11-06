@@ -1,5 +1,7 @@
 package com.example.screen
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -17,28 +19,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Card
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.ui.component.DesignMFASpace
 import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
-import com.example.data.viewmodel.HomeViewModel
-import com.example.data.viewmodel.SignUpPageViewModel
-import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun ChooseVerificationMethod(navController: NavHostController,
@@ -57,8 +59,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
                                      signUpPageViewModel: SignUpPageViewModel,
                                      homeViewModel: HomeViewModel){
-//    val user = FirebaseAuth.getInstance()
-//    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+    val context = LocalContext.current
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "MFA",
             true, action = "Choose Verification Method then proceed.",
@@ -97,7 +98,9 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
 
                 Button(
                     onClick = {
-                       homeViewModel.logOut(navController = navController)
+                       homeViewModel.logOut(navController = navController,
+                           signUpPageViewModel = signUpPageViewModel,
+                           context = context)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White
