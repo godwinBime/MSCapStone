@@ -1,8 +1,14 @@
 package com.example.loginpage.ui.component
 
 //noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
-import android.icu.text.CaseMap.Title
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -34,11 +40,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Card
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.CircularProgressIndicator
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -52,7 +55,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -74,7 +76,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -91,8 +92,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -100,14 +102,17 @@ import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
-import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.data.uistate.UserProfilePictureData
 import kotlinx.coroutines.delay
 
 private val TAG = VerifyEmailViewModel::class.simpleName
@@ -457,7 +462,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       7 -> {
-                          navController.navigate(Routes.Home.route)
+                          navController.navigate(Routes.UserProfilePicture.route)
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
@@ -873,7 +878,7 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                 }
                 "Change Password" -> {
                     if (providerId == "google.com") {
-//                        getToast(context = context, "Use Your Google Account for this action.")
+                        getToast(context = context, "Use Your Google Account for this action.")
                     }else if (providerId == "password"){
                         val email = auth.currentUser?.email?.let { userEmail ->
                             EmailVerifyUIState(
@@ -928,25 +933,60 @@ fun GoogleAccountProfilePictureComponent(user: FirebaseUser?, size: Dp = 120.dp)
         contentScale = ContentScale.Crop
     )
 }
+/*
+fun ChangeProfilePictureIcon(iconSize: Dp = 45.dp, onClick:() -> Unit){
+//    Spacer(modifier = Modifier.height(20.dp))
+    Box(modifier = Modifier
+//        .padding(6.dp)
+        .size(55.dp)
+//        .align(Alignment.BottomEnd)
+        .background(Color.Gray, shape = CircleShape)){
+        IconButton(modifier = Modifier
+            .align(Alignment.Center),
+            onClick = {}) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_add_a_photo_24),
+                contentDescription = "Change profile picture",
+                modifier = Modifier
+//                    .padding(10.dp)
+                    .clickable (onClick = onClick)
+                    .align(Alignment.Center)
+                    .size(size = iconSize),
+                tint = Color.LightGray
+            )
+        }
+    }
+}
+*/
 
 @Composable
-private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
-                                                      pageSource: String = "None",
-                                                      navController: NavHostController,
-                                                      size: Dp = 120.dp,
-                                                      timerViewModel: TimerViewModel = viewModel(),
-                                                      profileViewModel: ProfileViewModel = viewModel(),
-                                               onClick: () -> Unit){
-    val TAG1 = ProfileViewModel::class.simpleName
-    var downloadedImageUri by rememberSaveable() {
-        mutableStateOf<Uri?>(null)
-    }
-    val context = LocalContext.current
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-    val defaultProfileImageUri: Uri = Uri.parse("android.resource://com.example.loginpage/drawable/default_profile_picture")
-    val user = FirebaseAuth.getInstance().uid
-    val imagePath = "/ProfilePictures/$user"
+fun DisplayProfilePicture(uri: Uri?, navController: NavHostController,
+                          imageSize: Dp, pageSource: String, onClick: () -> Unit){
+    Image(
+//                painter = painter,
+        painter = rememberAsyncImagePainter(uri),
+        contentDescription = "Profile Picture",
+        modifier = if (pageSource == "HomeScreenDrawerHeader"){
+            Modifier
+//                    .clickable { showDialog = pageSource == "HomeScreenDrawerHeader" }
+                .clickable { navController.navigate(Routes.UserProfilePicture.route)}
+                .border(width = 2.dp, color = Color.Gray,
+                    shape = RoundedCornerShape(size = 90.dp))
+                .size(size = imageSize)
+                .fillMaxSize()
+        }else{
+            Modifier
+                .clickable(onClick = onClick)
+                .border(width = 2.dp, color = Color.Gray,
+                    shape = RoundedCornerShape(size = 299.dp))
+                .size(size = imageSize)
+                .fillMaxSize()
+        },
+        contentScale = ContentScale.Crop)
+}
 
+@Composable
+fun DoesPictureExist(imagePath: String, profileViewModel: ProfileViewModel = viewModel()){
     profileViewModel.isPictureExistInDatabase(imagePath = imagePath,
         onSuccess = {
             profileViewModel.profilePictureExist.value = true
@@ -954,42 +994,25 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
         onFailure = {
             profileViewModel.profilePictureExist.value = false
         })
+}
 
+@Composable
+fun downloadImage(imagePath: String,
+                  uri: Uri?,
+                  context: Context,
+                  isCallValid: Boolean = false,
+                  profileViewModel: ProfileViewModel = viewModel()): Uri?{
+    val TAG1 = ProfileViewModel::class.simpleName
+    var downloadedImageUri by rememberSaveable() {mutableStateOf<Uri?>(null)}
+    val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
 
-    if (profileViewModel.profilePictureExist.value == true) {
-        Log.d(TAG1, "Inside if()...Does profilePictureExist: ${profileViewModel.profilePictureExist.value}")
-        profileViewModel.downloadProfilePicture(imagePath = imagePath,
-            isCallValid = true,
-            onSuccess = { uri ->
-                downloadedImageUri = uri
-                profileViewModel.isDownloadSuccessful.value = true
-                Toast.makeText(
-                    context,
-                    "Image Downloaded successfully....",
-                    Toast.LENGTH_LONG
-                ).show()
-            },
-            onFailure = {
-                profileViewModel.isDownloadSuccessful.value = false
-                Toast.makeText(
-                    context,
-                    "Image Download Failed...",
-                    Toast.LENGTH_LONG
-                ).show()
-            })
-    }else{
-        Log.d(TAG1, "Inside else()...Does profilePictureExist: ${profileViewModel.profilePictureExist.value}")
-        /*Toast.makeText(
-            context,
-            "Image Download not possible...",
-            Toast.LENGTH_LONG
-        ).show()*/
-    }
-
-    /*
+    DoesPictureExist(imagePath = imagePath, profileViewModel = profileViewModel)
     LaunchedEffect(Unit) {
-        if (profileViewModel.profilePictureExist.value == true) {
+        if (profilePictureUri?.userProfilePictureDataImageUri == null &&
+            uri == null) {
+            Log.d(TAG1, "Inside downloadImage() if() uri's all null...\n\n")
             profileViewModel.downloadProfilePicture(imagePath = imagePath,
+                isCallValid = isCallValid,
                 onSuccess = { uri ->
                     downloadedImageUri = uri
                     Toast.makeText(
@@ -1005,165 +1028,119 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
                         Toast.LENGTH_LONG
                     ).show()
                 })
-        }else{
-                    Log.d(TAG1, "Does profilePictureExist: ${profileViewModel.profilePictureExist.value}")
-            Toast.makeText(
-                context,
-                "Image Download not possible...",
-                Toast.LENGTH_LONG
-            ).show()
+        } else {
+            downloadedImageUri = uri?:profilePictureUri?.userProfilePictureDataImageUri
+            Log.d(
+                TAG1,
+                "Inside downloadImage() else()...\n" +
+                        "Does profilePictureExist in uri : ${uri == null}\n" +
+                        "Does profilePictureExist in profilePictureUri?.userProfilePictureDataImageUri : " +
+                        "${profilePictureUri?.userProfilePictureDataImageUri == null}"
+            )
         }
-    }*/
+    }
+    return downloadedImageUri
+}
+
+@Composable
+fun UploadPicture(imageUri: Uri?, isCallValid: Boolean, navController: NavHostController,
+                  profileViewModel: ProfileViewModel = viewModel(),
+                  onSuccess: () -> Unit, onFailure: () -> Unit){
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        profileViewModel.uploadProfilePicture(uri = imageUri,
+            isCallValid = isCallValid, navController = navController,
+            onSuccess = {
+                onSuccess()
+//                    navController.navigate(Routes.UserProfile.route)
+                Toast.makeText(
+                    context,
+                    "Image Uploaded successfully...${profileViewModel.uploadProgress.value}",
+                    Toast.LENGTH_LONG
+                ).show()
+            },
+            onFailure = {
+                onFailure()
+                Toast.makeText(
+                    context,
+                    "Image Upload Failed...",
+                    Toast.LENGTH_LONG
+                ).show()
+            })
+    }
+}
+
+@Composable
+private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
+                                                      pageSource: String = "None",
+                                                      navController: NavHostController,
+                                                      imageSize: Dp = 90.dp,
+                                                      size: Dp = 12.dp,
+                                                      boxSize: Dp = 120.dp,
+                                                      isImageClicked: Boolean = false,
+                                                      profileViewModel: ProfileViewModel = viewModel(),
+                                                      onClick: () -> Unit){
+    val TAG1 = ProfileViewModel::class.simpleName
+    var finalImageUri by rememberSaveable() { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+    val defaultProfileImageUri: Uri? =
+        Uri.parse("android.resource://com.example.loginpage/drawable/default_profile_picture")
+    val user = FirebaseAuth.getInstance().uid
+    val imagePath = "/ProfilePictures/$user"
+    val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
+
+    Log.d(TAG1,
+        "Is profilePictureUri empty-->: ${profilePictureUri?.userProfilePictureDataImageUri == null}"
+    )
+    LaunchedEffect(Unit) {
+//        var downloadedImageUri by mutableStateOf<Uri?>(null)
+//        var uploadedImageUri by mutableStateOf<Uri?>(null)
+        finalImageUri = (profilePictureUri?.userProfilePictureDataImageUri?: imageUri)
+//        finalImageUri = (uploadedImageUri?: downloadedImageUri)
+    }
+
+    if (finalImageUri == null){
+        Log.d(TAG1, "\n\nfinalImageUri is null...\n\n")
+        finalImageUri = downloadImage(imagePath = imagePath,
+            uri = imageUri,
+            context = context, isCallValid = isImageClicked)
+    }
+
     Box(modifier = Modifier
-        .size(size = size)
-        .clip(CircleShape)){
-        val painter = rememberAsyncImagePainter(
-            model = downloadedImageUri?: defaultProfileImageUri
-        )
-        (downloadedImageUri?: defaultProfileImageUri)?.let { uri ->
-            Image(
-//                painter = painter,
-                painter = rememberAsyncImagePainter(uri),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .clickable { showDialog = pageSource == "HomeScreenDrawerHeader" }
-                    .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(size = 90.dp))
-                    .size(100.dp)
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop)
-        }
- /*       Image(
-            painter = painter,
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .clickable { showDialog = pageSource == "HomeScreenDrawerHeader" }
-                .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(size = 90.dp))
-                .size(100.dp)
-                .fillMaxSize(),
-            contentScale = ContentScale.Crop)
-*/
-        if (showDialog){
-            profileViewModel.isShowDialogClicked.value = true
-            Dialog(onDismissRequest = {/*showDialog = false*/}) {
-                Surface(modifier = Modifier
-                    .padding(10.dp)) {
-                    Spacer(modifier = Modifier.height(20.dp))
-//                    NormalTextComponent(value = "It may take a few minutes for the new profile picture to display.")
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Box(modifier = Modifier
-                        .clip(CircleShape),
-                        contentAlignment = Alignment.Center){
-                        (downloadedImageUri?: defaultProfileImageUri)?.let { uri ->
-                          Image(
-//                            painter = painter,
-                              painter = rememberAsyncImagePainter(uri),
-                            contentDescription = "Update Profile picture",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(65.dp)
-                                .clip(CircleShape)
-                                .size(250.dp)
-                                .clickable(onClick = onClick),
-                            contentScale = ContentScale.Fit
-                        )
-                        }
-
-                        /*Image(
-                            painter = painter,
-                            contentDescription = "Update Profile picture",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(65.dp)
-                                .clip(CircleShape)
-                                .size(250.dp)
-                                .clickable(onClick = onClick),
-                            contentScale = ContentScale.Fit
-                        )*/
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Box(modifier = Modifier
-                            .padding(60.dp)
-                            .size(65.dp)
-                            .background(Color.Gray, shape = CircleShape)
-                            .align(Alignment.BottomEnd)){
-                            Icon(
-                                painter = painterResource(R.drawable.baseline_add_a_photo_24),
-                                contentDescription = "Change profile picture",
-                                modifier = Modifier
-                                    .clickable (onClick = onClick)
-                                    .align(Alignment.Center)
-                                    .size(45.dp),
-                                tint = Color.LightGray
-                            )
-                        }
-                    }
-
-                    Log.d(TAG, "iShowDialog Clicked: ${profileViewModel.isShowDialogClicked.value}")
-                    if (profileViewModel.isShowDialogClicked.value == true){
-                        profileViewModel.uploadProfilePicture(uri = imageUri,
-                            isCallValid = true,
-                            onSuccess = {
-                                profileViewModel.isUploadSuccessful.value = true
-                                Toast.makeText(
-                                    context,
-                                    "Image Uploaded successfully....",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            },
-                            onFailure = {
-                                profileViewModel.isUploadSuccessful.value = false
-                                Toast.makeText(
-                                    context,
-                                    "Image Upload Failed...",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            })
-                    }
-
-                    Button(modifier = Modifier
-                        .fillMaxWidth(.5f)
-                        .padding(5.dp)
-                        .align(Alignment.BottomCenter),
-                        colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent),
-                        onClick = {
-                            showDialog = false
-                            profileViewModel.isShowDialogClicked.value = true
-                            if (profileViewModel.isDownloadSuccessful.value == true) {
-                                profileViewModel.isProfilePictureSuccessfullyChanged.value = true
-//                                timerViewModel.startTimer(timerDuration = 400)
-                                navController.navigate(Routes.UserProfile.route)
-                            }
-                        }
-                    ) {
-                        PopUpButtonComponent()
-                        /*
-                        Box(modifier = Modifier
-                            .heightIn(45.dp)
-                            .width(160.dp)
-                            .background(
-                                brush = Brush.horizontalGradient(listOf(Color.Gray, Color.Black, Color.Gray)),
-                                shape = RoundedCornerShape(95.dp)
-                            ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Dismiss",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }*/
-                    }
-                }
+        .size(
+            size =
+        if (pageSource == "HomeScreenDrawerHeader"){
+                size
+            }else{
+                boxSize
             }
+        )
+        .clip(CircleShape),
+        contentAlignment = Alignment.Center){
+        (finalImageUri?: defaultProfileImageUri)?.let { uri ->
+            DisplayProfilePicture(
+                uri = uri, navController = navController,
+                imageSize = imageSize, pageSource = pageSource
+            ) {
+                onClick.invoke()
+            }
+        }
+        if (imageUri != null && isImageClicked){
+            Log.d(TAG1, "Update dp initiated...image clicked")
+            UploadPicture(imageUri = imageUri, isCallValid = true,
+                navController = navController, profileViewModel = profileViewModel,
+                onSuccess = {}, onFailure = {})
         }
     }
 }
 
 @Composable
 fun PhotoPickerComponent(navController: NavHostController,
-                         pageSource: String =" None"){
-//    val context = LocalContext.current
+                         isImageClicked: Boolean = false,
+                         profileViewModel: ProfileViewModel = viewModel(),
+                         pageSource: String =" None",
+                         imageSize: Dp = 90.dp,
+                         size: Dp = 120.dp, boxSize: Dp = 120.dp){
     var selectedImageUri by rememberSaveable() {
         mutableStateOf<Uri?>(null)
     }
@@ -1174,45 +1151,69 @@ fun PhotoPickerComponent(navController: NavHostController,
             selectedImageUri = it
         }
     )
-    Box(
-        modifier = Modifier
-            .size(80.dp),
-        contentAlignment = Alignment.Center){
-        TraditionalAccountProfilePictureComponent(
-            imageUri = selectedImageUri,
-            pageSource = pageSource,
-            navController = navController) {
+
+    TraditionalAccountProfilePictureComponent(
+        imageUri = selectedImageUri,
+        pageSource = pageSource,
+        navController = navController,
+        isImageClicked = pageSource == "UserProfilePicture",
+        imageSize = imageSize,
+        size = size, boxSize = boxSize) {
+        photoPickerLauncher.launch(
+            PickVisualMediaRequest(
+                ActivityResultContracts.PickVisualMedia.ImageOnly
+            )
+        )
+    }
+    if (pageSource == "UserProfilePicture"){
+        ProfilePictureButtonComponent(navController = navController){
             photoPickerLauncher.launch(
                 PickVisualMediaRequest(
                     ActivityResultContracts.PickVisualMedia.ImageOnly
                 )
             )
         }
-        /*
-//        Log.d(TAG, "iShowDialog Clicked: ${profileViewModel.isShowDialogClicked.value}")
-//        if (profileViewModel.isShowDialogClicked.value == true){
-//            profileViewModel.uploadProfilePicture(uri = selectedImageUri,
-//                onSuccess = {
-//                    Toast.makeText(
-//                        context,
-//                        "Image Uploaded successfully....",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                },
-//                onFailure = {
-//                    Toast.makeText(
-//                        context,
-//                        "Image Upload Failed...",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                })
-//        }
-        */
     }
 }
 
 @Composable
-fun PopUpMessageComposable(isClicked: Boolean, action: String = "None",
+fun ProfilePictureButtonComponent(navController: NavHostController,
+                                  profileViewModel: ProfileViewModel = viewModel(),
+                                  onClick: () -> Unit){
+    val context = LocalContext.current
+    val user = FirebaseAuth.getInstance().uid
+    val imagePath = "/ProfilePictures/$user"
+
+    Spacer(modifier = Modifier.height(180.dp))
+    Row(
+        modifier = Modifier
+//            .background(Color.Gray)
+            .padding(start = 12.dp, end = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        ProfileButtonComponent(action = "Change Picture",
+            btnName = "Change",
+            buttonIconPainterResource = painterResource(id = R.drawable.baseline_edit_24),
+            navController = navController){
+            onClick.invoke()
+        }
+        Spacer(modifier = Modifier.width(40.dp))
+        ProfileButtonComponent(action = "Remove Picture",
+            btnName = "Remove",
+            buttonIconPainterResource = painterResource(id = R.drawable.baseline_delete_24),
+            navController = navController){
+            profileViewModel.deleteProfilePicture(imagePath = imagePath,
+                navController = navController)
+            getToast(context = context, "Delete Profile Picture")
+        }
+    }
+    Spacer(modifier = Modifier
+        .height(120.dp))
+}
+
+@Composable
+fun PopUpMessageComposable(isShowDialogClicked: Boolean, action: String = "None",
                            message: String = "None",
                            profileViewModel: ProfileViewModel = viewModel(),
                            navController: NavHostController){
@@ -1223,7 +1224,7 @@ fun PopUpMessageComposable(isClicked: Boolean, action: String = "None",
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        showDialog = isClicked
+        showDialog = isShowDialogClicked
         if (showDialog){
             AlertDialog(
                 onDismissRequest = {},
@@ -1235,7 +1236,8 @@ fun PopUpMessageComposable(isClicked: Boolean, action: String = "None",
                             containerColor = Color.Transparent),
                         onClick = {
                             showDialog = false
-                            profileViewModel.isProfilePictureSuccessfullyChanged.value = false
+//                            profileViewModel.isProfilePictureSuccessfullyChanged.value = false
+                            navController.navigate(Routes.UserProfile.route)
                         }
                     ) {
                         PopUpButtonComponent()
@@ -1247,7 +1249,36 @@ fun PopUpMessageComposable(isClicked: Boolean, action: String = "None",
 }
 
 @Composable
-fun PopUpButtonComponent(){
+fun ProfileButtonComponent(action: String = "None", btnName: String = "None",
+                           buttonIconPainterResource: Painter,
+                           navController: NavHostController, onClick: () -> Unit){
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Gray
+        ),
+        modifier = Modifier
+            .padding(8.dp),
+        onClick = {
+            onClick.invoke()
+        }
+    ) {
+        Image(
+            modifier = Modifier
+                .size(24.dp),
+            painter = buttonIconPainterResource,
+            contentDescription = action
+        )
+        Spacer(modifier = Modifier.width(2.dp))
+        Text(text = btnName,
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+fun PopUpButtonComponent(description: String = "Dismiss"){
     Box(modifier = Modifier
         .heightIn(45.dp)
         .width(120.dp)
@@ -1258,7 +1289,7 @@ fun PopUpButtonComponent(){
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Dismiss",
+            text = description,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White

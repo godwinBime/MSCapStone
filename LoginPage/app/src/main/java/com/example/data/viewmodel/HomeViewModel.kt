@@ -22,15 +22,15 @@ import com.google.firebase.auth.FirebaseAuth
 
 class HomeViewModel: ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
-
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
-    var logOutInProgress = mutableStateOf(false)
     var checkActiveSessionInProgress = mutableStateOf(false)
+    val sessionJustResumed : MutableLiveData<Boolean> = MutableLiveData(false)
+    val sessionJustStarted : MutableLiveData<Boolean> = MutableLiveData(false)
 
-//    val isSessionOver : MutableLiveData<Boolean> = MutableLiveData()
-
-//    val emailId: MutableLiveData<String> = MutableLiveData()
-//    val fullNames: MutableLiveData<String> = MutableLiveData()
+//    init {
+//
+//        homeSessionJustStarted.value = true
+//    }
 
     val navigationItemList = listOf<NavigationItem>(
         NavigationItem(
@@ -64,6 +64,14 @@ class HomeViewModel: ViewModel() {
             icon = Icons.AutoMirrored.Filled.Logout
         )
     )
+
+    fun resetStartState(){
+        sessionJustStarted.value = false
+    }
+
+    fun resetResumeState(){
+        sessionJustResumed.value = false
+    }
 
     fun googleSignInOptions(): GoogleSignInOptions {
         val gso = GoogleSignInOptions.Builder()
@@ -99,27 +107,32 @@ class HomeViewModel: ViewModel() {
 
     fun logOut(navController: NavHostController,
                signUpPageViewModel: SignUpPageViewModel, context: Context){
+        checkActiveSessionInProgress.value = true
         val providerId = signUpPageViewModel.checkUserProvider(user = FirebaseAuth.getInstance().currentUser)
         if (providerId == "google.com"){
             signOut(navController = navController)
             Log.d(TAG, "Inside sign out google account....")
             googleLogout(context = context, navController = navController)
+            checkActiveSessionInProgress.value = false
         }else if (providerId == "password"){
             signOut(navController = navController)
+            checkActiveSessionInProgress.value = false
         }else{
-            Log.d(TAG, "Invalid logout call...")
+            if (isUserLoggedIn.value == null || isUserLoggedIn.value == false) {
+                Log.d(TAG, "Invalid logout call...")
+                navController.navigate(Routes.Login.route)
+            }
+            checkActiveSessionInProgress.value = false
         }
     }
-    
+
     private fun signOut(navController: NavHostController){
-        logOutInProgress.value = true
         val firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null) {
             firebaseAuth.signOut()
             val authStateListener = FirebaseAuth.AuthStateListener {
                 if (it.currentUser == null) {
                     isUserLoggedIn.value = false
-                    logOutInProgress.value = false
                     navController.navigate(Routes.Login.route)
 //                    navController.popBackStack()
                     Log.d(TAG, "Inside sign out success state...")
@@ -131,7 +144,6 @@ class HomeViewModel: ViewModel() {
             firebaseAuth.addAuthStateListener(authStateListener)
         }else{
             Log.d(TAG, "Error:-> No user is logged in...Login to continue")
-            logOutInProgress.value = false
             navController.navigate(Routes.Login.route)
         }
     }
@@ -141,12 +153,14 @@ class HomeViewModel: ViewModel() {
         if (FirebaseAuth.getInstance().currentUser != null){
             Log.d(TAG, "Valid Session")
             isUserLoggedIn.value = true
+            sessionJustResumed.value = true
             checkActiveSessionInProgress.value = false
         }else{
+            sessionJustStarted.value = true
             Log.d(TAG, "User is not logged in")
             Log.d(TAG, "User Login-State: ${FirebaseAuth.getInstance().currentUser != null}")
             isUserLoggedIn.value = false
-            checkActiveSessionInProgress.value = true
+            checkActiveSessionInProgress.value = false
         }
     }
 /*

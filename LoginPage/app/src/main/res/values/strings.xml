@@ -38,19 +38,23 @@
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
     <string name="github">GitHub</string>
+    <string name="update_profile_picture_guide">Click on the image or any button to get started</string>
     <string name="choose_verification_method">Choose Verification Method</string>
     <string name="continue_to_password_change">A password reset link has been sent to </string>
     <string name="password_reset_details"> goto your email and click the link and create a new password.</string>
     <string name="go_and_change_password">Go and Change Password</string>
     <string name="profile">Profile</string>
+    <string name="choose_profile_picture">Choose a Picture From Gallery</string>
+    <string name="sign_in_with">Sign in with:</string>
+    <string name="forgot_password">Forget Password?</string>
+    <string name="profile_picture">Profile Picture</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="delete_profile">Delete Profile</string>
     <string name="delete_warning">This action cannot be undone.</string>
     <string name="acknowledge">Acknowledge</string>
+    <string name="no_user_found">No user found&#8230;</string>
     <string name="request_code">"Request another code in "</string>
     <string name="timer_type">seconds.</string>
-
-
     <string name="subject_confirm_your_ID">Confirm Your Identity</string>
     <string name="body">Thank you for using Capstone App. When prompted, use the following verification code: </string>
     <string name="code_expiration">The code will expire in 10 minutes.</string>

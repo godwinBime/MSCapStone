@@ -6,10 +6,12 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.example.data.uistate.UserProfilePictureData
 import com.example.navigation.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.EmailAuthProvider
@@ -28,19 +30,30 @@ class ProfileViewModel: ViewModel() {
     private val storage: FirebaseStorage = Firebase.storage
     private val TAG = ProfileViewModel::class.simpleName
     var message by mutableStateOf("")
-    val isShowDialogClicked : MutableLiveData<Boolean> = MutableLiveData()
     val profilePictureExist : MutableLiveData<Boolean> = MutableLiveData(false)
-    val isUploadSuccessful : MutableLiveData<Boolean> = MutableLiveData()
-    val isDownloadSuccessful : MutableLiveData<Boolean> = MutableLiveData()
-    val isProfilePictureSuccessfullyChanged : MutableLiveData<Boolean> = MutableLiveData()
-    var updateProfileInProgress = mutableStateOf(false)
+    private val isUploadSuccessful : MutableLiveData<Boolean> = MutableLiveData(false)
+    private val isDownloadSuccessful : MutableLiveData<Boolean> = MutableLiveData(false)
 
+    private val _profilePictureUri = MutableLiveData<UserProfilePictureData>()
+    val profilePictureUri: LiveData<UserProfilePictureData> get() = _profilePictureUri
+
+    private val _uploadProgress = MutableLiveData<Float>()
+    val uploadProgress: LiveData<Float> get() = _uploadProgress
+
+    private val _uploadStatus = MutableLiveData<String>()
+    val uploadStatus: LiveData<String> get() = _uploadStatus
+
+    var updateProfileInProgress = mutableStateOf(false)
     var oldPassword by mutableStateOf("")
     var newPassword by mutableStateOf("")
     var updatedFirstName by mutableStateOf("")
     var updatedLastName by mutableStateOf("")
     var updatedPhoneNumber by mutableStateOf("")
     var updatedEmail by mutableStateOf("")
+
+    init {
+        _profilePictureUri.value = UserProfilePictureData()  // Initialize with a default value
+    }
 
     fun updateUserProfile(navController: NavHostController) {
         Log.d(TAG, "To be updated First name: $updatedFirstName")
@@ -86,7 +99,7 @@ class ProfileViewModel: ViewModel() {
                                         documentRef.update(updateUserData)
                                             .addOnSuccessListener {
                                                 Log.d(TAG, "Success in Updating user data...")
-                                                navController.navigate(Routes.UserProfile.route)
+//                                                navController.navigate(Routes.UserProfile.route)
                                             }
                                             .addOnFailureListener{
                                                 Log.d(TAG, "Failed to Update user data...")
@@ -333,36 +346,73 @@ class ProfileViewModel: ViewModel() {
         }
     }
 
-    fun uploadProfilePicture(uri: Uri?, isCallValid: Boolean = false, onSuccess: () -> Unit,
-                                     onFailure: (Exception) -> Unit){
+    fun uploadProfilePicture(uri: Uri?, isCallValid: Boolean = false,
+                             navController: NavHostController,
+                             onSuccess: () -> Unit,
+                             onFailure: (Exception) -> Unit){
+        uploadPicture(
+            uri = uri,
+            isCallValid = isCallValid,
+            navController = navController, onSuccess = onSuccess, onFailure = onFailure
+        )
+    }
+
+    fun resetUploadProgress(){
+        _uploadProgress.value = 0f
+    }
+
+    private fun uploadPicture(uri: Uri?, isCallValid: Boolean = false,
+                             navController: NavHostController,
+                             onSuccess: () -> Unit,
+                             onFailure: (Exception) -> Unit){
         updateProfileInProgress.value = true
         viewModelScope.launch {
             try {
                 if (uri != null && auth.currentUser?.uid != null && isCallValid) {
                     val storageRef =
                         storage.reference.child("ProfilePictures/${auth.currentUser?.uid}")
-                    storageRef.putFile(uri)
-                        .addOnCompleteListener { uploadTask ->
-                            if (uploadTask.isSuccessful){
-                                isUploadSuccessful.value = true
-                                Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
-                                onSuccess()
-                                updateProfileInProgress.value = false
+                    val uploadTask = storageRef.putFile(uri)
+                        uploadTask
+                        .addOnSuccessListener {
+                            uploadTask.cancel()
+                            _uploadStatus.value = "Upload successful"
+                            isUploadSuccessful.value = true
+                            Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
+                            navController.navigate(Routes.UserProfile.route)
+                            onSuccess()
+                            downloadProfilePicture(imagePath = storageRef.path,
+                                isCallValid = isCallValid, onSuccess = {
+                                    onSuccess()
+                                },
+                                onFailure = {
+                                    onFailure(it)
+                                })
+                        }
+                        .addOnProgressListener {taskSnapshot ->
+                            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toFloat()
+                            Log.d(TAG, "Upload in progress... $progress%")
+                            _uploadProgress.value = progress
+                            if (_uploadProgress.value == 100f){
+                                uploadTask.cancel()
                             }
                         }
                         .addOnFailureListener{
                             isUploadSuccessful.value = false
+                            updateProfileInProgress.value = false
                             Log.d(TAG, "Upload Failed...")
                             onFailure(it)
                         }
                 }else{
                     isUploadSuccessful.value = false
+                    updateProfileInProgress.value = false
                     Log.d(TAG, "Upload Failed No image provided...")
                 }
             }catch (e: Exception){
                 isUploadSuccessful.value = false
+                updateProfileInProgress.value = false
                 Log.d(TAG, "Upload Exception: ${e.message}")
                 onFailure(e)
+                _uploadStatus.value = "Upload failed with exception: ${e.message}"
             }finally {
                 Log.d(TAG, "Is Upload Success...: ${isUploadSuccessful.value}")
             }
@@ -371,6 +421,24 @@ class ProfileViewModel: ViewModel() {
     }
 
     fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
+                               onFailure: (Exception) -> Unit){
+        Log.d(TAG,
+            "Is profilePictureUri empty...: ${_profilePictureUri.value == null}"
+        )
+        isPictureExistInDatabase(imagePath = imagePath,
+            onSuccess = onSuccess, onFailure = onFailure)
+
+        if (_profilePictureUri.value == null){
+            Log.d(TAG, "Inside downloadProfilePicture()...about to initiate download...")
+
+            downloadPicture(
+                imagePath = imagePath,
+                isCallValid = isCallValid, onSuccess = onSuccess, onFailure = onFailure
+            )
+        }
+    }
+
+    private fun downloadPicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
                                        onFailure: (Exception) -> Unit){
         updateProfileInProgress.value = true
         viewModelScope.launch {
@@ -378,13 +446,15 @@ class ProfileViewModel: ViewModel() {
                 if (!imagePath.isNullOrEmpty() && isCallValid) {
                     val storageRef = storage.reference.child(imagePath)
                     storageRef.downloadUrl
-                        .addOnSuccessListener {
+                        .addOnSuccessListener { uri ->
+                            _profilePictureUri.value = UserProfilePictureData(uri)
                             isDownloadSuccessful.value = true
+                            onSuccess(uri)
                             Log.d(TAG, "Download Success...Path: ${storageRef.path}")
-                            onSuccess(it)
                             updateProfileInProgress.value = false
                         }
                         .addOnFailureListener {
+                            _profilePictureUri.value = UserProfilePictureData(null)
                             isDownloadSuccessful.value = false
                             Log.d(TAG, "Call from downloadProfilePicture()...Download Failed")
                             onFailure(it)
@@ -401,6 +471,23 @@ class ProfileViewModel: ViewModel() {
                 Log.d(TAG, "Is Download Success...: ${isDownloadSuccessful.value}")
             }
         }
+    }
+
+    fun deleteProfilePicture(imagePath: String?, navController: NavHostController){
+        deletePicture(imagePath = imagePath, navController = navController)
+    }
+
+    private fun deletePicture(imagePath: String?, navController: NavHostController){
+        val storageRef = storage.reference
+        val desertRef = imagePath?.let { storageRef.child(it) }
+        desertRef?.delete()
+            ?.addOnSuccessListener {
+                Log.d(TAG, "Image successfully deleted...")
+                navController.navigate(Routes.UserProfile.route)
+            }
+            ?.addOnFailureListener{
+                Log.d(TAG, "Image not deleted...")
+            }
     }
 
     fun isPictureExistInDatabase(imagePath: String?, onSuccess: (Uri) -> Unit,

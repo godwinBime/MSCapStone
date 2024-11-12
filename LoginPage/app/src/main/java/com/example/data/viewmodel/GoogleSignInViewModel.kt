@@ -2,6 +2,7 @@ package com.example.data.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.uistate.GoogleSignInState
@@ -18,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class GoogleSignInViewModel @Inject constructor(
     private val repository: AuthenticationRepository): ViewModel() {
-        private val _googleState = mutableStateOf(GoogleSignInState())
+    private val _googleState = mutableStateOf(GoogleSignInState())
         val googleState: State<GoogleSignInState> = _googleState
 
-        fun googleSignIn(credential: AuthCredential, signUpPageViewModel: SignUpPageViewModel) = viewModelScope.launch {
+    fun googleSignIn(credential: AuthCredential, signUpPageViewModel: SignUpPageViewModel) = viewModelScope.launch {
             repository.googleSignIn(credential).collect{result ->
                 when(result){
                     is Resource.Success -> {
@@ -38,13 +39,4 @@ class GoogleSignInViewModel @Inject constructor(
                 }
         }
     }
-
-//    private lateinit var googleSignInClient: GoogleSignInClient
-//
-//    fun googleSignOut(){
-//        googleSignInClient.signOut()
-//            .addOnCompleteListener{
-//                    googleSignOut()
-//                }
-//    }
 }

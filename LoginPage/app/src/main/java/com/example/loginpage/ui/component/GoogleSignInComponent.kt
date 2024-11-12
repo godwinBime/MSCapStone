@@ -65,17 +65,7 @@ fun GoogleSignInScreen(
             .height(60.dp),
         onClick = {
             val gso = homeViewModel.googleSignInOptions()
-            /*
-//            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            val gso = GoogleSignInOptions.Builder()
-                .requestEmail()
-                .requestIdToken(SERVERCLIENT)
-                .requestProfile()
-                .build()
-            */
-
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
-//            val googleSignInIntent = googleSignInClient.signInIntent
             launcher.launch(
                 googleSignInClient.signInIntent
             )

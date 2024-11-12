@@ -42,7 +42,7 @@ private val TAG = VerifyEmailViewModel::class.simpleName
 fun GeneralBottomAppBar(
     navController: NavHostController,
     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
-    providerId: String, trueIndex: Int){
+    providerId: String, trueIndex: Int = 99){
     var selectedIndex by rememberSaveable { mutableIntStateOf(trueIndex) }
     val context = LocalContext.current.applicationContext
     val navItemList = listOf(

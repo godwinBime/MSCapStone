@@ -1,5 +1,7 @@
 package com.example.data.uistate
 
+import android.net.Uri
+
 data class UpdateUserDataUIState(
 //    var userId: String? = "",
     var firstName: String = "",
@@ -11,4 +13,8 @@ data class UpdateUserDataUIState(
 data class UpdatePasswordData(
     var oldPassword: String = "",
     var newPassword: String = ""
+)
+
+data class UserProfilePictureData(
+    var userProfilePictureDataImageUri: Uri? = null
 )

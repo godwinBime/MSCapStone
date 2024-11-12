@@ -66,12 +66,6 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                                      scrollState: ScrollState,
                                      homeViewModel: HomeViewModel = viewModel(),
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
-    /*
-    GeneralBottomAppBar(
-        navController = navController, scrollState = scrollState,
-        pageType = "SettingsScreen",
-        pageTitle = stringResource(R.string.settings)
-    )*/
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
     val context = LocalContext.current
@@ -101,7 +95,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            userType = "password")
+            providerId = "password")
     }
     val name = "\nSettings for ${
         if (providerId == "password") {
@@ -161,7 +155,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 if (user != null) {
                     NormalTextComponent(value = name)
                 }else{
-                    NormalTextComponent(value = "No user found...")
+                    NormalTextComponent(value = stringResource(id = R.string.no_user_found))
                 }
                 Spacer(modifier = Modifier.height(80.dp))
             }

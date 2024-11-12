@@ -1,7 +1,6 @@
 package com.example.navigation
 
 import android.widget.Toast
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,6 +32,7 @@ import com.example.screen.SignUp
 import com.example.screen.TermsAndConditionsScreen
 import com.example.screen.UpdateProfile
 import com.example.screen.UserProfile
+import com.example.screen.UserProfilePicture
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -187,6 +187,13 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
                 homeViewModel = HomeViewModel(),
                 signUpPageViewModel = SignUpPageViewModel()
             )
+        }
+
+        composable(Routes.UserProfilePicture.route) {
+            UserProfilePicture(navController = navController,
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                ))
         }
     }
 }

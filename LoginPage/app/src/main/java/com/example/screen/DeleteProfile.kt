@@ -85,7 +85,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            userType = "password")
+            providerId = "password")
     }
 /*
     GeneralBottomAppBar(navController = navController, providerId = providerId)

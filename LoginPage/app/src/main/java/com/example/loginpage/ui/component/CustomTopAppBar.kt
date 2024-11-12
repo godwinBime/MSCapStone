@@ -210,13 +210,15 @@ fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String
             )
             when(provider){
                 "google.com" -> {
-//                    PhotoPickerComponent(navController = navController,
-//                        pageSource = "HomeScreenDrawerHeader")
-                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
+                    PhotoPickerComponent(navController = navController,
+                        isImageClicked = false,
+                        pageSource = "HomeScreenDrawerHeader", size = 70.dp)
+//                    GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
                 }
                 "password" -> {
                     PhotoPickerComponent(navController = navController,
-                        pageSource = "HomeScreenDrawerHeader")
+                        isImageClicked = false,
+                        pageSource = "HomeScreenDrawerHeader", size = 80.dp)
                 }
             }
         }

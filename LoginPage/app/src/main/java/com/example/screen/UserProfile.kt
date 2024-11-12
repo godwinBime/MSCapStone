@@ -156,8 +156,8 @@ fun ScaffoldUserProfileWithTopBar(
                         val isEnable = true
                         Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
                         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-                            userType = "password")
-                        PhotoPickerComponent(navController = navController)
+                            providerId = "password")
+                        PhotoPickerComponent(navController = navController, size = 90.dp)
                         NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
@@ -192,7 +192,7 @@ fun ScaffoldUserProfileWithTopBar(
                     }
                     "None" -> {
                         Log.d(TAG, "No provider found")
-                        NormalTextComponent(value = "No user found...")
+                        NormalTextComponent(value = stringResource(id = R.string.no_user_found))
                     }
                 }
             }

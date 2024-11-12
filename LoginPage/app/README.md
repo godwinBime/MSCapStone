@@ -5,6 +5,16 @@ NOTE:
 If you login using your Google credentials, you cannot only make changes to your profile from your main Google account.
 
 Below are explanations on how core functionalities of this app work.
+APP LAUNCH:
+When the app starts, it checks if there is an existing session:
+- If there is one, it checks the authentication provider, if it's "google.com, it navigates
+  immediately to the home screen. If the provider is "password", it navigates immediately
+  to the verification page and a 5 digit pin is sent to the user's email and they provide
+  the code and if it is correct, they get authenticated and navigated to the home screen.
+
+- If there is no active session, the user then choose to login with email and password and follow
+  MFA procedure or login using their Google credentials or create a new account.
+
 - PASSWORD RESET WHEN PASSWORD IS FORGOTTEN
 When the user clicks the "forgot password" button, the user is asked to provide the email address they used in creating an account with, if there is an account associated with this email, a password reset link is sent to them which they can click on an a password reset page will then open. Then the user will be prompted to enter a new password, once it is registered, the user can then use it as the new password.
 - PASSWORD RESET WHEN LOGGED-IN

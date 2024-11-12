@@ -145,22 +145,22 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(20.dp))
 
                 GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.home),
+                    value = stringResource(id = R.string.profile_picture),
                     navController = navController, 7)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 GeneralClickableTextComponent(
-                    value = "Forget Password?",
+                    value = stringResource(id = R.string.forgot_password),
                     navController = navController, 2)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                DividerTextComponent(type = "Login")
+                DividerTextComponent(type = stringResource(id = R.string.login))
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                NormalTextComponent(value = "Sign in with:")
+                NormalTextComponent(value = stringResource(id = R.string.sign_in_with))
 
                 Row() {
                     Spacer(modifier = Modifier.width(10.dp))

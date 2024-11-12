@@ -76,7 +76,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            userType = "password")
+            providerId = "password")
     }
 
     Scaffold(
@@ -143,7 +143,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                         }"
                     )
                 }else{
-                    NormalTextComponent(value = "No user found...")
+                    NormalTextComponent(value = stringResource(id = R.string.no_user_found))
                 }
                 Spacer(modifier = Modifier.height(80.dp))
             }
