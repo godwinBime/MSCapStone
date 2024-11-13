@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -372,16 +373,17 @@ class ProfileViewModel: ViewModel() {
                     val storageRef =
                         storage.reference.child("ProfilePictures/${auth.currentUser?.uid}")
                     val uploadTask = storageRef.putFile(uri)
-                        uploadTask
+                    uploadTask
                         .addOnSuccessListener {
                             uploadTask.cancel()
                             _uploadStatus.value = "Upload successful"
                             isUploadSuccessful.value = true
                             Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
+                            Log.d(TAG, "Upload Complete... ${_uploadProgress.value}%")
                             navController.navigate(Routes.UserProfile.route)
                             onSuccess()
                             downloadProfilePicture(imagePath = storageRef.path,
-                                isCallValid = isCallValid, onSuccess = {
+                                isCallValid = true, onSuccess = {
                                     onSuccess()
                                 },
                                 onFailure = {
@@ -392,9 +394,6 @@ class ProfileViewModel: ViewModel() {
                             val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toFloat()
                             Log.d(TAG, "Upload in progress... $progress%")
                             _uploadProgress.value = progress
-                            if (_uploadProgress.value == 100f){
-                                uploadTask.cancel()
-                            }
                         }
                         .addOnFailureListener{
                             isUploadSuccessful.value = false

@@ -1047,26 +1047,34 @@ fun UploadPicture(imageUri: Uri?, isCallValid: Boolean, navController: NavHostCo
                   profileViewModel: ProfileViewModel = viewModel(),
                   onSuccess: () -> Unit, onFailure: () -> Unit){
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        profileViewModel.uploadProfilePicture(uri = imageUri,
-            isCallValid = isCallValid, navController = navController,
-            onSuccess = {
-                onSuccess()
-//                    navController.navigate(Routes.UserProfile.route)
-                Toast.makeText(
-                    context,
-                    "Image Uploaded successfully...${profileViewModel.uploadProgress.value}",
-                    Toast.LENGTH_LONG
-                ).show()
-            },
-            onFailure = {
-                onFailure()
-                Toast.makeText(
-                    context,
-                    "Image Upload Failed...",
-                    Toast.LENGTH_LONG
-                ).show()
-            })
+    LaunchedEffect(imageUri) {
+        if (imageUri != null) {
+            profileViewModel.uploadProfilePicture(uri = imageUri,
+                isCallValid = isCallValid, navController = navController,
+                onSuccess = {
+                    onSuccess()
+                    Toast.makeText(
+                        context,
+                        "Image Uploaded successfully...${profileViewModel.uploadProgress.value}%",
+                        Toast.LENGTH_LONG
+                    ).show()
+                },
+                onFailure = {
+                    onFailure()
+                    Toast.makeText(
+                        context,
+                        "Image Upload Failed...",
+                        Toast.LENGTH_LONG
+                    ).show()
+                })
+
+        }else{
+            Toast.makeText(
+                context,
+                "Image Uploaded Impossible without Uri...",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }
 
@@ -1093,10 +1101,7 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
         "Is profilePictureUri empty-->: ${profilePictureUri?.userProfilePictureDataImageUri == null}"
     )
     LaunchedEffect(Unit) {
-//        var downloadedImageUri by mutableStateOf<Uri?>(null)
-//        var uploadedImageUri by mutableStateOf<Uri?>(null)
         finalImageUri = (profilePictureUri?.userProfilePictureDataImageUri?: imageUri)
-//        finalImageUri = (uploadedImageUri?: downloadedImageUri)
     }
 
     if (finalImageUri == null){
@@ -1125,12 +1130,12 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
                 onClick.invoke()
             }
         }
-        if (imageUri != null && isImageClicked){
-            Log.d(TAG1, "Update dp initiated...image clicked")
-            UploadPicture(imageUri = imageUri, isCallValid = true,
-                navController = navController, profileViewModel = profileViewModel,
-                onSuccess = {}, onFailure = {})
-        }
+    }
+    if (imageUri != null && isImageClicked){
+        Log.d(TAG1, "Update dp initiated...image clicked")
+        UploadPicture(imageUri = imageUri, isCallValid = true,
+            navController = navController, profileViewModel = profileViewModel,
+            onSuccess = {}, onFailure = {})
     }
 }
 
