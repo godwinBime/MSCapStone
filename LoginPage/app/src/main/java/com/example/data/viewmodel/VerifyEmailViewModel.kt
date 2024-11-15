@@ -142,7 +142,8 @@ class VerifyEmailViewModel: ViewModel() {
         }
     }
 
-    private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None", navController: NavHostController){
+    private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None",
+                                     navController: NavHostController){
         if (auth.currentUser == null){
 //            otpCodeUpdate(actionType = "ChangePasswordVerifyEmail")
             Log.d(TAG, "Password reset request initiated...")
@@ -196,6 +197,10 @@ class VerifyEmailViewModel: ViewModel() {
             verificationMessage = "Error: -> Issue with email or code to sendOTPEmail. Try again..."
             Log.d(TAG, verificationMessage)
         }
+    }
+
+    fun resetOtpCode(){
+        sentOTPCode = ""
     }
 
 

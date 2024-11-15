@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,8 @@ import androidx.navigation.NavHostController
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DrawerContentComponent
 import com.example.loginpage.ui.component.GeneralBottomAppBar
@@ -66,6 +69,8 @@ fun Home(navController: NavHostController,
 fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  homeViewModel: HomeViewModel = viewModel(),
                                  scrollState: ScrollState,
+                                 verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                                 timerViewModel: TimerViewModel = viewModel(),
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
     val home = stringResource(id = R.string.home)
@@ -78,7 +83,11 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
             providerId = "password")
     }
-
+    LaunchedEffect(Unit) {
+        verifyEmailViewModel.sentOTPCode = " "
+        timerViewModel.resetTimer()
+        timerViewModel.mfaResetTimer()
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {

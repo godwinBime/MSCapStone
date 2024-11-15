@@ -32,12 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.loginpage.R
 import com.example.loginpage.ui.component.DesignMFASpace
 import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
@@ -116,7 +118,7 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(id = R.string.cancel),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White

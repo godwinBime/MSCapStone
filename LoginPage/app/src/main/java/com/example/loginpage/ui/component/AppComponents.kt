@@ -112,6 +112,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.stringResource
 import com.example.data.uistate.UserProfilePictureData
 import kotlinx.coroutines.delay
 
@@ -182,7 +183,7 @@ fun HeadingTextComponent(value: String = "None"){
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          onTextChanged:(String) -> Unit,
                          errorStatus: Boolean = false,
-                         emailViewModel: VerifyEmailViewModel = viewModel(),
+                         verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                          updateProfileViewModel: ProfileViewModel = viewModel(),
                          action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
@@ -202,16 +203,16 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             textValue.value = it
             when(action){
                 "ForgotPassword" ->{
-                    emailViewModel.emailAddress = textValue.value
+                    verifyEmailViewModel.emailAddress = textValue.value
                     changePasswordEmail = textValue.value
-                    Log.d(TAG, "ForgotPassword email to Send OTP Code: ${emailViewModel.emailAddress}")
+                    Log.d(TAG, "ForgotPassword email to Send OTP Code: ${verifyEmailViewModel.emailAddress}")
                 }
                 "VerifyAndGotoHomeScreen" -> {
-                    emailViewModel.sentOTPCode = textValue.value
-                    Log.d(TAG, "Sent OTP Code: ${emailViewModel.sentOTPCode}")
+                    verifyEmailViewModel.sentOTPCode = textValue.value
+                    Log.d(TAG, "Sent OTP Code: ${verifyEmailViewModel.sentOTPCode}")
                 }
                 "ChangePasswordVerifyEmail" -> {
-                    emailViewModel.sentOTPCode = textValue.value
+                    verifyEmailViewModel.sentOTPCode = textValue.value
                 }
                 "UpdatePhoneNumber" -> {
                     Log.d(TAG, "Updated PhoneNumber: ${textValue.value}")
@@ -226,8 +227,8 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                     updateProfileViewModel.updatedLastName = textValue.value
                 }
                 "DeleteProfile" -> {
-                    emailViewModel.sentOTPCode = textValue.value
-                    Log.d(TAG, "Sent OTP Code to validate DeleteProfile action: ${emailViewModel.sentOTPCode}")
+                    verifyEmailViewModel.sentOTPCode = textValue.value
+                    Log.d(TAG, "Sent OTP Code to validate DeleteProfile action: ${verifyEmailViewModel.sentOTPCode}")
                 }
             }
             onTextChanged(it)},
@@ -433,16 +434,16 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       4 -> {
-                          if (timerViewModel.isFinished.value) {
+                          if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()) {
                               getToast(context = context, "Resending OTP code")
                               val email = auth.currentUser?.email?.let { otpEmailTask ->
                                       EmailVerifyUIState(otpEmailTask)
                                   }
                               Log.d(TAG, "Resending OTP to: ${email?.to}")
                               if (email != null) {
-                                  timerViewModel.isFinished.value = false
-                                  timerViewModel.isRunning.value = false
-                                  timerViewModel.timeLeft.value = 60L
+                                  timerViewModel.mfaResetTimer()
+                                  timerViewModel.resetTimer()
+                                  timerViewModel.mfaStartTimer(timerDuration = 1000)
                                   verifyEmailViewModel.sendOTPToEmail(
                                       email = email,
                                       navController = navController,
@@ -452,7 +453,9 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           } else {
                               Log.d(TAG, "Timer triggered")
                               timerViewModel.startTimer(timerDuration = 1000)
-                              Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value}")
+                              timerViewModel.mfaResetTimer()
+//                              timerViewModel.mfaStartTimer(timerDuration = 1000)
+                              Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value} seconds")
                           }
                       }
                       5 -> {
@@ -489,6 +492,7 @@ fun ButtonComponent(navController: NavHostController,
                     rank: Int = 100,
                     onButtonClicked: () -> Unit, isEnable: Boolean = false,
                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                    timerViewModel: TimerViewModel = viewModel(),
                     updateProfileViewModel: ProfileViewModel = viewModel(),
                     signUpPageViewModel: SignUpPageViewModel = viewModel(),
                     originalPage: String = "None", userType: String = ""){
@@ -496,6 +500,12 @@ fun ButtonComponent(navController: NavHostController,
     val context = LocalContext.current.applicationContext
     val googleContext = LocalContext.current
 
+    if (timerViewModel.mfaIsRunning.value) {
+        Log.d(
+            TAG,
+            "Timer continues inside ButtonComponent()...${timerViewModel.mfaTimeLeft()} seconds left"
+        )
+    }
     Button(onClick = {
         when(rank){
             0 -> {
@@ -528,11 +538,19 @@ fun ButtonComponent(navController: NavHostController,
                 updateProfileViewModel.updateUserProfile(navController = navController)
             }
             5 -> {
+                val isRunning = timerViewModel.isMfaTimerRunning()
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 Log.d(TAG, "Inside VerifyAndGotoHomeScreen statement---")
-                verifyEmailViewModel.verifySentOTPCode(
-                    navController = navController, destination = "VerifyAndGotoHomeScreen")
+                if(isRunning) {
+//                    timerViewModel.mfaResetTimer()
+                    Log.d(TAG, "Inside VerifyAndGotoHomeScreen statement---timer is still running")
+                    verifyEmailViewModel.verifySentOTPCode(
+                        navController = navController, destination = "VerifyAndGotoHomeScreen")
+                }else{
+                    Log.d(TAG, "Inside else() VerifyAndGotoHomeScreen statement---otp code expired...")
+                    verifyEmailViewModel.resetOtpCode()
+                }
             }
             6 -> {
                 onButtonClicked.invoke()
@@ -638,7 +656,8 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
                     buttonType: String = "None", onButtonClicked: () -> Unit,
-                    verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+                    verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                    timerViewModel: TimerViewModel = viewModel()){
 
     val context = LocalContext.current.applicationContext
     val email = EmailVerifyUIState()
@@ -659,9 +678,11 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     }
                     "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
+//                        timerViewModel.mfaStartTimer(timerDuration = 1000)
                         Log.d(TAG, "Going to Send MFA code sent to ${auth.currentUser?.email}")
                         verifyEmailViewModel.sendOTPToEmail(email, type = "MFAVerifyEmail",
                             navController = navController)
+                        Log.d(TAG, "invalidateMfaTimer Trigger")
                     }
                 }
             },
@@ -1300,4 +1321,29 @@ fun PopUpButtonComponent(description: String = "Dismiss"){
             color = Color.White
         )
     }
+}
+
+@Composable
+fun CheckTimer(timerViewModel: TimerViewModel = viewModel()){
+    Text(
+        text = stringResource(R.string.request_code) + " " +
+                timerViewModel.timeLeft.value + " " + stringResource(R.string.timer_type),
+        color = Color.Red
+    )
+}
+
+@Composable
+fun OtpNotification(){
+    Text(
+        text = stringResource(id = R.string.otp_expiration_warning),
+        color = Color.Black
+    )
+}
+
+@Composable
+fun OtpCodeExpired(timerViewModel: TimerViewModel = viewModel()){
+    Text(
+        text = stringResource(id = R.string.expired_otp),
+        color = Color.Red
+    )
 }

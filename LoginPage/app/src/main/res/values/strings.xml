@@ -46,6 +46,7 @@
     <string name="profile">Profile</string>
     <string name="choose_profile_picture">Choose a Picture From Gallery</string>
     <string name="sign_in_with">Sign in with:</string>
+    <string name="cancel">Cancel</string>
     <string name="forgot_password">Forget Password?</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="enter_new_password">Enter new password</string>
@@ -63,4 +64,6 @@
     <string name="capstone_team">The Capstone App Team.</string>
     <string name="use_your_google_account">Use Your Google Account for this action.</string>
     <string name="profile_picture_change_notice">Profile Picture Successfully Changed</string>
+    <string name="expired_otp">OTP Code Expired. Click the resend button to get a new one</string>
+    <string name="otp_expiration_warning">Get verified right away because code will expire soon.</string>
 </resources>
