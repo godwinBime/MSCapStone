@@ -69,7 +69,7 @@ fun ScaffoldChangePassword(navController: NavHostController,
             ){
                 Spacer(modifier = Modifier.height(20.dp))
 
-                HeadingTextComponent(value = "Enter Verification Code->")
+                HeadingTextComponent(value = "Enter Verification Code")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 MyTextFieldComponent(labelValue = verificationCode,

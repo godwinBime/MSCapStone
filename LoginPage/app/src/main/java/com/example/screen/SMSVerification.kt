@@ -73,7 +73,8 @@ fun ScaffoldSMSVerification(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError,
+                    action = "SMSCode"
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))

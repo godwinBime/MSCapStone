@@ -134,7 +134,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
             ){
                 Spacer(modifier = Modifier.height(80.dp))
                 if (providerId == "password") {
-                    PhotoPickerComponent(navController = navController)
+//                    PhotoPickerComponent(navController = navController)
                     NormalTextComponent(
                         value = "Welcome, ${
                             signUpPageViewModel.fullNames.substringBefore(
@@ -145,7 +145,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 }else if (providerId == "google.com"){
 //                    PhotoPickerComponent(navController = navController)
 //                    Spacer(modifier = Modifier.height(80.dp))
-                    GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
+//                    GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                     NormalTextComponent(
                         value = "Welcome, ${
                             user?.displayName?.substringBefore(" ")

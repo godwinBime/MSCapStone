@@ -157,7 +157,7 @@ fun ScaffoldUserProfileWithTopBar(
                         Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
                         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
                             providerId = "password")
-                        PhotoPickerComponent(navController = navController, size = 90.dp)
+//                        PhotoPickerComponent(navController = navController, size = 90.dp)
                         NormalTextComponent(value = "${signUpPageViewModel.fullNames} ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
@@ -175,16 +175,9 @@ fun ScaffoldUserProfileWithTopBar(
                         )
                     }
                     "google.com" -> {
-                        /*
-                        if (profileViewModel.isProfilePictureSuccessfullyChanged.value == true){
-                            PopUpMessageComposable(isClicked = true,
-                                action = "Profile Picture Update",
-                                message = stringResource(id = R.string.profile_picture_change_notice),
-                                navController = navController)
-                        }*/
                         Log.d(TAG, "ProviderId in UserProfile.kt: google.com")
 //                        PhotoPickerComponent(navController = navController)
-                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
+//                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                         Spacer(modifier = Modifier.height(20.dp))
                         NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
                         DividerTextComponent()

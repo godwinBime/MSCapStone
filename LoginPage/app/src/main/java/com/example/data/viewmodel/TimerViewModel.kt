@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,12 +34,13 @@ class TimerViewModel: ViewModel() {
         if (isRunning.value) return
         isRunning.value = true
         isFinished.value = false
-        timerJob = viewModelScope.launch {
-            while (isRunning.value && timeLeft.value > 0 && !isTimerReset.value){
-                if (isTimerReset.value){
-//                    isTimerReset.value = false
+        timerJob = CoroutineScope(Dispatchers.Main).launch {
+//        timerJob = viewModelScope.launch {
+            while (isRunning.value && timeLeft.value > 0){
+                /*if (isTimerReset.value){
+                    isTimerReset.value = false
                     break
-                }
+                }*/
                 delay(timerDuration)
                 Log.d(TAG, "Timer running inside startTimer()...${timeLeft.value} seconds left")
                 timeLeft.value--
@@ -52,11 +55,11 @@ class TimerViewModel: ViewModel() {
     }
 
     fun resetTimer(){
-        isTimerReset.value = true
         isFinished.value = false
         isRunning.value = false
         timeLeft.value = 60L
         Log.d(TAG, "Timer reset inside resetTimer()...")
+        timerJob?.cancel()
     }
 
     fun isTimerFinished(): Boolean{
@@ -79,13 +82,14 @@ class TimerViewModel: ViewModel() {
         if (mfaIsRunning.value) return
         mfaIsRunning.value = true
         mfaIsFinished.value = false
-        mfaTimerJob = viewModelScope.launch {
-            while (mfaIsRunning.value && mfaTimeLeft.value > 0 && !isMfaTimerReset.value){
-                if (isMfaTimerReset.value){
+        mfaTimerJob = CoroutineScope(Dispatchers.Main).launch {
+//        mfaTimerJob = viewModelScope.launch {
+            while (mfaIsRunning.value && mfaTimeLeft.value > 0){
+                /*if (isMfaTimerReset.value){
                     Log.d(TAG, "\n\n\nIs mfa timer reset...${isMfaTimerReset.value}\n\n\n")
                     isMfaTimerReset.value = false
                     break
-                }
+                }*/
                 Log.d(TAG, "Timer running inside mfaStartTimer()...${mfaTimeLeft.value} seconds left")
                 delay(timerDuration)
                 mfaTimeLeft.value--
@@ -110,10 +114,10 @@ class TimerViewModel: ViewModel() {
     }
 
     fun mfaResetTimer(){
-        isMfaTimerReset.value = true
         Log.d(TAG, "Timer reset inside mfaResetTimer()...")
         mfaIsFinished.value = false
         mfaIsRunning.value = false
         mfaTimeLeft.value = 60L
+        mfaTimerJob?.cancel()
     }
 }

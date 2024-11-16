@@ -197,8 +197,19 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             unfocusedIndicatorColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(20.dp),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email,
-            imeAction = ImeAction.Next),
+        keyboardOptions = if (action == "VerifyAndGotoHomeScreen" ||
+            action == "SMSCode" || action == "DeleteProfile" ||
+            action == "ChangePasswordVerifyEmail" || action == "AuthenticatorAppVerification") {
+            KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
+            )
+        }else{
+            KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            )
+        },
         onValueChange = {
             textValue.value = it
             when(action){
@@ -465,7 +476,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       7 -> {
-                          navController.navigate(Routes.UserProfilePicture.route)
+                          navController.navigate(Routes.MFAVerifyEmail.route)
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")

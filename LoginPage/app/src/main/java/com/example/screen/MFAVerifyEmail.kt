@@ -86,7 +86,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Spacer(modifier = Modifier.height(20.dp))
-                HeadingTextComponent(value = "Enter Verification code")
+                HeadingTextComponent(value = "Enter Verification code...")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 OtpNotification()

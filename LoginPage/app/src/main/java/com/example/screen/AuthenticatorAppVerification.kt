@@ -77,8 +77,8 @@ fun ScaffoldAuthenticatorAppVerification(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError
-                    )
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.verificationCodeError,
+                    action = "AuthenticatorAppVerification")
 
                 Spacer(modifier = Modifier.height(50.dp))
                 SubButton(navController = navController,
