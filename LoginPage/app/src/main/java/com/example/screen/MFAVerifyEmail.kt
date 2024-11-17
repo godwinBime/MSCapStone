@@ -23,9 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
+import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
@@ -33,6 +35,7 @@ import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.GeneralClickableTextComponent
 import com.example.loginpage.ui.component.HeadingTextComponent
+import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.OtpNotification
 import com.example.loginpage.ui.component.SubButton
@@ -41,11 +44,13 @@ import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun MFAVerifyEmail(navController: NavHostController,
-                   homeViewModel: HomeViewModel,
-                   signUpPageViewModel: SignUpPageViewModel
-){
+                   homeViewModel: HomeViewModel = viewModel(),
+                   signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                   googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldMFAVerifyEmail(navController)
+        ScaffoldMFAVerifyEmail(navController = navController)
+        LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
+            signUpPageViewModel = signUpPageViewModel)
     }
 }
 
@@ -62,7 +67,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val user = FirebaseAuth.getInstance()
     val providerId = signUpPageViewModel.checkUserProvider(user = user.currentUser)
     val isEnabled = signUpPageViewModel.verificationCodeValidationsPassed.value
-    var codeStatus by rememberSaveable() { mutableStateOf("") }
+    var codeStatus by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val TAG = VerifyEmailViewModel::class.simpleName
 
@@ -118,7 +123,9 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                     type = "ResendOTP")
                 Spacer(modifier = Modifier.height(20.dp))
                 if(timerViewModel.isTimerRunning()){
-                    codeStatus = ""
+                    if (timerViewModel.isMfaTimerRunning()){
+                        codeStatus = ""
+                    }
                     Text(
                         text = stringResource(R.string.request_code) + " " +
                                 timerViewModel.timeLeft() + " " + stringResource(R.string.timer_type),
@@ -130,7 +137,8 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                     if (timerViewModel.isMfaCounterFinished()){
                         verifyEmailViewModel.resetOtpCode()
                         codeStatus = context.getString(R.string.expired_otp)
-                        timerViewModel.mfaResetTimer()
+//                        timerViewModel.mfaResetTimer()
+//                        timerViewModel.resetTimer()
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))

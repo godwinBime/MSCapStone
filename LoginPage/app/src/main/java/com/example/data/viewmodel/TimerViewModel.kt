@@ -15,17 +15,15 @@ import kotlinx.coroutines.runBlocking
 
 class TimerViewModel: ViewModel() {
     private var timerJob: Job? = null
-    private val TAG = VerifyEmailViewModel::class.simpleName
+    private val TAG = TimerViewModel::class.simpleName
     var timeLeft = mutableStateOf(60L)
     var isRunning = mutableStateOf(false)
     private var isFinished = mutableStateOf(false)
-    private var isTimerReset = mutableStateOf(false)
 
     private var mfaTimerJob: Job? = null
-    private var mfaTimeLeft = mutableStateOf(60L)
+    private var mfaTimeLeft = mutableStateOf(10L)
     var mfaIsRunning = mutableStateOf(false)
-    var mfaIsFinished = mutableStateOf(false)
-    private var isMfaTimerReset = mutableStateOf(false)
+    private var mfaIsFinished = mutableStateOf(false)
 
     /**
      * Timer to resend the otp code when the user clicks the resend otp button.
@@ -117,7 +115,7 @@ class TimerViewModel: ViewModel() {
         Log.d(TAG, "Timer reset inside mfaResetTimer()...")
         mfaIsFinished.value = false
         mfaIsRunning.value = false
-        mfaTimeLeft.value = 60L
+        mfaTimeLeft.value = 10L
         mfaTimerJob?.cancel()
     }
 }

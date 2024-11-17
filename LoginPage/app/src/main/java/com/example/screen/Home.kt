@@ -80,14 +80,19 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
     if (providerId == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            providerId = "password")
+        signUpPageViewModel.fetchedUSerData(
+            signUpPageViewModel = signUpPageViewModel,
+            providerId = "password"
+        )
     }
-    LaunchedEffect(Unit) {
-        verifyEmailViewModel.sentOTPCode = " "
-        timerViewModel.resetTimer()
-        timerViewModel.mfaResetTimer()
+    if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
+        LaunchedEffect(Unit) {
+            verifyEmailViewModel.resetOtpCode()
+            timerViewModel.resetTimer()
+            timerViewModel.mfaResetTimer()
+        }
     }
+
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {

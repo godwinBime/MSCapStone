@@ -32,6 +32,7 @@ import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.uistate.NavItem
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
@@ -41,6 +42,7 @@ private val TAG = VerifyEmailViewModel::class.simpleName
 @Composable
 fun GeneralBottomAppBar(
     navController: NavHostController,
+    timerViewModel: TimerViewModel = viewModel(),
     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
     providerId: String, trueIndex: Int = 99){
     var selectedIndex by rememberSaveable { mutableIntStateOf(trueIndex) }
@@ -60,6 +62,7 @@ fun GeneralBottomAppBar(
                     selectedIndex = index
                     bottomNavbarContentScreen(
                         navController = navController,
+                        timerViewModel = timerViewModel,
                         verifyEmailViewModel = verifyEmailViewModel,
                         selectedIndex = index,
                         providerId = providerId,
@@ -82,6 +85,7 @@ fun GeneralBottomAppBar(
 
 fun bottomNavbarContentScreen(
     navController: NavHostController,
+    timerViewModel: TimerViewModel,
     verifyEmailViewModel: VerifyEmailViewModel,
     selectedIndex: Int, providerId: String, context: Context){
     Log.d(TAG, "selectedIndex in bottomNavbarContentScreen(): $selectedIndex...")
@@ -116,6 +120,7 @@ fun bottomNavbarContentScreen(
                     navController = navController,
                     type = "DeleteProfile")
                 if (verifyEmailViewModel.isOTPSent) {
+                    timerViewModel.mfaStartTimer(timerDuration = 1000)
                     Log.d(TAG, "OTPSent...Navigating to verify OTP and DeleteProfile...")
                     navController.navigate(Routes.MFAVerifyEmail.route)
                 }

@@ -74,7 +74,6 @@ class ProfileViewModel: ViewModel() {
     private fun updateProfile(firstName: String, lastName: String,
                               phoneNumber: String, email: String = "",
                               navController: NavHostController){
-        updateProfileInProgress.value = true
         if (auth.currentUser != null){
             Log.d(TAG, "Inside update user data call and user is found")
             val userId = auth.currentUser?.uid
@@ -99,10 +98,12 @@ class ProfileViewModel: ViewModel() {
                                             .document(documentSnapshot.id)
                                         documentRef.update(updateUserData)
                                             .addOnSuccessListener {
+                                                updateProfileInProgress.value = false
                                                 Log.d(TAG, "Success in Updating user data...")
-//                                                navController.navigate(Routes.UserProfile.route)
+                                                navController.navigate(Routes.Home.route)
                                             }
                                             .addOnFailureListener{
+                                                updateProfileInProgress.value = false
                                                 Log.d(TAG, "Failed to Update user data...")
                                             }
                                     }
@@ -111,16 +112,20 @@ class ProfileViewModel: ViewModel() {
                             }
                             .addOnFailureListener{
                                 Log.d(TAG, "Failed to find documentID...")
+                                updateProfileInProgress.value = false
                             }
                     }else{
                         Log.d(TAG, "Error from updateProfile(): No userID detected...")
+                        updateProfileInProgress.value = false
                     }
                 }catch (e: Exception){
                     Log.d(TAG, "updateProfile Exception: ${e.message}")
+                    updateProfileInProgress.value = false
                 }
             }
         }else{
             Log.d(TAG, "No active user found when updateProfile() was called..")
+            updateProfileInProgress.value = false
         }
     }
 
@@ -144,6 +149,7 @@ class ProfileViewModel: ViewModel() {
                 it.reauthenticate(credential)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            updateProfileInProgress.value = false
                             // if re-authentication is successful, update password
                             user.updatePassword(newPassword)
                                 .addOnCompleteListener { updateTask ->
@@ -157,19 +163,23 @@ class ProfileViewModel: ViewModel() {
                                     }
                                 }
                         } else {
+                            updateProfileInProgress.value = false
                             Log.d(TAG, "re-authentication failed...")
                             callback(false, "re-authentication failed...")
                         }
                         updateProfileInProgress.value = false
                     }
                     .addOnFailureListener{
+                        updateProfileInProgress.value = false
                         callback(false, "re-authentication failed...")
                     }
             } ?: run {
+                updateProfileInProgress.value = false
                 Log.d(TAG, "No active user found when changePassword() was called..")
                 callback(false, "No user is logged in")
             }
         }catch (e: Exception){
+            updateProfileInProgress.value = false
             Log.d(TAG, "changePassword() Exception was triggered.. ${e.message}")
         }
     }
@@ -207,12 +217,15 @@ class ProfileViewModel: ViewModel() {
                         updateProfileInProgress.value = false
                     }
                     .addOnFailureListener{
+                        updateProfileInProgress.value = false
                         Log.d(TAG, "Error: addOnFailureListener:-> Email and password not deleted...")
                     }
             }else{
+                updateProfileInProgress.value = false
                 Log.d(TAG, "Error: No logged-in user found when deleteUsernamePassword() was called...")
             }
         }catch (e: Exception){
+            updateProfileInProgress.value = false
             Log.d(TAG, "deleteUsernamePassword Exception: ${e.message}")
         }
     }
@@ -322,6 +335,7 @@ class ProfileViewModel: ViewModel() {
                 user.delete()
                     .addOnCompleteListener{task ->
                         if (task.isSuccessful){
+                            updateProfileInProgress.value = false
                             homeViewModel.checkForActiveSession()
                             homeViewModel.logOut(navController = navController,
                                 signUpPageViewModel = signUpPageViewModel,
@@ -335,14 +349,17 @@ class ProfileViewModel: ViewModel() {
                         updateProfileInProgress.value = false
                     }
                     .addOnFailureListener{
+                        updateProfileInProgress.value = false
                         message = "Token expired, re-authenticate and try again."
                         Log.d(TAG, "In addOnFailureListener -- Google account deletion failed...")
                     }
             }catch (e: Exception){
+                updateProfileInProgress.value = false
                 message = "Token expired, re-authenticate and try again."
                 Log.d(TAG, "deleteGoogleUser() Exception: ${e.message}")
             }
         }else{
+            updateProfileInProgress.value = false
             Log.d(TAG, "No active user found when deleteGoogleUser() was called..")
         }
     }
@@ -351,6 +368,7 @@ class ProfileViewModel: ViewModel() {
                              navController: NavHostController,
                              onSuccess: () -> Unit,
                              onFailure: (Exception) -> Unit){
+        updateProfileInProgress.value = true
         uploadPicture(
             uri = uri,
             isCallValid = isCallValid,
@@ -366,7 +384,6 @@ class ProfileViewModel: ViewModel() {
                              navController: NavHostController,
                              onSuccess: () -> Unit,
                              onFailure: (Exception) -> Unit){
-        updateProfileInProgress.value = true
         viewModelScope.launch {
             try {
                 if (uri != null && auth.currentUser?.uid != null && isCallValid) {
@@ -429,7 +446,7 @@ class ProfileViewModel: ViewModel() {
 
         if (_profilePictureUri.value == null){
             Log.d(TAG, "Inside downloadProfilePicture()...about to initiate download...")
-
+            updateProfileInProgress.value = true
             downloadPicture(
                 imagePath = imagePath,
                 isCallValid = isCallValid, onSuccess = onSuccess, onFailure = onFailure
@@ -439,7 +456,6 @@ class ProfileViewModel: ViewModel() {
 
     private fun downloadPicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
                                        onFailure: (Exception) -> Unit){
-        updateProfileInProgress.value = true
         viewModelScope.launch {
             try {
                 if (!imagePath.isNullOrEmpty() && isCallValid) {
@@ -455,15 +471,18 @@ class ProfileViewModel: ViewModel() {
                         .addOnFailureListener {
                             _profilePictureUri.value = UserProfilePictureData(null)
                             isDownloadSuccessful.value = false
+                            updateProfileInProgress.value = false
                             Log.d(TAG, "Call from downloadProfilePicture()...Download Failed")
                             onFailure(it)
                         }
                 }else{
                     isDownloadSuccessful.value = false
+                    updateProfileInProgress.value = false
                     Log.d(TAG, "Download Failed No image provided...")
                 }
             }catch (e: Exception){
                 isDownloadSuccessful.value = false
+                updateProfileInProgress.value = false
                 Log.d(TAG, "Upload Exception: ${e.message}")
                 onFailure(e)
             }finally {
@@ -473,6 +492,7 @@ class ProfileViewModel: ViewModel() {
     }
 
     fun deleteProfilePicture(imagePath: String?, navController: NavHostController){
+        updateProfileInProgress.value = true
         deletePicture(imagePath = imagePath, navController = navController)
     }
 
@@ -481,10 +501,12 @@ class ProfileViewModel: ViewModel() {
         val desertRef = imagePath?.let { storageRef.child(it) }
         desertRef?.delete()
             ?.addOnSuccessListener {
+                updateProfileInProgress.value = false
                 Log.d(TAG, "Image successfully deleted...")
                 navController.navigate(Routes.UserProfile.route)
             }
             ?.addOnFailureListener{
+                updateProfileInProgress.value = false
                 Log.d(TAG, "Image not deleted...")
             }
     }

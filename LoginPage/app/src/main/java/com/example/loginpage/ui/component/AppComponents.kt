@@ -125,8 +125,7 @@ fun LoadingScreenComponent(
     signUpPageViewModel: SignUpPageViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
-    homeViewModel: HomeViewModel = viewModel()
-){
+    homeViewModel: HomeViewModel = viewModel()){
     val googleSignInState = googleSignInViewModel.googleState.value
     if (signUpPageViewModel.signInSignUpInProgress.value ||
         profileViewModel.updateProfileInProgress.value ||
@@ -452,8 +451,8 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                                   }
                               Log.d(TAG, "Resending OTP to: ${email?.to}")
                               if (email != null) {
-                                  timerViewModel.mfaResetTimer()
-                                  timerViewModel.resetTimer()
+//                                  timerViewModel.mfaResetTimer()
+//                                  timerViewModel.resetTimer()
                                   timerViewModel.mfaStartTimer(timerDuration = 1000)
                                   verifyEmailViewModel.sendOTPToEmail(
                                       email = email,
@@ -464,7 +463,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           } else {
                               Log.d(TAG, "Timer triggered")
                               timerViewModel.startTimer(timerDuration = 1000)
-                              timerViewModel.mfaResetTimer()
+//                              timerViewModel.mfaResetTimer()
 //                              timerViewModel.mfaStartTimer(timerDuration = 1000)
                               Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value} seconds")
                           }
@@ -476,7 +475,8 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       7 -> {
-                          navController.navigate(Routes.MFAVerifyEmail.route)
+                          Log.d(TAG, "Test button...#7")
+                          navController.navigate(Routes.DeleteProfileVerifyEmail.route)
                       }
                       8 -> {
 //                          Log.d(TAG, "Navigating to ChooseVerificationMethod")
@@ -577,8 +577,14 @@ fun ButtonComponent(navController: NavHostController,
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 Log.d(TAG, "Inside ChangePasswordVerifyEmail statement---" )
-                verifyEmailViewModel.verifySentOTPCode(
-                    navController = navController, destination = "ChangePasswordVerifyEmail")
+                if(timerViewModel.isMfaTimerRunning()) {
+                    verifyEmailViewModel.verifySentOTPCode(
+                        navController = navController,
+                        destination = "ChangePasswordVerifyEmail"
+                    )
+                }else{
+                    Log.d(TAG, "Inside ButtonComponent() OTP code expired---" )
+                }
             }
             9 -> {
                 onButtonClicked.invoke()
@@ -876,7 +882,9 @@ fun SwitchToggleButtonComponent(){
 }
 
 @Composable
-fun DrawerContentComponent(navController: NavHostController, homeViewModel: HomeViewModel,
+fun DrawerContentComponent(navController: NavHostController,
+                           homeViewModel: HomeViewModel = viewModel(),
+                           timerViewModel: TimerViewModel = viewModel(),
                            verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                            signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current.applicationContext
@@ -886,7 +894,9 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
         "password" -> {
             HomeScreenDrawerHeader(
                 value = signUpPageViewModel.fullNames.substringBefore(" "),
-                user = auth.currentUser, provider = "password", context = context,
+                user = auth.currentUser,
+                provider = "password",
+                context = context,
                 navController = navController)
         }
         "google.com" -> {
@@ -923,12 +933,14 @@ fun DrawerContentComponent(navController: NavHostController, homeViewModel: Home
                                 email = email,
                                 navController = navController,
                                 type = "ChangePasswordVerifyEmail")
-                            if (verifyEmailViewModel.isOTPSent) {
+                            /*if (verifyEmailViewModel.isOTPSent) {
+//                                timerViewModel.mfaStartTimer(timerDuration = 1000)
+                                Log.d(TAG1, "Timer initiated inside DrawerContentComponent()")
                                 Log.d(TAG, "OTPSent...Navigating to verify OTP and Change Password...")
                                 navController.navigate(
                                     Routes.MFAVerifyEmail.route)
-                            }
-                            navController.popBackStack()
+                            }*/
+//                            navController.popBackStack()
                         }else {
                             getToast(context = context, "No email provided.")
                         }

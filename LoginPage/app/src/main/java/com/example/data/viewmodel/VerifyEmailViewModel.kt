@@ -203,7 +203,6 @@ class VerifyEmailViewModel: ViewModel() {
         sentOTPCode = ""
     }
 
-
     fun verifySentOTPCode(navController: NavHostController,
                           destination: String = "None"){
         viewModelScope.launch {

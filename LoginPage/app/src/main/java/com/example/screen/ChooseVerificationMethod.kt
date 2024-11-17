@@ -63,8 +63,8 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      homeViewModel: HomeViewModel){
     val context = LocalContext.current
     Scaffold(
-        topBar = { TopAppBarBeforeLogin(navController, "MFA",
-            true, action = "Choose Verification Method then proceed.",
+        topBar = { TopAppBarBeforeLogin(navController = navController, title = "MFA",
+            showBackIcon = true, action = "Choose Verification Method then proceed.",
             homeViewModel, screenName = "ChooseVerificationMethod") },
         content = {
             Column(

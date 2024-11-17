@@ -58,7 +58,7 @@
     <string name="timer_type">seconds.</string>
     <string name="subject_confirm_your_ID">Confirm Your Identity</string>
     <string name="body">Thank you for using Capstone App. When prompted, use the following verification code: </string>
-    <string name="code_expiration">The code will expire in 10 minutes.</string>
+    <string name="code_expiration">This code will expire in shortly.</string>
     <string name="motivation">Enjoy using the Capstone App.</string>
     <string name="sincerely">Sincerely,</string>
     <string name="capstone_team">The Capstone App Team.</string>

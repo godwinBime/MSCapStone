@@ -50,8 +50,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
         getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-//        startDestination = Routes.ChooseVerificationMethod.route
-        startDestination = Routes.Home.route
+        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -81,7 +81,10 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         
         composable(Routes.ChangePasswordVerifyEmail.route){
             ChangePasswordVerifyEmail(navController = navController,
-                homeViewModel = HomeViewModel(), signUpPageViewModel = SignUpPageViewModel()
+                homeViewModel = HomeViewModel(),
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance()))
             )
         }
         
@@ -132,7 +135,9 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         composable(Routes.MFAVerifyEmail.route){
             MFAVerifyEmail(navController = navController,
                 homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel()
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance()))
             )
         }
 

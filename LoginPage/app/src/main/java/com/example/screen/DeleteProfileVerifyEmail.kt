@@ -10,9 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,7 +37,6 @@ import com.example.loginpage.ui.component.SubButton
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.google.firebase.auth.FirebaseAuth
 
-
 @Composable
 fun DeleteProfileVerifyEmail(navController: NavHostController,
                    homeViewModel: HomeViewModel,
@@ -47,14 +52,24 @@ fun DeleteProfileVerifyEmail(navController: NavHostController,
 fun ScaffoldDeleteProfileVerifyEmail(navController: NavHostController,
                                      homeViewModel: HomeViewModel,
                                      signUpPageViewModel: SignUpPageViewModel,
+                                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                      emailVerifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                      timerViewModel: TimerViewModel = viewModel()){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
-
     val codePainterResource = painterResource(id = R.drawable.confirmation_number)
     val user = FirebaseAuth.getInstance()
-    val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+    val providerId = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+    var codeStatus by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+
+    if (providerId == "password"){
+        LaunchedEffect(Unit) {
+            verifyEmailViewModel.resetOtpCode()
+            timerViewModel.resetTimer()
+            timerViewModel.mfaResetTimer()
+        }
+    }
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "DeleteProfile Email Verify",
             true, action = "Enter Verification code sent to your email.",
@@ -91,7 +106,7 @@ fun ScaffoldDeleteProfileVerifyEmail(navController: NavHostController,
                     signUpPageViewModel = signUpPageViewModel,
                     isEnable = signUpPageViewModel.verificationCodeValidationsPassed.value,
                     originalPage = "DeleteProfileVerifyEmail.kt",
-                    userType = userType
+                    userType = providerId
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -108,6 +123,19 @@ fun ScaffoldDeleteProfileVerifyEmail(navController: NavHostController,
                     navController = navController, rank = 4,
                     type = "ResendOTP")
                 Spacer(modifier = Modifier.height(20.dp))
+                LaunchedEffect(timerViewModel.isMfaTimerRunning()) {
+                    if (timerViewModel.isMfaCounterFinished()){
+                        verifyEmailViewModel.resetOtpCode()
+                        codeStatus = context.getString(R.string.expired_otp)
+                        timerViewModel.mfaResetTimer()
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = codeStatus,
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     )

@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.loginpage.ui.component.HeadingTextComponent
 import com.example.loginpage.ui.component.MyPasswordFieldComponent
@@ -24,33 +26,45 @@ import com.example.loginpage.ui.component.TopAppBarBeforeLogin
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.MyConfirmPasswordFieldComponent
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun NewPassword(navController: NavHostController, signUpPageViewModel: SignUpPageViewModel,
-                homeViewModel: HomeViewModel
-){
+fun NewPassword(navController: NavHostController,
+                signUpPageViewModel: SignUpPageViewModel,
+                homeViewModel: HomeViewModel){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldNewPasswordTopBar(navController, signUpPageViewModel, homeViewModel)
+        ScaffoldNewPasswordTopBar(navController = navController,
+            signUpPageViewModel = signUpPageViewModel,
+            homeViewModel = homeViewModel)
     }
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldNewPasswordTopBar(navController: NavHostController,
-                              signUpPageViewModel: SignUpPageViewModel,
-                              homeViewModel: HomeViewModel
-){
+                              signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                              timerViewModel: TimerViewModel = viewModel(),
+                              verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                              homeViewModel: HomeViewModel = viewModel()){
     val oldPassword = stringResource(id = R.string.old_password)
     val newPassword = stringResource(id = R.string.new_password)
     val resetPassword = stringResource(id = R.string.reset_password)
-
     val oldPasswordPainterResource = painterResource(id = R.drawable.password)
     val newPasswordPainterResource = painterResource(id = R.drawable.password)
     val user = FirebaseAuth.getInstance()
     val userType = signUpPageViewModel.checkUserProvider(user = user.currentUser)
+
+    if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
+        LaunchedEffect(Unit) {
+            verifyEmailViewModel.resetOtpCode()
+            timerViewModel.resetTimer()
+            timerViewModel.mfaResetTimer()
+        }
+    }
 
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController, "New Password",

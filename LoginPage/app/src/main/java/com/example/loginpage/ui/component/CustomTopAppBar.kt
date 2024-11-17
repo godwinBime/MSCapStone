@@ -110,7 +110,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                                     context = context)
                                 navController.navigate(Routes.Login.route)
 //                                navController.popBackStack()
-                                getToast(context, "Please Login to continue.")
+                                getToast(context, "ChooseVerificationMethod() Please Login to continue.")
                             }
                         }
                         "DefaultScreen" -> {
@@ -120,18 +120,21 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                         }
                         "ChangePassword" -> {
                             navController.navigate(Routes.Login.route)
-                            getToast(context, "(ChangePassword) Please Login to continue.")
+                            homeViewModel.logOut(navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context)
+                            getToast(context, "(ChangePassword()) Please Login to continue.")
                         }
                         "Login" -> {
                             homeViewModel.logOut(navController = navController,
                                 signUpPageViewModel = signUpPageViewModel,
                                 context = context)
-                            getToast(context, "(Login) Please Login to continue.")
+                            getToast(context, "(Login()) Please Login to continue.")
                         }
                     }
                 }) {
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = null)
+                        contentDescription = "Back")
                 }
             }
         }else{

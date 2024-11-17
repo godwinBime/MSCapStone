@@ -21,6 +21,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,11 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.ButtonComponent
 import com.example.loginpage.ui.component.ClickableLoginOrLogOutText
@@ -60,7 +64,8 @@ fun Login(navController: NavHostController,
         ScaffoldLoginWithTopBar(navController = navController,
             homeViewModel = homeViewModel,
             googleSignInViewModel = googleSignInViewModel,
-            scrollState, signUpPageViewModel)
+            scrollState = scrollState,
+            signUpPageViewModel = signUpPageViewModel,)
         LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
             signUpPageViewModel = signUpPageViewModel)
     }
@@ -69,10 +74,20 @@ fun Login(navController: NavHostController,
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
-                            homeViewModel: HomeViewModel,
+                            timerViewModel: TimerViewModel = viewModel(),
+                            homeViewModel: HomeViewModel = viewModel(),
                             googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
-                            scrollState: ScrollState, signUpPageViewModel: SignUpPageViewModel
-){
+                            scrollState: ScrollState,
+                            signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                            verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+    if (timerViewModel.isMfaCounterFinished() || timerViewModel.isTimerFinished()) {
+        LaunchedEffect(Unit) {
+            verifyEmailViewModel.resetOtpCode()
+            timerViewModel.resetTimer()
+            timerViewModel.mfaResetTimer()
+        }
+    }
+
     Scaffold(
         topBar = { TopAppBarBeforeLogin(
             navController = navController, stringResource(id = R.string.master_title),
