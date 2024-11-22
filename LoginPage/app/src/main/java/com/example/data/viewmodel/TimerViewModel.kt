@@ -16,12 +16,11 @@ import kotlinx.coroutines.runBlocking
 class TimerViewModel: ViewModel() {
     private var timerJob: Job? = null
     private val TAG = TimerViewModel::class.simpleName
-    var timeLeft = mutableStateOf(60L)
+    var timeLeft = mutableStateOf(30L)
     var isRunning = mutableStateOf(false)
     private var isFinished = mutableStateOf(false)
-
     private var mfaTimerJob: Job? = null
-    private var mfaTimeLeft = mutableStateOf(10L)
+    private var mfaTimeLeft = mutableStateOf(30L)
     var mfaIsRunning = mutableStateOf(false)
     private var mfaIsFinished = mutableStateOf(false)
 
@@ -55,7 +54,7 @@ class TimerViewModel: ViewModel() {
     fun resetTimer(){
         isFinished.value = false
         isRunning.value = false
-        timeLeft.value = 60L
+        timeLeft.value = 30L
         Log.d(TAG, "Timer reset inside resetTimer()...")
         timerJob?.cancel()
     }
@@ -115,7 +114,7 @@ class TimerViewModel: ViewModel() {
         Log.d(TAG, "Timer reset inside mfaResetTimer()...")
         mfaIsFinished.value = false
         mfaIsRunning.value = false
-        mfaTimeLeft.value = 10L
+        mfaTimeLeft.value = 30L
         mfaTimerJob?.cancel()
     }
 }

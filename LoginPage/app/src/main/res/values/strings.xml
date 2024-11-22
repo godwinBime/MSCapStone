@@ -9,6 +9,8 @@
     <string name="signup">SignUp</string>
     <string name="verify">Verify</string>
     <string name="send">Send</string>
+    <string name="admin_profile">Admin Profile</string>
+    <string name="add_employee">Add Employee</string>
     <string name="reset_password">Reset Password</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>

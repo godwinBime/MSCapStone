@@ -2,6 +2,7 @@ package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
@@ -101,7 +102,9 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.LoginButtonClicked -> {
-                logUserIn(navController = navController)
+                if (auth.currentUser == null) {
+                    logUserIn(navController = navController)
+                }
             }
 
             is SignUpPageUIEvent.PrivacyPolicyCheckboxClicked -> {
@@ -110,6 +113,10 @@ class SignUpPageViewModel: ViewModel() {
                     privacyPolicyAccepted = signUpEvent.privacyPolicyStatus
                 )
                 printSignUpState("Privacy_Policy")
+            }
+
+            is SignUpPageUIEvent.AddEmployeeButtonClicked -> {
+                signUp(navController = navController)
             }
         }
     }
@@ -223,27 +230,25 @@ class SignUpPageViewModel: ViewModel() {
         signInSignUpInProgress.value = true
         val email = signUpPageUIState.value.email
         val password = signUpPageUIState.value.password
-
-        FirebaseAuth
-            .getInstance()
-            .signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener{
-                Log.d(TAG, "Inside login addOnCompleteListener... by ${signUpPageUIState.value.email}")
-                Log.d(TAG, "Is Login Success: ${it.isSuccessful}")
-                if (it.isSuccessful){
+        val firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener{
+            Log.d(TAG, "Inside login addOnCompleteListener... by ${signUpPageUIState.value.email}")
+            Log.d(TAG, "Is Login Success: ${it.isSuccessful}")
+            if (it.isSuccessful){
 //                    checkUserProvider(auth.currentUser)
-                    Log.d(TAG, "Login-ID: ${auth.currentUser?.uid}")
-                    Log.d(TAG, "Going to choose verification method with email: ${signUpPageUIState.value.email}")
-                    navController.navigate(Routes.ChooseVerificationMethod.route)
-                    signInSignUpInProgress.value = false
-                }
-            }
-            .addOnFailureListener {
-                Log.d(TAG, "Inside Firebase Login addOnFailureListener")
-                Log.d(TAG, "Login Exception = ${it.message}")
-                Log.d(TAG, "Login Exception = ${it.localizedMessage}")
+                Log.d(TAG, "Login-ID: ${auth.currentUser?.uid}")
+                Log.d(TAG, "Going to choose verification method with email: ${signUpPageUIState.value.email}")
+                navController.navigate(Routes.ChooseVerificationMethod.route)
                 signInSignUpInProgress.value = false
             }
+        }
+        .addOnFailureListener {
+            Log.d(TAG, "Inside Firebase Login addOnFailureListener")
+            Log.d(TAG, "Login Exception = ${it.message}")
+            Log.d(TAG, "Login Exception = ${it.localizedMessage}")
+            signInSignUpInProgress.value = false
+        }
     }
 
     private fun signUp(navController: NavHostController){
@@ -266,8 +271,8 @@ class SignUpPageViewModel: ViewModel() {
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     Log.d(TAG, "Inside Firebase SignUp addOnCompleteListener")
-                    Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
                     if (it.isSuccessful) {
+                        Log.d(TAG, "SignUP isSuccessful: ${it.isSuccessful}")
                         val userId = auth.currentUser?.uid
                         storeUserData(
                             userId = userId,
@@ -275,8 +280,7 @@ class SignUpPageViewModel: ViewModel() {
                             signUpPageUIState.value.lastName,
                             signUpPageUIState.value.phoneNumber,
                             signUpPageUIState.value.email,
-                            navController = navController
-                        )
+                            navController = navController)
                         signInSignUpInProgress.value = false
                     }
                 }
@@ -287,16 +291,22 @@ class SignUpPageViewModel: ViewModel() {
                     Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")
                 }
         }else{
+            signInSignUpInProgress.value = false
             Log.d(TAG, "SignUP UnSuccessful no email or password provided")
         }
+    }
+
+    private fun logNewUserOut(navController: NavHostController){
+        val firebaseUser = FirebaseAuth.getInstance()
+        firebaseUser.signOut()
+        navController.navigate(Routes.Login.route)
     }
 
     private fun storeUserData(
         userId: String?, firstName: String,
         lastName: String, phoneNumber: String,
         email: String,
-        navController: NavHostController
-    ){
+        navController: NavHostController){
         val providerId = checkUserProvider(auth.currentUser)
         val userData = UserData(
             userId = userId,
@@ -308,23 +318,24 @@ class SignUpPageViewModel: ViewModel() {
             try {
                 firestore.collection("userdata").add(userData)
                     .addOnSuccessListener {
-                        Log.d(TAG, "New User-ID: ${auth.currentUser?.uid}")
-                        Log.d(TAG, "New user firstName: $firstName")
-                        Log.d(TAG, "New user lastName: $lastName")
-                        Log.d(TAG, "New user phoneNumber: $phoneNumber")
-                        navController.navigate(Routes.Login.route)
+                        signInSignUpInProgress.value = false
                     }
                     .addOnFailureListener {
+                        signInSignUpInProgress.value = false
                         Log.d(TAG, "storeUserData Error: ${it.message}")
                     }
             } catch (e: Exception) {
+                signInSignUpInProgress.value = false
                 Log.d(TAG, "addStoreUserData Exception: ${e.message}")
             } finally {
                 signInSignUpInProgress.value = false
+                logNewUserOut(navController = navController)
             }
         }else if (providerId == "google.com"){
+            signInSignUpInProgress.value = false
             Log.d(TAG, "storeUserData Error: Login through 3rd party (google.com) credentials. \nNo data provided.")
         }else{
+            signInSignUpInProgress.value = false
             Log.d(TAG, "storeUserData Error: No user logged in yet...")
         }
     }
@@ -335,53 +346,58 @@ class SignUpPageViewModel: ViewModel() {
                               userId: String?, onUserDataFetched: (UserData) -> Unit){
 //        val providerId = signUpPageViewModel.checkUserProvider(auth.currentUser)
         if (auth.currentUser != null && providerId == "password"){
-            signInSignUpInProgress.value = true
             try {
                 val query = firestore.collection("userdata").whereEqualTo("userId", userId)
                 query.get()
                     .addOnSuccessListener { querySnapshot ->
                         if (!querySnapshot.isEmpty){
+                            signInSignUpInProgress.value = false
                             val documentSnapshot = querySnapshot.documents[0]
                             val user = documentSnapshot.toObject(UserData::class.java)
                             if (user != null){
                                 onUserDataFetched(user)
                             }else{
+                                signInSignUpInProgress.value = false
                                 Log.d(TAG, "fetchUserData Error: User with ID: $userId not found ")
                             }
                         }else{
+                            signInSignUpInProgress.value = false
                             Log.d(TAG, "fetchUserData Error: No matching document found")
                         }
                     }
             }catch (e: Exception){
+                signInSignUpInProgress.value = false
                 Log.d(TAG, "fetchUserData Exception: ${e.message} ")
             }finally {
                 signInSignUpInProgress.value = false
             }
         }else if (providerId == "google.com"){
+            signInSignUpInProgress.value = false
             Log.d(TAG, "fetchUserData Error: \nLogin through 3rd party (google.com) credentials. \nNo data provided.")
         }else{
+            signInSignUpInProgress.value = false
             Log.d(TAG, "fetchUserData Error: No user logged in yet...")
         }
     }
 
     fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel, providerId: String?){
         val userId = auth.currentUser?.uid
+        signInSignUpInProgress.value = true
         if (providerId == "password") {
             fetchUserData(signUpPageViewModel = signUpPageViewModel, providerId = providerId,
                 userId = userId) { user ->
                 fullNames = user.firstName + " " + user.lastName
                 phoneNumber = user.phoneNumber
                 userEmail = user.email
-                Log.d(TAG, "FirstName: ${user.firstName}")
-                Log.d(TAG, "LastName: ${user.lastName}")
-                Log.d(TAG, "Cell: ${user.phoneNumber}")
             }
         }else if(providerId == "google.com"){
+            signInSignUpInProgress.value = false
             Log.d(TAG, "fetchedUserData Error: \nLogin through 3rd party (google.com) credentials. \nNo data provided.")
         }
     }
 
     fun checkUserProvider(user: FirebaseUser?): String{
+        signInSignUpInProgress.value = true
         user?.let {
             val providerData = it.providerData
             for (profile in providerData){
@@ -389,15 +405,18 @@ class SignUpPageViewModel: ViewModel() {
                 when(providerId){
                     "password" -> {
                         Log.d(TAG, "ProviderId call inside checkUserProvider(): email/password")
+                        signInSignUpInProgress.value = false
                         return "password"
                     }
                     "google.com" -> {
                         Log.d(TAG, "ProviderId call inside checkUserProvider(): google.com")
+                        signInSignUpInProgress.value = false
                         return "google.com"
                     }
                 }
             }
         }
+        signInSignUpInProgress.value = false
         return "None"
     }
 }

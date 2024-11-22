@@ -26,7 +26,7 @@ class VerifyEmailViewModel: ViewModel() {
     var isOTPSent by mutableStateOf(false)
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
-    var errorMessage by mutableStateOf("")
+//    var errorMessage by mutableStateOf("")
     var authenticationInProgress = mutableStateOf(false)
 
     private fun generateVerificationCode(): String{
@@ -36,10 +36,10 @@ class VerifyEmailViewModel: ViewModel() {
             }.joinToString("")
     }
 
-    fun passwordResetLink(email: String){
+    fun passwordResetLink(email: String, navController: NavHostController){
         authenticationInProgress.value = true
         viewModelScope.launch {
-            sendPasswordResetLink(email = email){
+            sendPasswordResetLink(email = email, navController = navController){
             }
         }
     }
@@ -47,12 +47,13 @@ class VerifyEmailViewModel: ViewModel() {
     /**
      * Check if forgot password provided email exist in Firebase db
      */
-    private fun sendPasswordResetLink(email: String,
+    private fun sendPasswordResetLink(email: String, navController: NavHostController,
                                         callback: (Boolean) -> Unit){
         try {
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener{task ->
                     if (task.isSuccessful){
+                        navController.navigate(Routes.ContinueToPasswordChange.route)
                         Log.d(TAG, "Email ($email) Exist")
                         callback(true)
                         authenticationInProgress.value = false

@@ -75,7 +75,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
             GeneralBottomAppBar(navController = navController, providerId = providerId,
                 trueIndex = 5)
         },
-
+/*
         floatingActionButton = {
             FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
@@ -85,7 +85,7 @@ fun ScaffoldLoginAndSecurityScreenWithTopBar(navController: NavHostController,
                     contentDescription = "Add"
                 )
             }
-        },
+        },*/
         topBar = { HomeScreenTopAppBar(navController, home, action = "Login And Security Screen",
             navigationIconClicked = {
                 coroutineScope.launch {

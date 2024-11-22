@@ -34,15 +34,12 @@ class ProfileViewModel: ViewModel() {
     val profilePictureExist : MutableLiveData<Boolean> = MutableLiveData(false)
     private val isUploadSuccessful : MutableLiveData<Boolean> = MutableLiveData(false)
     private val isDownloadSuccessful : MutableLiveData<Boolean> = MutableLiveData(false)
-
     private val _profilePictureUri = MutableLiveData<UserProfilePictureData>()
     val profilePictureUri: LiveData<UserProfilePictureData> get() = _profilePictureUri
-
     private val _uploadProgress = MutableLiveData<Float>()
     val uploadProgress: LiveData<Float> get() = _uploadProgress
-
     private val _uploadStatus = MutableLiveData<String>()
-    val uploadStatus: LiveData<String> get() = _uploadStatus
+//    val uploadStatus: LiveData<String> get() = _uploadStatus
 
     var updateProfileInProgress = mutableStateOf(false)
     var oldPassword by mutableStateOf("")
@@ -50,7 +47,6 @@ class ProfileViewModel: ViewModel() {
     var updatedFirstName by mutableStateOf("")
     var updatedLastName by mutableStateOf("")
     var updatedPhoneNumber by mutableStateOf("")
-    var updatedEmail by mutableStateOf("")
 
     init {
         _profilePictureUri.value = UserProfilePictureData()  // Initialize with a default value
@@ -184,20 +180,73 @@ class ProfileViewModel: ViewModel() {
         }
     }
 
+    fun deleteProfilePicture(imagePath: String?,
+                             action: String = "None",
+                             homeViewModel: HomeViewModel,
+                             signUpPageViewModel: SignUpPageViewModel,
+                             context: Context,
+                             navController: NavHostController){
+        updateProfileInProgress.value = true
+        deletePicture(imagePath = imagePath,
+            action = action,
+            homeViewModel = homeViewModel,
+            signUpPageViewModel = signUpPageViewModel,
+            context = context,
+            navController = navController)
+    }
+
+    private fun deletePicture(imagePath: String?,
+                              action: String = "None",
+                              homeViewModel: HomeViewModel,
+                              signUpPageViewModel: SignUpPageViewModel,
+                              context: Context,
+                              navController: NavHostController){
+        val storageRef = storage.reference
+        val desertRef = imagePath?.let { storageRef.child(it) }
+        desertRef?.delete()
+            ?.addOnSuccessListener {
+                updateProfileInProgress.value = false
+                Log.d(TAG, "Image successfully deleted...")
+                when(action){
+                    "DeleteAccount" -> {
+                        homeViewModel.logOut(navController = navController,
+                            signUpPageViewModel = signUpPageViewModel,
+                            context = context)
+                        navController.navigate(Routes.Login.route)
+                    }
+                    "DefaultProfilePicture" -> {
+                        navController.navigate(Routes.UserProfile.route)
+                    }
+                }
+            }
+            ?.addOnFailureListener{
+                updateProfileInProgress.value = false
+                Log.d(TAG, "Image not deleted...")
+            }
+    }
+
     fun deleteCurrentProfile(navController: NavHostController,
                              signUpPageViewModel: SignUpPageViewModel,
+                             homeViewModel: HomeViewModel,
+                             context: Context,
                              providerId: String){
         updateProfileInProgress.value = true
         if (providerId == "password") {
-            deleteProfile(navController = navController, signUpPageViewModel = signUpPageViewModel,
+            deleteProfile(navController = navController,
+                signUpPageViewModel = signUpPageViewModel,
+                context = context,
+                homeViewModel = homeViewModel,
                 userType = providerId)
         }
     }
 
     private fun deleteUsernamePassword(navController: NavHostController,
                                        signUpPageViewModel: SignUpPageViewModel,
+                                       homeViewModel: HomeViewModel,
+                                       context: Context,
                                        userType: String){
         val user = auth.currentUser
+        val imagePath = "/ProfilePictures/${user?.uid}"
         try{
             if (user != null){
                 Log.d(TAG, "About to delete logged-in user...")
@@ -206,7 +255,12 @@ class ProfileViewModel: ViewModel() {
                         if (task.isSuccessful) {
                             Log.d(TAG, "Email and password deleted successfully...")
                             if (userType == "password") {
-                                navController.navigate(Routes.Login.route)
+                                deleteProfilePicture(imagePath = imagePath,
+                                    action = "DeleteAccount",
+                                    homeViewModel = homeViewModel,
+                                    signUpPageViewModel = signUpPageViewModel,
+                                    context = context,
+                                    navController = navController)
                             } else if (userType == "google.com") {
                                 Log.d(TAG, "Google account user deleted, no data to delete")
                                 navController.navigate(Routes.Login.route)
@@ -232,6 +286,8 @@ class ProfileViewModel: ViewModel() {
 
     private fun deleteProfile(navController: NavHostController,
                               signUpPageViewModel: SignUpPageViewModel,
+                              context: Context,
+                              homeViewModel: HomeViewModel,
                               userType: String){
         if (auth.currentUser != null) {
             updateProfileInProgress.value = true
@@ -252,6 +308,8 @@ class ProfileViewModel: ViewModel() {
                                                 deleteUsernamePassword(
                                                     navController = navController,
                                                     signUpPageViewModel = signUpPageViewModel,
+                                                    homeViewModel = homeViewModel,
+                                                    context = context,
                                                     userType = userType
                                                 )
                                             }else{
@@ -322,8 +380,10 @@ class ProfileViewModel: ViewModel() {
         }
     }*/
 
-    private suspend fun deleteGoogleUser(navController: NavHostController, providerId: String,
-                                         context: Context, homeViewModel: HomeViewModel,
+    private suspend fun deleteGoogleUser(navController: NavHostController,
+                                         providerId: String,
+                                         context: Context,
+                                         homeViewModel: HomeViewModel,
                                          signUpPageViewModel: SignUpPageViewModel){
         val user = auth.currentUser
         if (user != null && user.providerData.any{it.providerId == "google.com"}){
@@ -333,20 +393,18 @@ class ProfileViewModel: ViewModel() {
                 // Re-authenticate user
                 user.reauthenticate(credential).await()
                 user.delete()
-                    .addOnCompleteListener{task ->
-                        if (task.isSuccessful){
-                            updateProfileInProgress.value = false
-                            homeViewModel.checkForActiveSession()
-                            homeViewModel.logOut(navController = navController,
-                                signUpPageViewModel = signUpPageViewModel,
-                                context = context)
-                            navController.navigate(Routes.Login.route)
-                            if (auth.currentUser == null) {
-                                Log.d(TAG, "Google account successfully deleted...")
-                            }
-                            Log.d(TAG, "Any active user after account deletion?: ${auth.currentUser != null}")
-                        }
+                    .addOnSuccessListener {
                         updateProfileInProgress.value = false
+//                        homeViewModel.checkForActiveSession()
+                        homeViewModel.logOut(navController = navController,
+                            signUpPageViewModel = signUpPageViewModel,
+                            context = context)
+                        navController.navigate(Routes.Login.route)
+                        if (auth.currentUser == null) {
+                            Log.d(TAG, "Google account successfully deleted...")
+                        }
+                        Log.d(TAG, "Any active user after account deletion?: ${auth.currentUser != null}")
+
                     }
                     .addOnFailureListener{
                         updateProfileInProgress.value = false
@@ -376,9 +434,9 @@ class ProfileViewModel: ViewModel() {
         )
     }
 
-    fun resetUploadProgress(){
-        _uploadProgress.value = 0f
-    }
+//    fun resetUploadProgress(){
+//        _uploadProgress.value = 0f
+//    }
 
     private fun uploadPicture(uri: Uri?, isCallValid: Boolean = false,
                              navController: NavHostController,
@@ -489,26 +547,6 @@ class ProfileViewModel: ViewModel() {
                 Log.d(TAG, "Is Download Success...: ${isDownloadSuccessful.value}")
             }
         }
-    }
-
-    fun deleteProfilePicture(imagePath: String?, navController: NavHostController){
-        updateProfileInProgress.value = true
-        deletePicture(imagePath = imagePath, navController = navController)
-    }
-
-    private fun deletePicture(imagePath: String?, navController: NavHostController){
-        val storageRef = storage.reference
-        val desertRef = imagePath?.let { storageRef.child(it) }
-        desertRef?.delete()
-            ?.addOnSuccessListener {
-                updateProfileInProgress.value = false
-                Log.d(TAG, "Image successfully deleted...")
-                navController.navigate(Routes.UserProfile.route)
-            }
-            ?.addOnFailureListener{
-                updateProfileInProgress.value = false
-                Log.d(TAG, "Image not deleted...")
-            }
     }
 
     fun isPictureExistInDatabase(imagePath: String?, onSuccess: (Uri) -> Unit,

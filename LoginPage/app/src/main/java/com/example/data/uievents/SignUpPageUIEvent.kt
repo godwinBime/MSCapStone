@@ -12,4 +12,5 @@ sealed class SignUpPageUIEvent {
     object RegisterButtonClicked: SignUpPageUIEvent()
     object RegisterButtonClickedAfterFirebaseAuth: SignUpPageUIEvent()
     object LoginButtonClicked: SignUpPageUIEvent()
+    object AddEmployeeButtonClicked: SignUpPageUIEvent()
 }

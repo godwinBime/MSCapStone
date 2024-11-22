@@ -89,7 +89,6 @@ fun bottomNavbarContentScreen(
     verifyEmailViewModel: VerifyEmailViewModel,
     selectedIndex: Int, providerId: String, context: Context){
     Log.d(TAG, "selectedIndex in bottomNavbarContentScreen(): $selectedIndex...")
-
     when(selectedIndex){
         0 -> {
 //            getToast(context, action = "Home Nav button clicked!")

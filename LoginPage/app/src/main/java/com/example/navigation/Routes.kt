@@ -40,4 +40,6 @@ sealed class Routes(val route: String) {
     object DeleteProfileVerifyEmail: Routes("DeleteProfileVerifyEmail")
 
     object UserProfilePicture: Routes("UserProfilePicture")
+
+    object AddEmployee: Routes("AddEmployee")
 }

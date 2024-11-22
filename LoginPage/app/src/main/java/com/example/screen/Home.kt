@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.data.uistate.UserData
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
@@ -46,6 +47,7 @@ import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.example.loginpage.ui.component.NormalTextComponent
 import com.example.loginpage.ui.component.PhotoPickerComponent
 import com.example.loginpage.ui.component.getToast
+import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -72,19 +74,19 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                  timerViewModel: TimerViewModel = viewModel(),
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
-    val context = LocalContext.current
+//    val context = LocalContext.current
     val home = stringResource(id = R.string.home)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(
             signUpPageViewModel = signUpPageViewModel,
             providerId = "password"
         )
     }
+
     if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
         LaunchedEffect(Unit) {
             verifyEmailViewModel.resetOtpCode()
@@ -100,7 +102,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 navController = navController, providerId = providerId,
                 trueIndex = 0)
         },
-
+/*
         floatingActionButton = {
             FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
@@ -111,9 +113,10 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                     contentDescription = "Add"
                 )
             }
-        },
+        },*/
         topBar = {
-            HomeScreenTopAppBar(navController, home, action = "Home Screen",
+            HomeScreenTopAppBar(navController = navController,
+                title = home, action = "Home Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
@@ -141,20 +144,14 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)
                     NormalTextComponent(
-                        value = "Welcome, ${
-                            signUpPageViewModel.fullNames.substringBefore(
-                                " "
-                            )
-                        }"
+                        value = "Welcome, ${signUpPageViewModel.fullNames.substringBefore(delimiter = " ")}"
                     )
                 }else if (providerId == "google.com"){
 //                    PhotoPickerComponent(navController = navController)
 //                    Spacer(modifier = Modifier.height(80.dp))
 //                    GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                     NormalTextComponent(
-                        value = "Welcome, ${
-                            user?.displayName?.substringBefore(" ")
-                        }"
+                        value = "Welcome, ${user?.displayName?.substringBefore(delimiter = " ")}"
                     )
                 }else{
                     NormalTextComponent(value = stringResource(id = R.string.no_user_found))

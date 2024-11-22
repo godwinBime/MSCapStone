@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,8 +50,8 @@ fun ChangePasswordVerifyEmail(navController: NavHostController,
                               signUpPageViewModel: SignUpPageViewModel,
                               googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldChangePassword(navController,
-            homeViewModel, signUpPageViewModel)
+        ScaffoldChangePassword(navController = navController,
+            homeViewModel = homeViewModel, signUpPageViewModel = signUpPageViewModel)
         LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
             signUpPageViewModel = signUpPageViewModel)
     }
@@ -79,8 +80,9 @@ fun ScaffoldChangePassword(navController: NavHostController,
     }
 
     Scaffold(
-        topBar = { TopAppBarBeforeLogin(navController, "Change Password Verify Email",
-            true, action = "Enter Verification Code sent to your email.",
+        topBar = { TopAppBarBeforeLogin(navController = navController,
+            title = "Change Password Verify Email",
+            showBackIcon = true, action = "Enter Verification Code sent to your email.",
             homeViewModel = homeViewModel) },
         content = {
             Column(
@@ -143,8 +145,6 @@ fun ScaffoldChangePassword(navController: NavHostController,
                     if (timerViewModel.isMfaCounterFinished()){
                         verifyEmailViewModel.resetOtpCode()
                         codeStatus = context.getString(R.string.expired_otp)
-//                        timerViewModel.mfaResetTimer()
-//                        timerViewModel.resetTimer()
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))

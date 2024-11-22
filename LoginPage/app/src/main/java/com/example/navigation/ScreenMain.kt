@@ -13,6 +13,7 @@ import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.loginpage.MainActivity
 import com.example.loginpage.ui.component.getToast
+import com.example.screen.AddEmployee
 import com.example.screen.AuthenticatorAppVerification
 import com.example.screen.ChangePasswordVerifyEmail
 import com.example.screen.ChooseVerificationMethod
@@ -49,9 +50,10 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
-        getToast(context, "Partially Active Email/Password user detected", Toast.LENGTH_LONG)
-        startDestination = Routes.ChooseVerificationMethod.route
-//        startDestination = Routes.Home.route
+        getToast(context, "Partially Active Email/Password user detected",
+            Toast.LENGTH_LONG)
+//        startDestination = Routes.ChooseVerificationMethod.route
+        startDestination = Routes.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -190,12 +192,22 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
         composable(Routes.DeleteProfileVerifyEmail.route){
             DeleteProfileVerifyEmail(navController = navController,
                 homeViewModel = HomeViewModel(),
-                signUpPageViewModel = SignUpPageViewModel()
+                signUpPageViewModel = SignUpPageViewModel(),
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                )
             )
         }
 
         composable(Routes.UserProfilePicture.route) {
             UserProfilePicture(navController = navController,
+                googleSignInViewModel = GoogleSignInViewModel(
+                    repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
+                ))
+        }
+
+        composable(Routes.AddEmployee.route) {
+            AddEmployee(navController = navController,
                 googleSignInViewModel = GoogleSignInViewModel(
                     repository = AuthenticationRepositoryImpl(FirebaseAuth.getInstance())
                 ))

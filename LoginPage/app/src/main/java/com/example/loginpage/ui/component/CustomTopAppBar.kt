@@ -120,9 +120,9 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                         }
                         "ChangePassword" -> {
                             navController.navigate(Routes.Login.route)
-                            homeViewModel.logOut(navController = navController,
-                                signUpPageViewModel = signUpPageViewModel,
-                                context = context)
+//                            homeViewModel.logOut(navController = navController,
+//                                signUpPageViewModel = signUpPageViewModel,
+//                                context = context)
                             getToast(context, "(ChangePassword()) Please Login to continue.")
                         }
                         "Login" -> {

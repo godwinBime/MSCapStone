@@ -68,30 +68,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-    val context = LocalContext.current
-
-    /*
-    GeneralBottomAppBar(navController = navController)
-    val name = "\nSettings for ${
-        if (providerId == "password") {
-            signUpPageViewModel.fullNames.substringBefore(" ")
-        }else{
-            user?.displayName?.substringBefore(" ")
-        }
-    }"
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Spacer(modifier = Modifier.height(80.dp))
-        NormalTextComponent(value = name)
-
-        Spacer(modifier = Modifier.height(80.dp))
-    }
-    */
+//    val context = LocalContext.current
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
@@ -115,7 +92,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 navController = navController, providerId = providerId,
                 trueIndex = 4)
         },
-
+/*
         floatingActionButton = {
             FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
                 shape = RoundedCornerShape(12.dp),
@@ -125,7 +102,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                     contentDescription = "Add"
                 )
             }
-        },
+        },*/
         topBar = { HomeScreenTopAppBar(navController, title = settingTitle,
             action = "Settings Screen",
             navigationIconClicked = {

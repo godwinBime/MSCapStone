@@ -64,23 +64,16 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
     val email = stringResource(id = R.string.email)
     val phoneNumber = stringResource(id = R.string.phone_number)
     val password = stringResource(id = R.string.password)
-//    val confirmPassword = stringResource(id = R.string.confirm_password)
-
     val emailPainterResource = painterResource(id = R.drawable.email)
     val personPainterResource = painterResource(id = R.drawable.person)
     val phoneNumberPainterResource = painterResource(id = R.drawable.phone)
     val passwordPainterResource = painterResource(id = R.drawable.password)
-//    val confirmPasswordPainterResource = painterResource(id = R.drawable.password)
-//    val googlePaintResource = "painterResource(id = R.drawable.ic_google)"
-//    val gitHubPaintResource = "painterResource(id = R.drawable.ic_gitHub)"
-//    val facebookPaintResource = "painterResource(id = R.drawable.ic_facebook)"
 
     val isEnabled = signUpPageViewModel.firstNameValidationsPassed.value &&
             signUpPageViewModel.lastNameValidationsPassed.value &&
             signUpPageViewModel.emailValidationsPassed.value &&
             signUpPageViewModel.phoneNumberValidationsPassed.value &&
             signUpPageViewModel.passwordValidationsPassed.value &&
-            //signUpPageViewModel.confirmPasswordValidationsPassed.value &&
             signUpPageViewModel.privacyPolicyValidationPassed.value
 
     val createAccount = stringResource(id = R.string.create_account)
@@ -171,7 +164,8 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
+                    action = "SignUp"
                 )
 
                 CheckBoxComponent(value = "SignUp", navController = navController,

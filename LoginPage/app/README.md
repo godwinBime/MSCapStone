@@ -26,3 +26,9 @@ the user can then use it as the new password.
 When a user is authenticated, if the user wants to change the password, 
 the user gets verified one more time, then a password reset option within 
 the app is provided which then lets the user change the password.
+
+- OTP Code Expiry
+Whenever a OTP is sent to the user's email, 
+the users has 60 seconds to input it before ir expires.
+The user is provided with a OTP resend code button each time the code expires.
+

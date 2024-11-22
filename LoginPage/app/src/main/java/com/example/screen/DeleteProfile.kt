@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,8 @@ import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.ProfileViewModel
+import com.example.data.viewmodel.TimerViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DividerTextComponent
 import com.example.loginpage.ui.component.DrawerContentComponent
@@ -54,14 +57,17 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun DeleteProfile(navController: NavHostController, homeViewModel: HomeViewModel = viewModel(),
+fun DeleteProfile(navController: NavHostController,
+                  homeViewModel: HomeViewModel = viewModel(),
                   signUpPageViewModel: SignUpPageViewModel = viewModel(),
                   googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        ScaffoldDeleteProfileWithTopBar(navController, homeViewModel, scrollState)
+        ScaffoldDeleteProfileWithTopBar(navController = navController,
+            homeViewModel = homeViewModel,
+            scrollState = scrollState)
         LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
             signUpPageViewModel = signUpPageViewModel)
     }
@@ -70,12 +76,14 @@ fun DeleteProfile(navController: NavHostController, homeViewModel: HomeViewModel
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
-                                    homeViewModel: HomeViewModel,
+                                    homeViewModel: HomeViewModel = viewModel(),
                                     scrollState: ScrollState,
+                                    verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                                    timerViewModel: TimerViewModel = viewModel(),
                                     updateProfileViewModel: ProfileViewModel = viewModel(),
                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
 
-    val context = LocalContext.current
+//    val context = LocalContext.current
     val warning = "\n${stringResource(R.string.delete_warning)}"
     val deleteTitle = stringResource(id = R.string.delete_profile)
     val scaffoldState = rememberScaffoldState()
@@ -86,6 +94,14 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
             providerId = "password")
+    }
+
+    if (timerViewModel.isMfaCounterFinished() || timerViewModel.isTimerFinished()) {
+        LaunchedEffect(Unit) {
+            verifyEmailViewModel.resetOtpCode()
+            timerViewModel.resetTimer()
+            timerViewModel.mfaResetTimer()
+        }
     }
 /*
     GeneralBottomAppBar(navController = navController, providerId = providerId)
@@ -154,7 +170,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
             GeneralBottomAppBar(navController = navController, providerId = providerId,
                 trueIndex = 2)
         },
-
+/*
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { getToast(context, "Add floating button clicked!") },
@@ -166,7 +182,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     contentDescription = "Add"
                 )
             }
-        },
+        },*/
         topBar = {
             HomeScreenTopAppBar(navController, title = deleteTitle, action = "DeleteProfile Screen",
                 navigationIconClicked = {
@@ -176,6 +192,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                 }
             )
         },
+        /*
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen, /*Gesture is on enabled when drawer is in open state*/
         drawerContent = {
             DrawerContentComponent(
@@ -183,7 +200,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                 homeViewModel = homeViewModel,
 //                headerTitle = stringResource(id = R.string.delete_profile)
             )
-        },
+        },*/
        content = {
             Column(
                 modifier = Modifier

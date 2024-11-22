@@ -1,6 +1,6 @@
 package com.example.data.uistate
 
-import android.net.Uri
+//import android.net.Uri
 
 data class SignUpPageUIState (
     var firstName: String = "",
@@ -38,6 +38,6 @@ data class UserData(
 //    var profilePicture: Uri? = null
 )
 
-data class ProfilePicture(
-    var profilePicture: Uri? = null
-)
+//data class ProfilePicture(
+//    var profilePicture: Uri? = null
+//)

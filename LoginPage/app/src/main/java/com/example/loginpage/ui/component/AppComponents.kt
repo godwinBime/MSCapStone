@@ -113,6 +113,7 @@ import com.google.firebase.auth.FirebaseUser
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
+import com.example.data.local.entities.navigationItemList
 import com.example.data.uistate.UserProfilePictureData
 import kotlinx.coroutines.delay
 
@@ -126,6 +127,7 @@ fun LoadingScreenComponent(
     profileViewModel: ProfileViewModel = viewModel(),
     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
     homeViewModel: HomeViewModel = viewModel()){
+
     val googleSignInState = googleSignInViewModel.googleState.value
     if (signUpPageViewModel.signInSignUpInProgress.value ||
         profileViewModel.updateProfileInProgress.value ||
@@ -196,8 +198,8 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             unfocusedIndicatorColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(20.dp),
-        keyboardOptions = if (action == "VerifyAndGotoHomeScreen" ||
-            action == "SMSCode" || action == "DeleteProfile" ||
+        keyboardOptions = if (action == "VerifyAndGotoHomeScreen" || action == "SignUp" ||
+            action == "SMSCode" || action == "DeleteProfile" || action == "AddEmployee" ||
             action == "ChangePasswordVerifyEmail" || action == "AuthenticatorAppVerification") {
             KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
@@ -444,27 +446,25 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                           navController.navigate(Routes.Home.route)
                       }
                       4 -> {
-                          if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()) {
+                          if (timerViewModel.isTimerFinished() && timerViewModel.isMfaCounterFinished()) {
                               getToast(context = context, "Resending OTP code")
+                              timerViewModel.resetTimer()
+                              timerViewModel.mfaResetTimer()
                               val email = auth.currentUser?.email?.let { otpEmailTask ->
                                       EmailVerifyUIState(otpEmailTask)
                                   }
                               Log.d(TAG, "Resending OTP to: ${email?.to}")
                               if (email != null) {
-//                                  timerViewModel.mfaResetTimer()
-//                                  timerViewModel.resetTimer()
-                                  timerViewModel.mfaStartTimer(timerDuration = 1000)
                                   verifyEmailViewModel.sendOTPToEmail(
                                       email = email,
                                       navController = navController,
                                       type = type
                                   )
+                                  timerViewModel.mfaStartTimer(timerDuration = 1000)
                               }
                           } else {
                               Log.d(TAG, "Timer triggered")
                               timerViewModel.startTimer(timerDuration = 1000)
-//                              timerViewModel.mfaResetTimer()
-//                              timerViewModel.mfaStartTimer(timerDuration = 1000)
                               Log.d(TAG, "Time left: ${timerViewModel.timeLeft.value} seconds")
                           }
                       }
@@ -494,7 +494,6 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
     }
 }
 
-
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ButtonComponent(navController: NavHostController,
@@ -507,7 +506,7 @@ fun ButtonComponent(navController: NavHostController,
                     updateProfileViewModel: ProfileViewModel = viewModel(),
                     signUpPageViewModel: SignUpPageViewModel = viewModel(),
                     originalPage: String = "None", userType: String = ""){
-    val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
+//    val email = EmailVerifyUIState(verifyEmailViewModel.emailAddress)
     val context = LocalContext.current.applicationContext
     val googleContext = LocalContext.current
 
@@ -521,21 +520,26 @@ fun ButtonComponent(navController: NavHostController,
         when(rank){
             0 -> {
                 onButtonClicked.invoke()
-                Log.d(TAG, "From $originalPage in ButtonComponent Going to choose verification method with email: ${verifyEmailViewModel.auth.currentUser?.email}")
             }
             1 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
-                verifyEmailViewModel.sendOTPToEmail(
-                    email = email,
-                    navController = navController,
-                    type = "MFAVerifyEmail")
+                /*if (originalPage == "SignUp.kt") {
+                    verifyEmailViewModel.sendOTPToEmail(
+                        email = email,
+                        navController = navController,
+                        type = "MFAVerifyEmail"
+                    )
+                }else if (originalPage == "AddEmployee.kt"){
+                    Log.d(TAG, "From $originalPage in ButtonComponent")
+                }*/
             }
             2 -> {
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
-                verifyEmailViewModel.passwordResetLink(email = verifyEmailViewModel.emailAddress)
-                navController.navigate(Routes.ContinueToPasswordChange.route)
+                verifyEmailViewModel.passwordResetLink(
+                    email = verifyEmailViewModel.emailAddress,
+                    navController = navController)
             }
             3 -> {
                 onButtonClicked.invoke()
@@ -593,6 +597,8 @@ fun ButtonComponent(navController: NavHostController,
                     updateProfileViewModel.deleteCurrentProfile(
                         navController = navController,
                         signUpPageViewModel = signUpPageViewModel,
+                        homeViewModel = homeViewModel,
+                        context = context,
                         providerId = userType
                     )
                 }else if (userType == "google.com"){
@@ -601,7 +607,6 @@ fun ButtonComponent(navController: NavHostController,
                         context = googleContext, homeViewModel = homeViewModel,
                         providerId = userType)
                 }
-                getToast(context, action = "Round Delete Button clicked!")
             }
             10 -> {
                 onButtonClicked.invoke()
@@ -613,6 +618,9 @@ fun ButtonComponent(navController: NavHostController,
                 Log.d(TAG, "Inside DeleteProfileVerifyEmail statement---" )
                 verifyEmailViewModel.verifySentOTPCode(
                     navController = navController, destination = "DeleteProfile")
+            }
+            12 -> {
+                onButtonClicked.invoke()
             }
         }
     },
@@ -907,7 +915,7 @@ fun DrawerContentComponent(navController: NavHostController,
                 context = context, navController = navController)
         }
     }
-    NavigationDrawerBody(navigationDrawerItems = homeViewModel.navigationItemList,
+    NavigationDrawerBody(navigationDrawerItems = navigationItemList,
         onNavigationItemClicked = {
             when(it.title){
                 "Home" -> {
@@ -948,7 +956,7 @@ fun DrawerContentComponent(navController: NavHostController,
                         getToast(context = context, "Error: Auth is neither Google or email/password")
                     }
                 }
-                "Setting" -> {
+                "Settings" -> {
                     Log.d("Setting ", "Inside onNavigationItemClicked Settings = ${it.itemId}, ${it.title}")
                     navController.navigate(Routes.Settings.route)
                 }
@@ -1059,11 +1067,11 @@ fun downloadImage(imagePath: String,
                 isCallValid = isCallValid,
                 onSuccess = { uri ->
                     downloadedImageUri = uri
-                    Toast.makeText(
+                    /*Toast.makeText(
                         context,
                         "Image Downloaded successfully....",
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 },
                 onFailure = {
                     Toast.makeText(
@@ -1097,19 +1105,19 @@ fun UploadPicture(imageUri: Uri?, isCallValid: Boolean, navController: NavHostCo
                 isCallValid = isCallValid, navController = navController,
                 onSuccess = {
                     onSuccess()
-                    Toast.makeText(
+                    /*Toast.makeText(
                         context,
                         "Image Uploaded successfully...${profileViewModel.uploadProgress.value}%",
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 },
                 onFailure = {
                     onFailure()
-                    Toast.makeText(
+                    /*Toast.makeText(
                         context,
                         "Image Upload Failed...",
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 })
 
         }else{
@@ -1228,6 +1236,8 @@ fun PhotoPickerComponent(navController: NavHostController,
 @Composable
 fun ProfilePictureButtonComponent(navController: NavHostController,
                                   profileViewModel: ProfileViewModel = viewModel(),
+                                  homeViewModel: HomeViewModel = viewModel(),
+                                  signUpPageViewModel: SignUpPageViewModel = viewModel(),
                                   onClick: () -> Unit){
     val context = LocalContext.current
     val user = FirebaseAuth.getInstance().uid
@@ -1253,14 +1263,19 @@ fun ProfilePictureButtonComponent(navController: NavHostController,
             buttonIconPainterResource = painterResource(id = R.drawable.baseline_delete_24),
             navController = navController){
             profileViewModel.deleteProfilePicture(imagePath = imagePath,
+                homeViewModel = homeViewModel,
+                action = "DefaultProfilePicture",
+                signUpPageViewModel = signUpPageViewModel,
+                context = context,
                 navController = navController)
-            getToast(context = context, "Delete Profile Picture")
+//            getToast(context = context, "Delete Profile Picture")
         }
     }
     Spacer(modifier = Modifier
         .height(120.dp))
 }
 
+/*
 @Composable
 fun PopUpMessageComposable(isShowDialogClicked: Boolean, action: String = "None",
                            message: String = "None",
@@ -1296,11 +1311,13 @@ fun PopUpMessageComposable(isShowDialogClicked: Boolean, action: String = "None"
         }
     }
 }
+*/
 
 @Composable
 fun ProfileButtonComponent(action: String = "None", btnName: String = "None",
                            buttonIconPainterResource: Painter,
-                           navController: NavHostController, onClick: () -> Unit){
+                           navController: NavHostController,
+                           onClick: () -> Unit){
     Button(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Gray
@@ -1347,26 +1364,9 @@ fun PopUpButtonComponent(description: String = "Dismiss"){
 }
 
 @Composable
-fun CheckTimer(timerViewModel: TimerViewModel = viewModel()){
-    Text(
-        text = stringResource(R.string.request_code) + " " +
-                timerViewModel.timeLeft.value + " " + stringResource(R.string.timer_type),
-        color = Color.Red
-    )
-}
-
-@Composable
 fun OtpNotification(){
     Text(
         text = stringResource(id = R.string.otp_expiration_warning),
         color = Color.Black
-    )
-}
-
-@Composable
-fun OtpCodeExpired(timerViewModel: TimerViewModel = viewModel()){
-    Text(
-        text = stringResource(id = R.string.expired_otp),
-        color = Color.Red
     )
 }
