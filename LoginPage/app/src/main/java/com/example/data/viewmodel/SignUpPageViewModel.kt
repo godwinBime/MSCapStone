@@ -29,6 +29,7 @@ class SignUpPageViewModel: ViewModel() {
     var verificationCodeValidationsPassed = mutableStateOf(false)
     var privacyPolicyValidationPassed = mutableStateOf(false)
     var signInSignUpInProgress = mutableStateOf(false)
+    var authError = mutableStateOf(" ")
 
     var fullNames = ""
     var phoneNumber = ""
@@ -286,6 +287,7 @@ class SignUpPageViewModel: ViewModel() {
                 }
                 .addOnFailureListener {
                     signInSignUpInProgress.value = false
+                    authError.value = it.message.toString()
                     Log.d(TAG, "Inside Firebase Signup addOnFailureListener")
                     Log.d(TAG, "SignUp Exception = ${it.message}")
                     Log.d(TAG, "SignUp Exception = ${it.localizedMessage}")
@@ -301,6 +303,7 @@ class SignUpPageViewModel: ViewModel() {
         firebaseUser.signOut()
         navController.navigate(Routes.Login.route)
     }
+
 
     private fun storeUserData(
         userId: String?, firstName: String,

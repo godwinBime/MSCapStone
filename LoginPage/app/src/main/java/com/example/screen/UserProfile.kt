@@ -179,7 +179,8 @@ fun ScaffoldUserProfileWithTopBar(
 //                        PhotoPickerComponent(navController = navController)
 //                        GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                         Spacer(modifier = Modifier.height(20.dp))
-                        NormalTextComponent(value = "${FirebaseAuth.getInstance().currentUser?.displayName} ")
+                        NormalTextComponent(value = "Full Names: ${user?.displayName}")
+                        NormalTextComponent(value = "Email: ${user?.email} ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
                     }

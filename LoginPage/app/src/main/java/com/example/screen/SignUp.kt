@@ -13,9 +13,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -177,7 +179,12 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                     }
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = signUpPageViewModel.authError.value,
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,
@@ -199,7 +206,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
 
                 DividerTextComponent()
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Box(modifier = Modifier
                     .fillMaxSize()
@@ -209,6 +216,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                     val loginText = stringResource(id = R.string.login)
                     ClickableLoginOrLogOutText(navController, initialText, loginText, rank = 0)
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     )

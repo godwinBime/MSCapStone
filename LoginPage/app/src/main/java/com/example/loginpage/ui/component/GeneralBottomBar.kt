@@ -101,6 +101,7 @@ fun bottomNavbarContentScreen(
                 navController.navigate(Routes.UserProfile.route)
             }else if (providerId == "google.com"){
                 getToast(context = context, "Use Your Google Account for this action.")
+                navController.navigate(Routes.UserProfile.route)
             }else{
                 getToast(context = context, "No email provided for edit action.")
             }

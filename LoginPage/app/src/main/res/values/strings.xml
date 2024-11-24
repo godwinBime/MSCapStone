@@ -8,6 +8,7 @@
     <string name="login">Login</string>
     <string name="signup">SignUp</string>
     <string name="verify">Verify</string>
+    <string name="dismiss">Dismiss</string>
     <string name="send">Send</string>
     <string name="admin_profile">Admin Profile</string>
     <string name="add_employee">Add Employee</string>
@@ -48,6 +49,7 @@
     <string name="profile">Profile</string>
     <string name="choose_profile_picture">Choose a Picture From Gallery</string>
     <string name="sign_in_with">Sign in with:</string>
+    <string name="sign_in">Sign In</string>
     <string name="cancel">Cancel</string>
     <string name="forgot_password">Forget Password?</string>
     <string name="profile_picture">Profile Picture</string>
@@ -63,6 +65,8 @@
     <string name="code_expiration">This code will expire in shortly.</string>
     <string name="motivation">Enjoy using the Capstone App.</string>
     <string name="sincerely">Sincerely,</string>
+    <string name="theme_instructions_heading">Theme Recommendation</string>
+    <string name="theme_instructions_body">Using light theme for better experience.</string>
     <string name="capstone_team">The Capstone App Team.</string>
     <string name="use_your_google_account">Use Your Google Account for this action.</string>
     <string name="profile_picture_change_notice">Profile Picture Successfully Changed</string>

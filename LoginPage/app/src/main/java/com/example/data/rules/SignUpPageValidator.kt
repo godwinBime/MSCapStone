@@ -48,7 +48,7 @@ object SignUpPageValidator {
 
     fun validateVerificationCode(verificationCode: String): SignUpValidationResult{
         return SignUpValidationResult(
-            (verificationCode.isNotEmpty() && verificationCode.length > 2)
+            (verificationCode.isNotEmpty() && verificationCode.length > 3)
         )
     }
 

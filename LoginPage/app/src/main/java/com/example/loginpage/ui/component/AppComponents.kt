@@ -40,8 +40,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Card
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.CircularProgressIndicator
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -62,6 +65,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,6 +80,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -93,11 +98,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.data.local.entities.navigationItemList
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
 import com.example.data.viewmodel.GoogleSignInViewModel
@@ -110,12 +114,7 @@ import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.res.stringResource
-import com.example.data.local.entities.navigationItemList
-import com.example.data.uistate.UserProfilePictureData
-import kotlinx.coroutines.delay
+import kotlin.math.log
 
 private val TAG = VerifyEmailViewModel::class.simpleName
 var changePasswordEmail: String = ""
@@ -176,7 +175,7 @@ fun HeadingTextComponent(value: String = "None"){
         color = Color.Black, // if (isSystemInDarkTheme()) Color.White else Color.Black,
         textAlign = TextAlign.Center
     )
-    Spacer(modifier = Modifier.height(20.dp))
+    Spacer(modifier = Modifier.height(10.dp))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -257,7 +256,7 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
                              errorStatus: Boolean = false,
                              updateProfileViewModel: ProfileViewModel = viewModel()){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
-    val showPassword = remember { mutableStateOf(false) }
+    val showPassword = rememberSaveable { mutableStateOf(false) }
 
     TextField(
         modifier = Modifier
@@ -309,7 +308,7 @@ fun MyConfirmPasswordFieldComponent(labelValue: String, painterResource: Painter
                                     errorStatus: Boolean = false,
                                     updateProfileViewModel: ProfileViewModel = viewModel()){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
-    val confirmShowPassword = remember { mutableStateOf(false) }
+    val confirmShowPassword = rememberSaveable { mutableStateOf(false) }
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -694,12 +693,12 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
                     "MFAAuthenticatorApp" -> {
                         onButtonClicked.invoke()
 //                        navController.navigate(Routes.AuthenticatorAppVerification.route)
-                        getToast(context, action = "AuthenticatorAppVerification Coming soon!")
+                        getToast(context, action = "AuthenticatorAppVerification Coming soon use email option to get verified")
                     }
                     "MFASMSVerification" -> {
                         onButtonClicked.invoke()
 //                        navController.navigate(Routes.SMSVerification.route)
-                        getToast(context, action = "SMSVerification coming soon!")
+                        getToast(context, action = "SMSVerification coming soon, use email option to get verified")
                     }
                     "MFAVerifyEmail" -> {
                         onButtonClicked.invoke()
@@ -1074,11 +1073,11 @@ fun downloadImage(imagePath: String,
                     ).show()*/
                 },
                 onFailure = {
-                    Toast.makeText(
+                    /*Toast.makeText(
                         context,
                         "Image Download Failed...",
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 })
         } else {
             downloadedImageUri = uri?:profilePictureUri?.userProfilePictureDataImageUri
@@ -1343,8 +1342,51 @@ fun ProfileButtonComponent(action: String = "None", btnName: String = "None",
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PopUpButtonComponent(description: String = "Dismiss"){
+fun ThemeInstructionDialogComponent(showDialog: Boolean = false){
+    var loginDialog by rememberSaveable { mutableStateOf(false) }
+    var placeholderDialog by rememberSaveable { mutableStateOf(true) }
+
+    placeholderDialog = showDialog //does nothing
+    LaunchedEffect(Unit) {
+        loginDialog = true
+    }
+    Column (
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        if (loginDialog){
+            AlertDialog(
+                onDismissRequest = {},
+                title = {
+                    Text(text = stringResource(id = R.string.theme_instructions_heading))
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.theme_instructions_body),
+                        fontWeight = FontWeight.Normal
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        onClick = { loginDialog = false}
+                    ) {
+                        PopUpButtonComponent(description = stringResource(id = R.string.dismiss))
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun PopUpButtonComponent(description: String = "Default Btn"){
     Box(modifier = Modifier
         .heightIn(45.dp)
         .width(120.dp)
@@ -1370,3 +1412,4 @@ fun OtpNotification(){
         color = Color.Black
     )
 }
+

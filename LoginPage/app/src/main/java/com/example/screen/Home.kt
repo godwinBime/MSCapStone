@@ -143,9 +143,11 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(80.dp))
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)
+                    if (signUpPageViewModel.fullNames != null){
                     NormalTextComponent(
                         value = "Welcome, ${signUpPageViewModel.fullNames.substringBefore(delimiter = " ")}"
                     )
+                        }
                 }else if (providerId == "google.com"){
 //                    PhotoPickerComponent(navController = navController)
 //                    Spacer(modifier = Modifier.height(80.dp))

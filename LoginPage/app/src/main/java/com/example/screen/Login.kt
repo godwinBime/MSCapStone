@@ -18,8 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,8 +48,12 @@ import com.example.loginpage.ui.component.LoadingScreenComponent
 import com.example.loginpage.ui.component.MyPasswordFieldComponent
 import com.example.loginpage.ui.component.MyTextFieldComponent
 import com.example.loginpage.ui.component.NormalTextComponent
+import com.example.loginpage.ui.component.ThemeInstructionDialogComponent
 import com.example.loginpage.ui.component.TopAppBarBeforeLogin
+import com.example.util.isFirstLaunch
+import com.example.util.setFirstLaunchFlag
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.math.log
 
 @Composable
 fun Login(navController: NavHostController,
@@ -76,6 +85,19 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             scrollState: ScrollState,
                             signUpPageViewModel: SignUpPageViewModel = viewModel(),
                             verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
+    val context = LocalContext.current
+    val showDialog = isFirstLaunch(context = context)
+
+    LaunchedEffect(showDialog) {
+        if (showDialog) {
+            setFirstLaunchFlag(context = context, isFirstLaunch = false)
+        }
+    }
+
+    if (showDialog) {
+        ThemeInstructionDialogComponent(showDialog = showDialog)
+    }
+
     if (timerViewModel.isMfaCounterFinished() || timerViewModel.isTimerFinished()) {
         LaunchedEffect(Unit) {
             verifyEmailViewModel.resetOtpCode()
@@ -100,7 +122,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 NormalTextComponent(value = stringResource(id = R.string.welcome))
-                HeadingTextComponent(value = "Sign in")
+                HeadingTextComponent(value = stringResource(id = R.string.sign_in))
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -134,7 +156,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
                 )
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Box(modifier = Modifier
                     .fillMaxSize()
@@ -153,23 +175,23 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+//                Spacer(modifier = Modifier.height(20.dp))
+//
+//                GeneralClickableTextComponent(
+//                    value = stringResource(id = R.string.code),
+//                    navController = navController, 7)
 
-                GeneralClickableTextComponent(
-                    value = stringResource(id = R.string.code),
-                    navController = navController, 7)
-
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 GeneralClickableTextComponent(
                     value = stringResource(id = R.string.forgot_password),
                     navController = navController, 2)
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 DividerTextComponent(type = stringResource(id = R.string.login))
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 NormalTextComponent(value = stringResource(id = R.string.sign_in_with))
 
@@ -182,7 +204,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     Spacer(modifier = Modifier.width(5.dp))
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 DividerTextComponent(type = stringResource(id = R.string.login))
 
@@ -194,8 +216,11 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                     contentAlignment = Alignment.Center) {
                     val initialText = stringResource(id = R.string.not_registered)
                     val loginText = stringResource(id = R.string.create_account)
-                    ClickableLoginOrLogOutText(navController, initialText, loginText, rank = 1)
+                    ClickableLoginOrLogOutText(navController = navController,
+                        initialText = initialText,
+                        loginText = loginText, rank = 1)
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     )
