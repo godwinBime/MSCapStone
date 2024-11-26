@@ -102,21 +102,10 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 navController = navController, providerId = providerId,
                 trueIndex = 0)
         },
-/*
-        floatingActionButton = {
-            FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
-                shape = RoundedCornerShape(12.dp),
-                containerColor = Color(0xFF838282)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
-                )
-            }
-        },*/
         topBar = {
             HomeScreenTopAppBar(navController = navController,
-                title = home, action = "Home Screen",
+                title = home,
+                action = "Home Screen",
             navigationIconClicked = {
                 coroutineScope.launch {
                     scaffoldState.drawerState.open()
@@ -143,17 +132,15 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 Spacer(modifier = Modifier.height(80.dp))
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)
-                    if (signUpPageViewModel.fullNames != null){
                     NormalTextComponent(
-                        value = "Welcome, ${signUpPageViewModel.fullNames.substringBefore(delimiter = " ")}"
+                        value = "Hi, ${signUpPageViewModel.fullNames.substringBefore(delimiter = " ")}"
                     )
-                        }
                 }else if (providerId == "google.com"){
 //                    PhotoPickerComponent(navController = navController)
 //                    Spacer(modifier = Modifier.height(80.dp))
 //                    GoogleAccountProfilePictureComponent(user = user, size = 120.dp)
                     NormalTextComponent(
-                        value = "Welcome, ${user?.displayName?.substringBefore(delimiter = " ")}"
+                        value = "Hi, ${user?.displayName?.substringBefore(delimiter = " ")}"
                     )
                 }else{
                     NormalTextComponent(value = stringResource(id = R.string.no_user_found))

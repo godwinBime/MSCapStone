@@ -92,18 +92,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                 navController = navController, providerId = providerId,
                 trueIndex = 4)
         },
-/*
-        floatingActionButton = {
-            FloatingActionButton(onClick = { getToast(context, "Add floating button clicked!") },
-                shape = RoundedCornerShape(12.dp),
-                containerColor = Color(0xFF838282)            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add"
-                )
-            }
-        },*/
-        topBar = { HomeScreenTopAppBar(navController, title = settingTitle,
+        topBar = { HomeScreenTopAppBar(navController = navController, title = settingTitle,
             action = "Settings Screen",
             navigationIconClicked = {
                 coroutineScope.launch {

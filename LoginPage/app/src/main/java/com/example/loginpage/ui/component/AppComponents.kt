@@ -430,15 +430,15 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
             onClick = {
                   when (rank){
                       0  -> {
-                          getToast(context = context, "Nav to login")
+//                          getToast(context = context, "Nav to login")
                           navController.navigate(Routes.Login.route)
                       }
                       1 -> {
-                          getToast(context = context, "Nav to SignUp")
+//                          getToast(context = context, "Nav to SignUp")
                           navController.navigate(Routes.SignUp.route)
                       }
                       2 -> {
-                          getToast(context = context, "Nav to Reset Password")
+//                          getToast(context = context, "Nav to Reset Password")
                           navController.navigate(Routes.ForgotPassword.route)
                       }
                       3 -> {

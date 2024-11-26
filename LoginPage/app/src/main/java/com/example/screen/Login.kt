@@ -1,6 +1,8 @@
 package com.example.screen
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
