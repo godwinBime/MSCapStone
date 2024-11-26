@@ -111,9 +111,8 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
     Scaffold(
         topBar = { TopAppBarBeforeLogin(
             navController = navController, stringResource(id = R.string.master_title),
-            false, action = "Fill the email and password above to login.",
-            homeViewModel = homeViewModel,
-            screenName = "Login")},
+            showBackIcon = false, action = "Fill the email and password above to login.",
+            homeViewModel = homeViewModel)},
         content = {
             Column(
                 modifier = Modifier

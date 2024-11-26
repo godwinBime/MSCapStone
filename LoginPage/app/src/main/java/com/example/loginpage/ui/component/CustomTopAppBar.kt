@@ -1,8 +1,11 @@
 package com.example.loginpage.ui.component
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.activity.addCallback
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +28,7 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
@@ -90,9 +95,42 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                          signUpPageViewModel: SignUpPageViewModel = viewModel(),
                          screenName: String = "DefaultScreen"){
     val context = LocalContext.current
+    val lifeCycleOwner = LocalLifecycleOwner.current
     val currentScreen = navController.currentBackStackEntry?.destination?.route
+    val backStackDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     homeViewModel.checkForActiveSession()
+    LaunchedEffect(Unit) {
+        backStackDispatcher?.addCallback(lifeCycleOwner){
+            if (currentScreen == "Login"){
+                getToast(context = context, "Logging user out and Closing App...")
+                homeViewModel.logOut(
+                    navController = navController,
+                    signUpPageViewModel = signUpPageViewModel,
+                    context = context
+                )
+                navController.navigate(Routes.Login.route){
+                    popUpTo(Routes.Login.route){
+                        inclusive = true
+                    }
+                }
+                (context as? Activity)?.finish()
+            }else{
+                navController.popBackStack()
+            }
+        }
+    }
     BackHandler {
+        if (navController.previousBackStackEntry != null){
+            getToast(context = context, "Inside Login screen and backstack is not empty...")
+            navController.navigate(Routes.Login.route){
+                popUpTo(Routes.Login.route){
+                    inclusive = true
+                }
+            }
+        }else{
+            navController.navigate(Routes.Login.route)
+            navController.popBackStack()
+        }
         if (currentScreen == "Login"){
             getToast(context = context, "Inside Login screen...")
             if (homeViewModel.isUserLoggedIn.value == true) {
@@ -101,10 +139,15 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                     signUpPageViewModel = signUpPageViewModel,
                     context = context
                 )
+                (context as? Activity)?.finish()
                 getToast(context = context, "Logged user out...")
+            }else{
+                getToast(context = context, "No Logged-in user found...")
             }
         }
-        navController.popBackStack()
+        if (currentScreen != "Login"){
+            navController.popBackStack()
+        }
     }
     TopAppBar(
         backgroundColor = Color.LightGray,
@@ -141,12 +184,6 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
 //                                signUpPageViewModel = signUpPageViewModel,
 //                                context = context)
 //                            getToast(context, "(ChangePassword()) Please Login to continue.")
-                        }
-                        "Login" -> {
-                            homeViewModel.logOut(navController = navController,
-                                signUpPageViewModel = signUpPageViewModel,
-                                context = context)
-                            getToast(context, "(Login()) Please Login to continue.")
                         }
                     }
                 }) {

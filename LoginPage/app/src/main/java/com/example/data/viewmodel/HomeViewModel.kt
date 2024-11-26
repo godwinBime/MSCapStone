@@ -24,13 +24,6 @@ class HomeViewModel: ViewModel() {
     private val TAG = HomeViewModel::class.simpleName
     val isUserLoggedIn : MutableLiveData<Boolean> = MutableLiveData()
     var checkActiveSessionInProgress = mutableStateOf(false)
-//    val sessionJustResumed : MutableLiveData<Boolean> = MutableLiveData(false)
-//    val sessionJustStarted : MutableLiveData<Boolean> = MutableLiveData(false)
-
-//    init {
-//
-//        homeSessionJustStarted.value = true
-//    }
 
     fun googleSignInOptions(): GoogleSignInOptions {
         val gso = GoogleSignInOptions.Builder()
@@ -85,11 +78,6 @@ class HomeViewModel: ViewModel() {
         }
     }
 
-    // Log newly created user out
-    fun logNewUserOut(navController: NavHostController){
-        signOut(navController = navController)
-    }
-
     private fun signOut(navController: NavHostController){
         val firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null) {
@@ -98,7 +86,6 @@ class HomeViewModel: ViewModel() {
                 if (it.currentUser == null) {
                     isUserLoggedIn.value = false
                     navController.navigate(Routes.Login.route)
-//                    navController.popBackStack()
                     Log.d(TAG, "Inside sign out success state...")
                 } else {
                     Log.d(TAG, "Logged-In User: ${it.currentUser!!.displayName}")
