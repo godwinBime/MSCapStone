@@ -2,18 +2,20 @@ package com.example.data.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.data.rules.SignUpPageValidator
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.SignUpPageUIState
 import com.example.data.uistate.UserData
 import com.example.navigation.Routes
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class SignUpPageViewModel: ViewModel() {
     private val TAG = SignUpPageViewModel::class.simpleName
@@ -117,7 +119,7 @@ class SignUpPageViewModel: ViewModel() {
             }
 
             is SignUpPageUIEvent.AddEmployeeButtonClicked -> {
-                signUp(navController = navController)
+                newEmployee(navController = navController)
             }
         }
     }
@@ -252,6 +254,38 @@ class SignUpPageViewModel: ViewModel() {
         }
     }
 
+    private fun newEmployee(navController: NavHostController){
+        signInSignUpInProgress.value = true
+        viewModelScope.launch {
+            createEmployee(navController = navController)
+        }
+    }
+
+    private suspend fun createEmployee(navController: NavHostController){
+        val auth = FirebaseAuth.getInstance()
+        val email = signUpPageUIState.value.email
+        val password = signUpPageUIState.value.password
+        try {
+            val employeeCredentials = auth.createUserWithEmailAndPassword(email, password).await()
+            val employeeId = employeeCredentials.user?.uid
+            if (employeeId != null){
+                Log.d(TAG, "createEmployee() ... storing employee in FireStore...")
+                Log.d(TAG, "${signUpPageUIState.value.firstName} ID: $employeeId")
+                storeUserData(
+                    userId = employeeId,
+                    signUpPageUIState.value.firstName,
+                    signUpPageUIState.value.lastName,
+                    signUpPageUIState.value.phoneNumber,
+                    signUpPageUIState.value.email,
+                    navController = navController)
+            }
+            signInSignUpInProgress.value = false
+        }catch (e: Exception){
+            signInSignUpInProgress.value = false
+            Log.d(TAG, "createEmployee() Exception: ${e.message}")
+        }
+    }
+
     private fun signUp(navController: NavHostController){
         Log.d(TAG, "SignUp Button Clicked...")
         printSignUpState("Auth to create user account in Firebase DB...")
@@ -282,7 +316,6 @@ class SignUpPageViewModel: ViewModel() {
                             signUpPageUIState.value.phoneNumber,
                             signUpPageUIState.value.email,
                             navController = navController)
-                        signInSignUpInProgress.value = false
                     }
                 }
                 .addOnFailureListener {
@@ -297,13 +330,6 @@ class SignUpPageViewModel: ViewModel() {
             Log.d(TAG, "SignUP UnSuccessful no email or password provided")
         }
     }
-
-    private fun logNewUserOut(navController: NavHostController){
-        val firebaseUser = FirebaseAuth.getInstance()
-        firebaseUser.signOut()
-        navController.navigate(Routes.Login.route)
-    }
-
 
     private fun storeUserData(
         userId: String?, firstName: String,
@@ -322,6 +348,8 @@ class SignUpPageViewModel: ViewModel() {
                 firestore.collection("userdata").add(userData)
                     .addOnSuccessListener {
                         signInSignUpInProgress.value = false
+                        navController.navigate(Routes.Login.route)
+                        auth.signOut()
                     }
                     .addOnFailureListener {
                         signInSignUpInProgress.value = false
@@ -330,9 +358,6 @@ class SignUpPageViewModel: ViewModel() {
             } catch (e: Exception) {
                 signInSignUpInProgress.value = false
                 Log.d(TAG, "addStoreUserData Exception: ${e.message}")
-            } finally {
-                signInSignUpInProgress.value = false
-                logNewUserOut(navController = navController)
             }
         }else if (providerId == "google.com"){
             signInSignUpInProgress.value = false

@@ -261,6 +261,10 @@ class ProfileViewModel: ViewModel() {
                                     signUpPageViewModel = signUpPageViewModel,
                                     context = context,
                                     navController = navController)
+                                homeViewModel.logOut(navController = navController,
+                                    signUpPageViewModel = signUpPageViewModel,
+                                    context = context)
+                                navController.navigate(Routes.Login.route)
                             } else if (userType == "google.com") {
                                 Log.d(TAG, "Google account user deleted, no data to delete")
                                 navController.navigate(Routes.Login.route)
@@ -404,7 +408,6 @@ class ProfileViewModel: ViewModel() {
                             Log.d(TAG, "Google account successfully deleted...")
                         }
                         Log.d(TAG, "Any active user after account deletion?: ${auth.currentUser != null}")
-
                     }
                     .addOnFailureListener{
                         updateProfileInProgress.value = false

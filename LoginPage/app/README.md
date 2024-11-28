@@ -29,6 +29,10 @@ the app is provided which then lets the user change the password.
 
 - OTP Code Expiry
 Whenever a OTP is sent to the user's email, 
-the users has 60 seconds to input it before ir expires.
+the users has 30 seconds to input it before ir expires.
 The user is provided with a OTP resend code button each time the code expires.
 
+- OTP Code Resend
+The current OTP code has to expire before a new one is sent.
+The user gets a counter on the screen telling them how much time is left
+before a new OTP is resent if they click the resend button.

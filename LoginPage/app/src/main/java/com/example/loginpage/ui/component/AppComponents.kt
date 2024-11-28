@@ -58,6 +58,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -76,6 +77,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -97,6 +99,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -971,18 +974,49 @@ fun DrawerContentComponent(navController: NavHostController,
 }
 
 @Composable
-fun GoogleAccountProfilePictureComponent(user: FirebaseUser?, size: Dp = 120.dp){
+fun GoogleAccountProfilePictureComponent(user: FirebaseUser?,
+                                         size: Dp = 120.dp){
+    var showDialog by rememberSaveable { mutableStateOf(false) }
     Image(
         painter = rememberAsyncImagePainter(
             model = user?.photoUrl,
         ),
         contentDescription = "Profile Picture",
         modifier = Modifier
+            .clickable { showDialog = true }
             .clip(CircleShape)
 //            .padding(20.dp)
             .size(size = size),
         contentScale = ContentScale.Crop
     )
+    if (showDialog){
+        Dialog(onDismissRequest = {showDialog = false}) {
+            Surface(modifier = Modifier
+                .padding(10.dp)) {
+                Spacer(modifier = Modifier.height(40.dp))
+                Box(modifier = Modifier
+                    .background(color = Color.LightGray)
+                    .clip(CircleShape)
+                    .size(400.dp)
+                    .padding(45.dp),
+                    contentAlignment = Alignment.Center){
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            model = user?.photoUrl,
+                        ),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxSize()
+                            .size(300.dp)
+                            .clip(CircleShape)
+                            .size(size = size),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+        }
+    }
 }
 /*
 fun ChangeProfilePictureIcon(iconSize: Dp = 45.dp, onClick:() -> Unit){
