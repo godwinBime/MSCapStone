@@ -1,5 +1,6 @@
 package com.example.data.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableLongStateOf
@@ -24,6 +25,82 @@ class TimerViewModel: ViewModel() {
     var mfaIsRunning = mutableStateOf(false)
     private var mfaIsFinished = mutableStateOf(false)
 
+    fun saveAuthStartTime(context: Context, startTime: Long){
+       val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putLong("startTime", startTime)
+        Log.d(TAG, "startTime inside saveAuthStartTime()...$startTime")
+        editor.apply()
+    }
+
+    fun getAuthStartTime(context: Context): Long{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("startTime", 0L)
+    }
+
+    fun saveAuthEndTime(context: Context, endTime: Long){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putLong("endTime", endTime)
+        Log.d(TAG, "endTime inside saveAuthEndTime()...$endTime")
+        editor.apply()
+    }
+
+    fun getAuthEndTime(context: Context): Long{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getLong("endTime", 0L)
+    }
+
+    fun setAuthTimeRecorded(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isAuthStartTimeRecorded", true)
+        editor.apply()
+    }
+
+    fun isAuthStartTimeRecorded(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isAuthStartTimeRecorded", false)
+    }
+
+    fun setUserTypingFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isUserTyping", true)
+        editor.apply()
+    }
+
+    fun isUserTyping(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isUserTyping", false)
+    }
+
+    fun resetUserTypingFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isUserTyping", false)
+        editor.apply()
+        Log.d(TAG, "inside resetUserTypingFlag()...resetting user input flags")
+    }
+
+    fun resetTimeRecordingFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isAuthStartTimeRecorded", false)
+        editor.putLong("startTime", 0L)
+        editor.putLong("endTime", 0L)
+        editor.apply()
+        Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
+    }
+
+    fun calculateAuthDuration(startTime: Long, endTime: Long): String{
+        val duration = endTime - startTime
+        val minutes = (duration / 1000) / 60
+        val seconds = (duration / 1000) % 60
+        val summary = "Login Duration: $minutes minutes and $seconds seconds"
+        return summary
+    }
+
     /**
      * Timer to resend the otp code when the user clicks the resend otp button.
      */
@@ -34,12 +111,7 @@ class TimerViewModel: ViewModel() {
         timerJob = CoroutineScope(Dispatchers.Main).launch {
 //        timerJob = viewModelScope.launch {
             while (isRunning.value && timeLeft.value > 0){
-                /*if (isTimerReset.value){
-                    isTimerReset.value = false
-                    break
-                }*/
                 delay(timerDuration)
-                Log.d(TAG, "Timer running inside startTimer()...${timeLeft.value} seconds left")
                 timeLeft.value--
             }
             isFinished.value = true

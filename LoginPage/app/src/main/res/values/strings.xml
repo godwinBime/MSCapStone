@@ -22,7 +22,7 @@
     <string name="code">code</string>
     <string name="not_registered">Not Registered Yet?</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="privacy_policy_details">By continuing, you accept our privacy policy.</string>
+    <string name="privacy_policy_details">By continuing, you accept our </string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>

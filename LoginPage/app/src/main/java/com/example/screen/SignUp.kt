@@ -104,7 +104,8 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                             SignUpPageUIEvent.FirstNameChanged(it),
                             navController = navController)
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError)
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.firstNameError,
+                    action = "SignUp")
 
                 Spacer(modifier = Modifier
                      .height(20.dp))
@@ -166,8 +167,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
-                    action = "SignUp"
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
                 )
 
                 CheckBoxComponent(value = "SignUp", navController = navController,
@@ -184,7 +184,7 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                     text = signUpPageViewModel.authError.value,
                     color = Color.Red
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Box(modifier = Modifier
                     .padding(55.dp, 0.dp, 55.dp, 0.dp)){
                     ButtonComponent(navController,

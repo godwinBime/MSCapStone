@@ -122,6 +122,11 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                     navController = navController, rank = 4,
                     type = "ResendOTP")
                 Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = verifyEmailViewModel.errorMessage,
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(20.dp))
                 if(timerViewModel.isTimerRunning()){
                     if (timerViewModel.isMfaTimerRunning()){
                         codeStatus = ""

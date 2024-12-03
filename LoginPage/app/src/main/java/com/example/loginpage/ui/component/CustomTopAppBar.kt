@@ -48,6 +48,7 @@ import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseUser
@@ -57,6 +58,7 @@ private val TAG = HomeViewModel::class.simpleName
 fun CustomTopAppBar(navController: NavHostController,
                     title: String, showBackIcon: Boolean,
                     logoutButtonClicked: () -> Unit){
+//    val context = LocalContext.current
     TopAppBar(
         backgroundColor = Color.LightGray,
         title = { Text(
@@ -77,6 +79,7 @@ fun CustomTopAppBar(navController: NavHostController,
         actions = {
             IconButton(onClick = {
                 logoutButtonClicked()
+//                timerViewModel.resetTimeRecordingFlag(context = context)
             }
             ) {
                 Icon(
@@ -122,17 +125,19 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
     BackHandler {
         if (currentScreen == "Login" || screenName == "Login"){
             if (navController.previousBackStackEntry != null){
-//            getToast(context = context, "Inside Login screen and backstack is not empty...")
                 navController.navigate(Routes.Login.route){
                     popUpTo(Routes.Login.route){
                         inclusive = true
                     }
                 }
             }else{
-                navController.navigate(Routes.Login.route)
-                navController.popBackStack()
+                try {
+                    navController.navigate(Routes.Login.route)
+                    navController.popBackStack()
+                }catch (e: IllegalArgumentException){
+                    Log.d(TAG, "NavigateUp Exception: ${e.message}")
+                }
             }
-//            getToast(context = context, "Inside Login screen...")
             if (homeViewModel.isUserLoggedIn.value == true) {
                 homeViewModel.logOut(
                     navController = navController,
@@ -140,7 +145,6 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                     context = context
                 )
                 (context as? Activity)?.finish()
-//                getToast(context = context, "Logged user out...")
             }else{
                 getToast(context = context, "No Logged-in user found...")
             }

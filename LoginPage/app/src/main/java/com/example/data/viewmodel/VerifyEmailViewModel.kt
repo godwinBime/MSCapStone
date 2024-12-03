@@ -26,7 +26,7 @@ class VerifyEmailViewModel: ViewModel() {
     var isOTPSent by mutableStateOf(false)
     var emailAddress by mutableStateOf("")
     private var otpCode by mutableStateOf("")
-//    var errorMessage by mutableStateOf("")
+    var errorMessage by mutableStateOf("")
     var authenticationInProgress = mutableStateOf(false)
 
     private fun generateVerificationCode(): String{
@@ -245,6 +245,7 @@ class VerifyEmailViewModel: ViewModel() {
                     }
                 }
             }else{
+                errorMessage = "Error! wrong OTP code entered."
                 verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${readOTPCode()}"
                 Log.d(TAG, verificationMessage)
             }

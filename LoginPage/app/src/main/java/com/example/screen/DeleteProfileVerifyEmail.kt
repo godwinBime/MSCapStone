@@ -47,7 +47,9 @@ fun DeleteProfileVerifyEmail(navController: NavHostController,
                              signUpPageViewModel: SignUpPageViewModel,
                              googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldDeleteProfileVerifyEmail(navController, homeViewModel, signUpPageViewModel)
+        ScaffoldDeleteProfileVerifyEmail(navController = navController,
+            homeViewModel = homeViewModel,
+            signUpPageViewModel = signUpPageViewModel)
         LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel)
     }
 }
@@ -58,7 +60,6 @@ fun ScaffoldDeleteProfileVerifyEmail(navController: NavHostController,
                                      homeViewModel: HomeViewModel,
                                      signUpPageViewModel: SignUpPageViewModel,
                                      verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
-                                     emailVerifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                      timerViewModel: TimerViewModel = viewModel()){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
@@ -119,6 +120,12 @@ fun ScaffoldDeleteProfileVerifyEmail(navController: NavHostController,
                     value = stringResource(id = R.string.resend_code),
                     navController = navController, rank = 4,
                     type = "ResendOTP")
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = verifyEmailViewModel.errorMessage,
+                    color = Color.Red
+                )
+                Spacer(modifier = Modifier.height(40.dp))
                 if(timerViewModel.isTimerRunning()){
 //                    if (timerViewModel.isMfaTimerRunning()){
 //                        codeStatus = ""

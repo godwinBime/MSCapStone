@@ -247,6 +247,7 @@ class SignUpPageViewModel: ViewModel() {
             }
         }
         .addOnFailureListener {
+            authError.value = "Authentication Failed.\n${it.message.toString()} Please Try Again"
             Log.d(TAG, "Inside Firebase Login addOnFailureListener")
             Log.d(TAG, "Login Exception = ${it.message}")
             Log.d(TAG, "Login Exception = ${it.localizedMessage}")
@@ -352,6 +353,7 @@ class SignUpPageViewModel: ViewModel() {
                         auth.signOut()
                     }
                     .addOnFailureListener {
+                        authError.value = "Unable to store user data.\n${it.message.toString()} Please Try Again"
                         signInSignUpInProgress.value = false
                         Log.d(TAG, "storeUserData Error: ${it.message}")
                     }

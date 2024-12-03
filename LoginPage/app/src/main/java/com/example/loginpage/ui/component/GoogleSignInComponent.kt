@@ -1,5 +1,6 @@
 package com.example.loginpage.ui.component
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +28,7 @@ import com.example.data.local.entities.Constant.SERVERCLIENT
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -39,11 +41,12 @@ import kotlinx.coroutines.launch
 fun GoogleSignInScreen(
     signUpPageViewModel: SignUpPageViewModel = viewModel(),
     googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel,
+    timerViewModel: TimerViewModel = viewModel(),
+    homeViewModel: HomeViewModel = viewModel(),
     value: String, navController: NavHostController){
+    val TAG1 = TimerViewModel::class.simpleName
     val googleSignInState = googleSignInViewModel.googleState.value
     val scope = rememberCoroutineScope()
-
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){
             val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
@@ -57,13 +60,14 @@ fun GoogleSignInScreen(
                 print(it)
             }
         }
-
-
     val context = LocalContext.current
     OutlinedButton (
         modifier = Modifier
             .height(60.dp),
         onClick = {
+            val startTime = System.currentTimeMillis()
+            timerViewModel.saveAuthStartTime(context = context, startTime = startTime)
+            Log.d(TAG1, "startTime inside...$startTime")
             val gso = homeViewModel.googleSignInOptions()
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
             launcher.launch(

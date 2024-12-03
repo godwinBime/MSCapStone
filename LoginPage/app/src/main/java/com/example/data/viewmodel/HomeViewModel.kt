@@ -46,7 +46,7 @@ class HomeViewModel: ViewModel() {
         googleSignInClient.signOut()
             .addOnCompleteListener{signOutTask ->
                 if(signOutTask.isSuccessful){
-                    Log.d(TAG, "Successfully signed out from Google.")
+                    Log.d(TAG, "Successfully signed out from Google account.")
                     navController.navigate(Routes.Login.route)
                 }else{
                     Log.d(TAG, "Sign out failed: ${signOutTask.exception?.message}")
@@ -63,7 +63,7 @@ class HomeViewModel: ViewModel() {
         val providerId = signUpPageViewModel.checkUserProvider(user = FirebaseAuth.getInstance().currentUser)
         if (providerId == "google.com"){
             signOut(navController = navController)
-            Log.d(TAG, "Inside sign out google account....")
+            Log.d(TAG, "Inside sign out from google account....")
             googleLogout(context = context, navController = navController)
             checkActiveSessionInProgress.value = false
         }else if (providerId == "password"){

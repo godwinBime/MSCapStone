@@ -2,6 +2,7 @@ package com.example.screen
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,9 +65,7 @@ fun Login(navController: NavHostController,
           homeViewModel: HomeViewModel,
           googleSignInViewModel: GoogleSignInViewModel,
           signUpPageViewModel: SignUpPageViewModel = hiltViewModel()){
-
     val scrollState = rememberScrollState()
-
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
@@ -78,6 +79,9 @@ fun Login(navController: NavHostController,
     }
 }
 
+private val TAG = TimerViewModel::class.simpleName
+
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
@@ -89,7 +93,14 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val context = LocalContext.current
     val showDialog = isFirstLaunch(context = context)
+    val isAuthTimeRecorded = timerViewModel.isAuthStartTimeRecorded(context = context)
 
+    LaunchedEffect(Unit) {
+        Log.d(TAG, "isAuthTimeRecorded: $isAuthTimeRecorded")
+        if (isAuthTimeRecorded) {
+            timerViewModel.resetTimeRecordingFlag(context = context)
+        }
+    }
     LaunchedEffect(showDialog) {
         if (showDialog) {
             setFirstLaunchFlag(context = context, isFirstLaunch = false)
@@ -140,7 +151,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             navController = navController)
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
-                    action = "Login"
+                    action = "Login",
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -156,6 +167,12 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                         )
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = signUpPageViewModel.authError.value,
+                    color = Color.Red
                 )
                 Spacer(modifier = Modifier.height(30.dp))
 

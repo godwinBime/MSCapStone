@@ -186,10 +186,15 @@ fun HeadingTextComponent(value: String = "None"){
 fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                          onTextChanged:(String) -> Unit,
                          errorStatus: Boolean = false,
+                         timerViewModel: TimerViewModel = viewModel(),
                          verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                          updateProfileViewModel: ProfileViewModel = viewModel(),
                          action: String = "None"){
     val textValue = rememberSaveable{ mutableStateOf("")}
+    val TAG1 = TimerViewModel::class.simpleName
+    val context = LocalContext.current
+    val isAuthTimeRecorded = timerViewModel.isAuthStartTimeRecorded(context = context)
+    val isUserTyping = timerViewModel.isUserTyping(context = context)
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -216,6 +221,34 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
         onValueChange = {
             textValue.value = it
             when(action){
+                "Login" -> {
+                    if (!isAuthTimeRecorded) {
+                        if (!isUserTyping) {
+                            val startTime = System.currentTimeMillis()
+                            timerViewModel.saveAuthStartTime(
+                                context = context,
+                                startTime = startTime
+                            )
+                            timerViewModel.setUserTypingFlag(context = context)
+                        }else{
+                            Log.d(TAG1, "User is typing to login...")
+                        }
+                    }
+                }
+                "SignUp" -> {
+                    if (!isAuthTimeRecorded) {
+                        if (!isUserTyping) {
+                            val startTime = System.currentTimeMillis()
+                            timerViewModel.saveAuthStartTime(
+                                context = context,
+                                startTime = startTime
+                            )
+                            timerViewModel.setUserTypingFlag(context = context)
+                        }else{
+                            Log.d(TAG1, "User is typing to create account...")
+                        }
+                    }
+                }
                 "ForgotPassword" ->{
                     verifyEmailViewModel.emailAddress = textValue.value
                     changePasswordEmail = textValue.value
@@ -366,7 +399,7 @@ fun CheckBoxComponent(value: String, navController: NavHostController,
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val checkState = remember { mutableStateOf(false)}
+        val checkState = rememberSaveable { mutableStateOf(false)}
         Checkbox(
             checked = checkState.value,
             onCheckedChange = {checkState.value  = it
@@ -378,10 +411,10 @@ fun CheckBoxComponent(value: String, navController: NavHostController,
 
 @Composable
 fun ClickableTextComponent(value: String = "", navController: NavHostController){
-    val initialText = "By continuing, you accept our "
-    val privacyPolicyText = "Privacy policy "
+    val initialText = stringResource(id = R.string.privacy_policy_details) + " "
+    val privacyPolicyText = stringResource(id = R.string.privacy_policy) + " "
     val andText = "and "
-    val termsAndConditionsText = "Terms of use."
+    val termsAndConditionsText = stringResource(id = R.string.terms_and_conditions_header) + "."
 
     val annotatedString = buildAnnotatedString {
         append(initialText)
@@ -623,6 +656,10 @@ fun ButtonComponent(navController: NavHostController,
             }
             12 -> {
                 onButtonClicked.invoke()
+            }
+            13 -> {
+//                navController.navigate(Routes.SignUp.route)
+                navController.navigateUp()
             }
         }
     },
@@ -950,7 +987,6 @@ fun DrawerContentComponent(navController: NavHostController,
                                 navController.navigate(
                                     Routes.MFAVerifyEmail.route)
                             }*/
-//                            navController.popBackStack()
                         }else {
                             getToast(context = context, "No email provided.")
                         }
@@ -985,7 +1021,6 @@ fun GoogleAccountProfilePictureComponent(user: FirebaseUser?,
         modifier = Modifier
             .clickable { showDialog = true }
             .clip(CircleShape)
-//            .padding(20.dp)
             .size(size = size),
         contentScale = ContentScale.Crop
     )
@@ -1279,7 +1314,6 @@ fun ProfilePictureButtonComponent(navController: NavHostController,
     Spacer(modifier = Modifier.height(180.dp))
     Row(
         modifier = Modifier
-//            .background(Color.Gray)
             .padding(start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
