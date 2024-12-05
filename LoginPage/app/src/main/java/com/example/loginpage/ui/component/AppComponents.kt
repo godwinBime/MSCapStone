@@ -193,7 +193,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
     val textValue = rememberSaveable{ mutableStateOf("")}
     val TAG1 = TimerViewModel::class.simpleName
     val context = LocalContext.current
-    val isAuthTimeRecorded = timerViewModel.isAuthStartTimeRecorded(context = context)
+    val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
     val isUserTyping = timerViewModel.isUserTyping(context = context)
     TextField(
         modifier = Modifier
@@ -205,7 +205,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             unfocusedIndicatorColor = Color.Transparent,
         ),
         shape = RoundedCornerShape(20.dp),
-        keyboardOptions = if (action == "VerifyAndGotoHomeScreen" || action == "SignUp" ||
+        keyboardOptions = if (action == "VerifyAndGotoHomeScreen" || action == "SignUpPhoneNumber" ||
             action == "SMSCode" || action == "DeleteProfile" || action == "AddEmployee" ||
             action == "ChangePasswordVerifyEmail" || action == "AuthenticatorAppVerification") {
             KeyboardOptions(
@@ -219,11 +219,13 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
             )
         },
         onValueChange = {
+            Log.d(TAG1, "isAuthTimeRecorded: $isAuthTimeRecorded")
             textValue.value = it
             when(action){
                 "Login" -> {
-                    if (!isAuthTimeRecorded) {
-                        if (!isUserTyping) {
+                    if (!timerViewModel.isAuthTimeRecorded(context = context)) {
+                        if (!timerViewModel.isUserTyping(context = context)) {
+                            Log.d(TAG1, "Typing initiated to login...")
                             val startTime = System.currentTimeMillis()
                             timerViewModel.saveAuthStartTime(
                                 context = context,
@@ -236,14 +238,16 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                     }
                 }
                 "SignUp" -> {
-                    if (!isAuthTimeRecorded) {
-                        if (!isUserTyping) {
+                    if (!timerViewModel.isAuthTimeRecorded(context = context)) {
+                        if (!timerViewModel.isUserTyping(context = context)) {
+                            Log.d(TAG1, "Typing initiated to SignUp...")
                             val startTime = System.currentTimeMillis()
                             timerViewModel.saveAuthStartTime(
                                 context = context,
                                 startTime = startTime
                             )
                             timerViewModel.setUserTypingFlag(context = context)
+                            timerViewModel.setUserCreatingAccountFlag(context = context)
                         }else{
                             Log.d(TAG1, "User is typing to create account...")
                         }
@@ -293,7 +297,6 @@ fun MyPasswordFieldComponent(labelValue: String, painterResource: Painter,
                              updateProfileViewModel: ProfileViewModel = viewModel()){
     val passwordValue = rememberSaveable{ mutableStateOf("")}
     val showPassword = rememberSaveable { mutableStateOf(false) }
-
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -720,8 +723,7 @@ fun SubButton(navController: NavHostController, value: String, rank: Int = 100,
 @Composable
 fun ChooseMFAButton(name: String, navController: NavHostController,
                     buttonType: String = "None", onButtonClicked: () -> Unit,
-                    verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
-                    timerViewModel: TimerViewModel = viewModel()){
+                    verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
 
     val context = LocalContext.current.applicationContext
     val email = EmailVerifyUIState()
@@ -937,10 +939,11 @@ fun DrawerContentComponent(navController: NavHostController,
     val context = LocalContext.current.applicationContext
     val auth = FirebaseAuth.getInstance()
     val providerId = signUpPageViewModel.checkUserProvider(user = auth.currentUser)
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
     when(providerId) {
         "password" -> {
             HomeScreenDrawerHeader(
-                value = signUpPageViewModel.fullNames.substringBefore(" "),
+                value = fullNames?.substringBefore(" "),
                 user = auth.currentUser,
                 provider = "password",
                 context = context,
@@ -999,6 +1002,7 @@ fun DrawerContentComponent(navController: NavHostController,
                     navController.navigate(Routes.Settings.route)
                 }
                 "Logout" -> {
+                    timerViewModel.resetTimeRecordingFlag(context = context)
                     Log.d("Logout", "Inside onNavigationItemClicked Logout = ${it.itemId}, ${it.title}")
                     homeViewModel.logOut(navController = navController,
                         signUpPageViewModel = signUpPageViewModel,

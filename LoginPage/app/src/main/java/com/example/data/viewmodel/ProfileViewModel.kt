@@ -37,9 +37,7 @@ class ProfileViewModel: ViewModel() {
     private val _profilePictureUri = MutableLiveData<UserProfilePictureData>()
     val profilePictureUri: LiveData<UserProfilePictureData> get() = _profilePictureUri
     private val _uploadProgress = MutableLiveData<Float>()
-    val uploadProgress: LiveData<Float> get() = _uploadProgress
     private val _uploadStatus = MutableLiveData<String>()
-//    val uploadStatus: LiveData<String> get() = _uploadStatus
 
     var updateProfileInProgress = mutableStateOf(false)
     var oldPassword by mutableStateOf("")
@@ -187,12 +185,19 @@ class ProfileViewModel: ViewModel() {
                              context: Context,
                              navController: NavHostController){
         updateProfileInProgress.value = true
-        deletePicture(imagePath = imagePath,
-            action = action,
-            homeViewModel = homeViewModel,
-            signUpPageViewModel = signUpPageViewModel,
-            context = context,
-            navController = navController)
+        isPictureExistInDatabase(imagePath = imagePath, onSuccess = {}, onFailure = {})
+        if (profilePictureExist.value == true) {
+            deletePicture(
+                imagePath = imagePath,
+                action = action,
+                homeViewModel = homeViewModel,
+                signUpPageViewModel = signUpPageViewModel,
+                context = context,
+                navController = navController
+            )
+        }else{
+            Log.d(TAG, "Profile picture does not exist...nothing to delete")
+        }
     }
 
     private fun deletePicture(imagePath: String?,
@@ -251,26 +256,24 @@ class ProfileViewModel: ViewModel() {
             if (user != null){
                 Log.d(TAG, "About to delete logged-in user...")
                 user.delete()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
+                    .addOnSuccessListener {
+                        if (userType == "password") {
                             Log.d(TAG, "Email and password deleted successfully...")
-                            if (userType == "password") {
-                                deleteProfilePicture(imagePath = imagePath,
-                                    action = "DeleteAccount",
-                                    homeViewModel = homeViewModel,
-                                    signUpPageViewModel = signUpPageViewModel,
-                                    context = context,
-                                    navController = navController)
-                                homeViewModel.logOut(navController = navController,
-                                    signUpPageViewModel = signUpPageViewModel,
-                                    context = context)
-                                navController.navigate(Routes.Login.route)
-                            } else if (userType == "google.com") {
-                                Log.d(TAG, "Google account user deleted, no data to delete")
-                                navController.navigate(Routes.Login.route)
-                            } else {
-                                Log.d(TAG, "Error: Undefined user...")
-                            }
+                            deleteProfilePicture(imagePath = imagePath,
+                                action = "DeleteAccount",
+                                homeViewModel = homeViewModel,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context,
+                                navController = navController)
+                            homeViewModel.logOut(navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context)
+                            navController.navigate(Routes.Login.route)
+                        } else if (userType == "google.com") {
+                            Log.d(TAG, "Google account user deleted, no data to delete")
+                            navController.navigate(Routes.Login.route)
+                        } else {
+                            Log.d(TAG, "Error: Undefined user...")
                         }
                         updateProfileInProgress.value = false
                     }
@@ -329,13 +332,13 @@ class ProfileViewModel: ViewModel() {
                                 }
                             }else if (auth.currentUser != null){
                                 Log.d(TAG, "Call from deleteProfile()...Logged-in user with no data...")
-                                /*
                                 deleteUsernamePassword(
                                     navController = navController,
                                     signUpPageViewModel = signUpPageViewModel,
+                                    homeViewModel = homeViewModel,
+                                    context = context,
                                     userType = userType
                                 )
-                                */
                             }else{
                                 Log.d(TAG, "Error: DocumentId Not found")
                             }

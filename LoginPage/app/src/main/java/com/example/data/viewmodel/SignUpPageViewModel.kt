@@ -1,5 +1,6 @@
 package com.example.data.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -410,12 +411,14 @@ class SignUpPageViewModel: ViewModel() {
         }
     }
 
-    fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel, providerId: String?){
+    fun fetchedUSerData(signUpPageViewModel: SignUpPageViewModel,
+                        providerId: String?, context: Context){
         val userId = auth.currentUser?.uid
         signInSignUpInProgress.value = true
         if (providerId == "password") {
             fetchUserData(signUpPageViewModel = signUpPageViewModel, providerId = providerId,
                 userId = userId) { user ->
+                saveFullNames(context = context, user.firstName + " " + user.lastName)
                 fullNames = user.firstName + " " + user.lastName
                 phoneNumber = user.phoneNumber
                 userEmail = user.email
@@ -448,5 +451,36 @@ class SignUpPageViewModel: ViewModel() {
         }
         signInSignUpInProgress.value = false
         return "None"
+    }
+
+    private fun saveFullNames(context: Context, fullNames: String){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("fullNames", fullNames)
+        editor.apply()
+    }
+
+    fun getFullNames(context: Context): String?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("fullNames", null)
+    }
+
+    fun setFullNamesFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isFullNamesObtained", true)
+        editor.apply()
+    }
+
+    fun isFullNamesObtained(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isFullNamesObtained", false)
+    }
+
+    fun resetFullNames(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("fullNames")
+        editor.apply()
     }
 }

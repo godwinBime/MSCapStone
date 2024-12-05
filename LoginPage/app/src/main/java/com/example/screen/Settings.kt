@@ -68,11 +68,11 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
                                      signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-//    val context = LocalContext.current
+    val context = LocalContext.current
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            providerId = "password")
+            providerId = "password", context = context)
     }
     val name = "\nSettings for ${
         if (providerId == "password") {

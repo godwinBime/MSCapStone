@@ -92,12 +92,7 @@ fun ScaffoldUserProfilePictureWithTopBar(
     profileViewModel: ProfileViewModel = viewModel()) {
     val userProfile = stringResource(id = R.string.profile_picture)
     val scaffoldState = rememberScaffoldState()
-//    val coroutineScope = rememberCoroutineScope()
-//    val user = FirebaseAuth.getInstance().currentUser
-//    val providerId = signUpPageViewModel.checkUserProvider(user = user)
     val context = LocalContext.current
-//    val uploadProgress by profileViewModel.uploadProgress.observeAsState(0f)
-
     Scaffold(
         modifier = Modifier
             .background(Color.Red),

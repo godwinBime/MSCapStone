@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
@@ -33,12 +35,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -85,9 +90,9 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
     val authStartTime = timerViewModel.getAuthStartTime(context = context)
-    val isAuthTimeRecorded = timerViewModel.isAuthStartTimeRecorded(context = context)
+    val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
     val authEndTime = if (!isAuthTimeRecorded) {
         val endTime = System.currentTimeMillis()
         timerViewModel.saveAuthEndTime(context = context, endTime = endTime)
@@ -96,15 +101,17 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     }else{
         timerViewModel.getAuthEndTime(context = context)
     }
-    val timerResults = timerViewModel.calculateAuthDuration(startTime = authStartTime, endTime = authEndTime)
+    val timerResults = timerViewModel.calculateAuthDuration(startTime = authStartTime,
+        endTime = authEndTime, context = context)
     val authDuration = rememberSaveable { mutableStateOf("")}
 
-    if (providerId == "password") {
-        timerViewModel.resetUserTypingFlag(context = context)
+    if (providerId == "password" && !signUpPageViewModel.isFullNamesObtained(context = context)) {
+//        timerViewModel.resetUserTypingFlag(context = context)
         signUpPageViewModel.fetchedUSerData(
             signUpPageViewModel = signUpPageViewModel,
-            providerId = "password"
+            providerId = "password", context = context
         )
+        signUpPageViewModel.setFullNamesFlag(context = context)
     }
 
     if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
@@ -114,6 +121,8 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
             timerViewModel.mfaResetTimer()
         }
     }
+    // Authentication process is complete, set the complete flag to true
+    timerViewModel.setAuthComplete(context = context)
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -153,7 +162,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)
                     NormalTextComponent(
-                        value = "Welcome, ${signUpPageViewModel.fullNames.substringBefore(delimiter = " ")}"
+                        value = "Welcome, ${fullNames?.substringBefore(delimiter = " ")}"
                     )
                 }else if (providerId == "google.com"){
               /*      PhotoPickerComponent(navController = navController)
@@ -174,8 +183,10 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                     }
                 }
                 Box(modifier = Modifier
+                    .shadow(8.dp, RoundedCornerShape(25.dp))
                     .background(Color.LightGray)
-                    .size(300.dp, 100.dp)
+                    .size(350.dp, 100.dp)
+                    .border(2.dp, Color.LightGray)
                     .padding(15.dp)) {
                     when (providerId) {
                         "google.com" -> {
@@ -198,11 +209,12 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                     Spacer(modifier = Modifier.height(40.dp))
                     Text(
                         text = authDuration.value,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(top = 20.dp)
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        style = TextStyle(fontSize = 17.sp)
                     )
                 }
                 Spacer(modifier = Modifier.height(80.dp))

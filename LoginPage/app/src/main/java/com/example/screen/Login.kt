@@ -93,14 +93,19 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val context = LocalContext.current
     val showDialog = isFirstLaunch(context = context)
-    val isAuthTimeRecorded = timerViewModel.isAuthStartTimeRecorded(context = context)
+    Log.d(TAG, "Login()...isAuthTimeRecorded: ${timerViewModel.isAuthTimeRecorded(context = context)}")
 
-    LaunchedEffect(Unit) {
-        Log.d(TAG, "isAuthTimeRecorded: $isAuthTimeRecorded")
-        if (isAuthTimeRecorded) {
-            timerViewModel.resetTimeRecordingFlag(context = context)
-        }
+    if (timerViewModel.isAuthTimeRecorded(context = context)) {
+        timerViewModel.resetAuthStartTime(context = context)
+        Log.d(TAG, "...isAuthTimeRecorded still true: ${timerViewModel.isAuthTimeRecorded(context = context)}")
     }
+
+    if (timerViewModel.isAuthComplete(context = context)){
+        signUpPageViewModel.resetFullNames(context = context)
+        timerViewModel.resetAuthFlag(context = context)
+        Log.d(TAG, "isAuthComplete Login() = ${timerViewModel.isAuthComplete(context = context)}")
+    }
+
     LaunchedEffect(showDialog) {
         if (showDialog) {
             setFirstLaunchFlag(context = context, isFirstLaunch = false)

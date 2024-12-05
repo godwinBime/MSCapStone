@@ -17,13 +17,33 @@ import kotlinx.coroutines.runBlocking
 class TimerViewModel: ViewModel() {
     private var timerJob: Job? = null
     private val TAG = TimerViewModel::class.simpleName
-    var timeLeft = mutableStateOf(30L)
+    var timeLeft = mutableStateOf(40L)
     var isRunning = mutableStateOf(false)
     private var isFinished = mutableStateOf(false)
     private var mfaTimerJob: Job? = null
-    private var mfaTimeLeft = mutableStateOf(30L)
+    private var mfaTimeLeft = mutableStateOf(40L)
     var mfaIsRunning = mutableStateOf(false)
     private var mfaIsFinished = mutableStateOf(false)
+
+    fun setAuthComplete(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isAuthComplete", true)
+        editor.apply()
+    }
+
+    fun isAuthComplete(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isAuthComplete", false)
+    }
+
+    fun resetAuthFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isAuthComplete", false)
+        editor.apply()
+        Log.d(TAG, "inside resetAuthTime()...resetting authcomplete")
+    }
 
     fun saveAuthStartTime(context: Context, startTime: Long){
        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -58,7 +78,7 @@ class TimerViewModel: ViewModel() {
         editor.apply()
     }
 
-    fun isAuthStartTimeRecorded(context: Context): Boolean{
+    fun isAuthTimeRecorded(context: Context): Boolean{
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("isAuthStartTimeRecorded", false)
     }
@@ -75,12 +95,20 @@ class TimerViewModel: ViewModel() {
         return sharedPreferences.getBoolean("isUserTyping", false)
     }
 
-    fun resetUserTypingFlag(context: Context){
+    /*fun resetUserTypingFlag(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("isUserTyping", false)
         editor.apply()
         Log.d(TAG, "inside resetUserTypingFlag()...resetting user input flags")
+    }*/
+
+    fun resetAuthStartTime(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isAuthStartTimeRecorded", false)
+        editor.apply()
+        Log.d(TAG, "inside resetAuthStartTime()...resetting AuthStartTime")
     }
 
     fun resetTimeRecordingFlag(context: Context){
@@ -89,15 +117,42 @@ class TimerViewModel: ViewModel() {
         editor.putBoolean("isAuthStartTimeRecorded", false)
         editor.putLong("startTime", 0L)
         editor.putLong("endTime", 0L)
+        editor.putBoolean("isUserCreatingAccount", false)
+        editor.putBoolean("isUserTyping", false)
+        editor.putBoolean("isAuthComplete", false)
         editor.apply()
         Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
+        Log.d(TAG, "[")
+        Log.d(TAG, "isAuthTimeRecorded(context: Context) reset = ${isAuthTimeRecorded(context = context)}")
+        Log.d(TAG, "isUserTyping(context: Context) reset = ${isUserTyping(context = context)}")
+        Log.d(TAG, "isUserCreatingAccount(context: Context) reset = ${isUserCreatingAccount(context = context)}")
+        Log.d(TAG, "isAuthComplete(context: Context) reset = ${isAuthComplete(context = context)}")
+        Log.d(TAG, "]")
+
     }
 
-    fun calculateAuthDuration(startTime: Long, endTime: Long): String{
+    fun setUserCreatingAccountFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isUserCreatingAccount", true)
+        editor.apply()
+    }
+
+    private fun isUserCreatingAccount(context: Context):Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isUserCreatingAccount", false)
+    }
+
+    fun calculateAuthDuration(startTime: Long, endTime: Long, context: Context): String{
+        val isUserCreatingAccount = isUserCreatingAccount(context = context)
         val duration = endTime - startTime
         val minutes = (duration / 1000) / 60
         val seconds = (duration / 1000) % 60
-        val summary = "Login Duration: $minutes minutes and $seconds seconds"
+        val summary = if (isUserCreatingAccount) {
+            "Account Creation and Login Duration: \n$minutes minutes and $seconds seconds"
+        }else{
+            "Login Duration: $minutes minute(s) and $seconds seconds"
+        }
         return summary
     }
 
@@ -126,7 +181,7 @@ class TimerViewModel: ViewModel() {
     fun resetTimer(){
         isFinished.value = false
         isRunning.value = false
-        timeLeft.value = 30L
+        timeLeft.value = 40L
         Log.d(TAG, "Timer reset inside resetTimer()...")
         timerJob?.cancel()
     }
@@ -159,7 +214,7 @@ class TimerViewModel: ViewModel() {
                     isMfaTimerReset.value = false
                     break
                 }*/
-                Log.d(TAG, "Timer running inside mfaStartTimer()...${mfaTimeLeft.value} seconds left")
+//                Log.d(TAG, "Timer running inside mfaStartTimer()...${mfaTimeLeft.value} seconds left")
                 delay(timerDuration)
                 mfaTimeLeft.value--
             }
@@ -186,7 +241,7 @@ class TimerViewModel: ViewModel() {
         Log.d(TAG, "Timer reset inside mfaResetTimer()...")
         mfaIsFinished.value = false
         mfaIsRunning.value = false
-        mfaTimeLeft.value = 30L
+        mfaTimeLeft.value = 40L
         mfaTimerJob?.cancel()
     }
 }

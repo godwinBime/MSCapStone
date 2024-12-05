@@ -1,5 +1,6 @@
 package com.example.navigation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +12,7 @@ import com.example.data.repository.AuthenticationRepositoryImpl
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.TimerViewModel
 import com.example.loginpage.MainActivity
 import com.example.loginpage.ui.component.getToast
 import com.example.screen.AddEmployee
@@ -36,8 +38,10 @@ import com.example.screen.UserProfile
 import com.example.screen.UserProfilePicture
 import com.google.firebase.auth.FirebaseAuth
 
+private val TAG = TimerViewModel::class.simpleName
 @Composable
 fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
+               timerViewModel: TimerViewModel = viewModel(),
                signUpPageViewModel: SignUpPageViewModel = viewModel()){
     val context = LocalContext.current
     val navController = rememberNavController()
@@ -45,15 +49,21 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
     homeViewModel.checkForActiveSession()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
+    val isAuthComplete = timerViewModel.isAuthComplete(context = context)
+    Log.d(TAG, "isAuthComplete ScreenMain() = ${timerViewModel.isAuthComplete(context = context)}")
+
 
     if (homeViewModel.isUserLoggedIn.value == true && providerId == "google.com"){
         getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
         startDestination = Routes.Home.route
-    }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password"){
+    }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password" && isAuthComplete){
         getToast(context, "Partially Active Email/Password user detected",
             Toast.LENGTH_LONG)
 //        startDestination = Routes.ChooseVerificationMethod.route
         startDestination = Routes.Home.route
+    }else if (!isAuthComplete && homeViewModel.isUserLoggedIn.value == true){
+        homeViewModel.logOut(navController = navController,
+            signUpPageViewModel = signUpPageViewModel, context = context)
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

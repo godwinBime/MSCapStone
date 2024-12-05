@@ -83,17 +83,18 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                                     updateProfileViewModel: ProfileViewModel = viewModel(),
                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
 
-//    val context = LocalContext.current
+    val context = LocalContext.current
     val warning = "\n${stringResource(R.string.delete_warning)}"
     val deleteTitle = stringResource(id = R.string.delete_profile)
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            providerId = "password")
+            providerId = "password", context = context)
     }
 
     if (timerViewModel.isMfaCounterFinished() || timerViewModel.isTimerFinished()) {
@@ -217,7 +218,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     "password" -> {
                         NormalTextComponent(
                             value =
-                            "Full Names: ${signUpPageViewModel.fullNames} "
+                            "Full Names: $fullNames "
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         NormalTextComponent(

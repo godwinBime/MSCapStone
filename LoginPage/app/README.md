@@ -36,3 +36,8 @@ The user is provided with a OTP resend code button each time the code expires.
 The current OTP code has to expire before a new one is sent.
 The user gets a counter on the screen telling them how much time is left
 before a new OTP is resent if they click the resend button.
+
+- NOTE
+When the user clicks the back button continuously and arrives the login page, 
+the user automatically gets logged out of the app. There the backstack gets emptied
+in case there are still some screens available in the navigation stack.

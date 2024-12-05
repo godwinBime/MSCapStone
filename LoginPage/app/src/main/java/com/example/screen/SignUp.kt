@@ -167,8 +167,8 @@ fun ScaffoldSignUpWithTopBar(navController: NavHostController, homeViewModel: Ho
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError
-                )
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.phoneNumberError,
+                    action = "SignUpPhoneNumber")
 
                 CheckBoxComponent(value = "SignUp", navController = navController,
                     onCheckBoxChecked = {

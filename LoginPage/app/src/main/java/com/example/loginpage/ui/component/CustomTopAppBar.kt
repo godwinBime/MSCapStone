@@ -57,8 +57,9 @@ private val TAG = HomeViewModel::class.simpleName
 @Composable
 fun CustomTopAppBar(navController: NavHostController,
                     title: String, showBackIcon: Boolean,
+                    timerViewModel: TimerViewModel = viewModel(),
                     logoutButtonClicked: () -> Unit){
-//    val context = LocalContext.current
+    val context = LocalContext.current
     TopAppBar(
         backgroundColor = Color.LightGray,
         title = { Text(
@@ -79,7 +80,7 @@ fun CustomTopAppBar(navController: NavHostController,
         actions = {
             IconButton(onClick = {
                 logoutButtonClicked()
-//                timerViewModel.resetTimeRecordingFlag(context = context)
+                timerViewModel.resetTimeRecordingFlag(context = context)
             }
             ) {
                 Icon(
@@ -96,6 +97,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
                          showBackIcon: Boolean, action: String,
                          homeViewModel: HomeViewModel = viewModel(),
                          signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                         timerViewModel: TimerViewModel = viewModel(),
                          screenName: String = "DefaultScreen"){
     val context = LocalContext.current
     val lifeCycleOwner = LocalLifecycleOwner.current
@@ -105,6 +107,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
     LaunchedEffect(screenName) {
         backStackDispatcher?.addCallback(lifeCycleOwner){
             if (currentScreen == "Login" || screenName == "Login"){
+                timerViewModel.resetTimeRecordingFlag(context = context)
                 getToast(context = context, "Logging user out and Closing App...")
                 homeViewModel.logOut(
                     navController = navController,
@@ -124,6 +127,7 @@ fun TopAppBarBeforeLogin(navController: NavHostController, title: String,
     }
     BackHandler {
         if (currentScreen == "Login" || screenName == "Login"){
+            timerViewModel.resetTimeRecordingFlag(context = context)
             if (navController.previousBackStackEntry != null){
                 navController.navigate(Routes.Login.route){
                     popUpTo(Routes.Login.route){
