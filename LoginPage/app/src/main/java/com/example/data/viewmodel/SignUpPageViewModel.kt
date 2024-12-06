@@ -34,10 +34,6 @@ class SignUpPageViewModel: ViewModel() {
     var signInSignUpInProgress = mutableStateOf(false)
     var authError = mutableStateOf(" ")
 
-    var fullNames = ""
-    var phoneNumber = ""
-    var userEmail = ""
-
     fun onSignUpEvent(signUpEvent: SignUpPageUIEvent, navController: NavHostController){
 //        validateSignUpDataWithRules()
         when(signUpEvent){
@@ -418,10 +414,9 @@ class SignUpPageViewModel: ViewModel() {
         if (providerId == "password") {
             fetchUserData(signUpPageViewModel = signUpPageViewModel, providerId = providerId,
                 userId = userId) { user ->
-                saveFullNames(context = context, user.firstName + " " + user.lastName)
-                fullNames = user.firstName + " " + user.lastName
-                phoneNumber = user.phoneNumber
-                userEmail = user.email
+                saveFullNames(context = context, fullNames = user.firstName + " " + user.lastName)
+                saveUserEmail(context = context, userEmail = user.email)
+                saveUserPhoneNumber(context = context, userPhoneNumber = user.phoneNumber)
             }
         }else if(providerId == "google.com"){
             signInSignUpInProgress.value = false
@@ -477,10 +472,37 @@ class SignUpPageViewModel: ViewModel() {
         return sharedPreferences.getBoolean("isFullNamesObtained", false)
     }
 
-    fun resetFullNames(context: Context){
+    private fun saveUserEmail(context: Context, userEmail: String){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userEmail", userEmail)
+        editor.apply()
+    }
+
+    fun getUserEmail(context: Context): String?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("userEmail", null)
+    }
+
+    private fun saveUserPhoneNumber(context: Context, userPhoneNumber: String){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userPhoneNumber", userPhoneNumber)
+        editor.apply()
+    }
+
+    fun getUserPhoneNumber(context: Context): String?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("userPhoneNumber", null)
+    }
+
+
+    fun resetUserData(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.remove("fullNames")
+        editor.remove("userPhoneNumber")
+        editor.remove("userEmail")
         editor.apply()
     }
 }

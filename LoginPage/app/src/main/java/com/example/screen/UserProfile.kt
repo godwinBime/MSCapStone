@@ -81,6 +81,10 @@ fun ScaffoldUserProfileWithTopBar(
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
 
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
+    val userEmail = signUpPageViewModel.getUserEmail(context = context)
+    val userPhoneNumber = signUpPageViewModel.getUserPhoneNumber(context = context)
+
     Scaffold(
         modifier = Modifier
             .background(Color.Red),
@@ -158,12 +162,12 @@ fun ScaffoldUserProfileWithTopBar(
                         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
                             providerId = "password", context = context)
 //                        PhotoPickerComponent(navController = navController, size = 90.dp)
-                        NormalTextComponent(value = "Full Names: ${signUpPageViewModel.fullNames} ")
+                        NormalTextComponent(value = "Full Names: $fullNames ")
                         DividerTextComponent()
                         Spacer(modifier = Modifier.height(10.dp))
-                        NormalTextComponent(value = "Phone Number: ${signUpPageViewModel.phoneNumber}")
+                        NormalTextComponent(value = "Phone Number: $userPhoneNumber")
                         Spacer(modifier = Modifier.height(10.dp))
-                        NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+                        NormalTextComponent(value = "Email: $userEmail")
 
                         Spacer(modifier = Modifier.height(40.dp))
                         SubButton(

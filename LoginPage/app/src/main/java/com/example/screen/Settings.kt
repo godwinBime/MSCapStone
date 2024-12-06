@@ -69,6 +69,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
     val context = LocalContext.current
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
 
     if (providerId == "password") {
         signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
@@ -76,7 +77,7 @@ fun ScaffoldSettingsScreenWithTopBar(navController: NavHostController,
     }
     val name = "\nSettings for ${
         if (providerId == "password") {
-            signUpPageViewModel.fullNames.substringBefore(" ")
+            fullNames?.substringBefore(" ")
         }else{
             user?.displayName?.substringBefore(" ")
         }

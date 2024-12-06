@@ -90,7 +90,6 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-    val fullNames = signUpPageViewModel.getFullNames(context = context)
     val authStartTime = timerViewModel.getAuthStartTime(context = context)
     val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
     val authEndTime = if (!isAuthTimeRecorded) {
@@ -105,14 +104,18 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         endTime = authEndTime, context = context)
     val authDuration = rememberSaveable { mutableStateOf("")}
 
-    if (providerId == "password" && !signUpPageViewModel.isFullNamesObtained(context = context)) {
+    LaunchedEffect(Unit) {
+        if (providerId == "password" && !signUpPageViewModel.isFullNamesObtained(context = context)) {
 //        timerViewModel.resetUserTypingFlag(context = context)
-        signUpPageViewModel.fetchedUSerData(
-            signUpPageViewModel = signUpPageViewModel,
-            providerId = "password", context = context
-        )
-        signUpPageViewModel.setFullNamesFlag(context = context)
+            signUpPageViewModel.fetchedUSerData(
+                signUpPageViewModel = signUpPageViewModel,
+                providerId = "password", context = context
+            )
+            signUpPageViewModel.setFullNamesFlag(context = context)
+        }
     }
+
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
 
     if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
         LaunchedEffect(Unit) {

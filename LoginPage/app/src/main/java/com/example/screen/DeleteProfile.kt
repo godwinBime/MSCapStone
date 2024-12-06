@@ -90,12 +90,15 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
     val coroutineScope = rememberCoroutineScope()
     val user = FirebaseAuth.getInstance().currentUser
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
-    val fullNames = signUpPageViewModel.getFullNames(context = context)
 
-    if (providerId == "password") {
-        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-            providerId = "password", context = context)
-    }
+    val fullNames = signUpPageViewModel.getFullNames(context = context)
+    val userEmail = signUpPageViewModel.getUserEmail(context = context)
+    val userPhoneNumber = signUpPageViewModel.getUserPhoneNumber(context = context)
+
+//    if (providerId == "password") {
+//        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+//            providerId = "password", context = context)
+//    }
 
     if (timerViewModel.isMfaCounterFinished() || timerViewModel.isTimerFinished()) {
         LaunchedEffect(Unit) {
@@ -223,10 +226,10 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                         Spacer(modifier = Modifier.height(10.dp))
                         NormalTextComponent(
                             value =
-                            "Phone Number: ${signUpPageViewModel.phoneNumber}"
+                            "Phone Number: $userPhoneNumber"
                         )
                         Spacer(modifier = Modifier.height(20.dp))
-                        NormalTextComponent(value = "Email: ${signUpPageViewModel.userEmail}")
+                        NormalTextComponent(value = "Email: $userEmail")
                     }
                     "google.com" -> {
                         Spacer(modifier = Modifier.height(20.dp))

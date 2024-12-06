@@ -77,7 +77,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -117,7 +116,6 @@ import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlin.math.log
 
 private val TAG = VerifyEmailViewModel::class.simpleName
 var changePasswordEmail: String = ""
@@ -1084,8 +1082,9 @@ fun ChangeProfilePictureIcon(iconSize: Dp = 45.dp, onClick:() -> Unit){
 */
 
 @Composable
-fun DisplayProfilePicture(uri: Uri?, navController: NavHostController,
-                          imageSize: Dp, pageSource: String, onClick: () -> Unit){
+fun DisplayProfilePicture(
+    uri: Uri, navController: NavHostController,
+    imageSize: Dp, pageSource: String, onClick: () -> Unit){
     Image(
 //                painter = painter,
         painter = rememberAsyncImagePainter(uri),
@@ -1127,16 +1126,39 @@ fun downloadImage(imagePath: String,
                   isCallValid: Boolean = false,
                   profileViewModel: ProfileViewModel = viewModel()): Uri?{
     val TAG1 = ProfileViewModel::class.simpleName
-    var downloadedImageUri by rememberSaveable() {mutableStateOf<Uri?>(null)}
+    var downloadedImageUri by rememberSaveable {mutableStateOf<Uri?>(null)}
     val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
 
     DoesPictureExist(imagePath = imagePath, profileViewModel = profileViewModel)
     LaunchedEffect(Unit) {
+       /* if (!profileViewModel.isProfilePictureDownloaded(context = context)){
+            profileViewModel.downloadProfilePicture(imagePath = imagePath,
+                isCallValid = isCallValid,
+                context = context,
+                onSuccess = { uri ->
+                    downloadedImageUri = uri
+                    /*Toast.makeText(
+                        context,
+                        "Image Downloaded successfully....",
+                        Toast.LENGTH_LONG
+                    ).show()*/
+                },
+                onFailure = {
+                    /*Toast.makeText(
+                        context,
+                        "Image Download Failed...",
+                        Toast.LENGTH_LONG
+                    ).show()*/
+                })
+            profileViewModel.setProfilePictureDownloadFlag(context = context)
+        }
+        downloadedImageUri = Uri.parse(profileViewModel.getProfilePicture(context = context))*/
         if (profilePictureUri?.userProfilePictureDataImageUri == null &&
             uri == null) {
             Log.d(TAG1, "Inside downloadImage() if() uri's all null...\n\n")
             profileViewModel.downloadProfilePicture(imagePath = imagePath,
                 isCallValid = isCallValid,
+                context = context,
                 onSuccess = { uri ->
                     downloadedImageUri = uri
                     /*Toast.makeText(
@@ -1213,27 +1235,29 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
                                                       profileViewModel: ProfileViewModel = viewModel(),
                                                       onClick: () -> Unit){
     val TAG1 = ProfileViewModel::class.simpleName
-    var finalImageUri by rememberSaveable() { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
+    var finalImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     val defaultProfileImageUri: Uri? =
         Uri.parse("android.resource://com.example.loginpage/drawable/default_profile_picture")
     val user = FirebaseAuth.getInstance().uid
     val imagePath = "/ProfilePictures/$user"
+
     val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
 
     Log.d(TAG1,
         "Is profilePictureUri empty-->: ${profilePictureUri?.userProfilePictureDataImageUri == null}"
     )
-    LaunchedEffect(Unit) {
-        finalImageUri = (profilePictureUri?.userProfilePictureDataImageUri?: imageUri)
-    }
+//    LaunchedEffect(Unit) {
+//        finalImageUri = (profilePictureUri?.userProfilePictureDataImageUri?: imageUri)
+//    }
 
     if (finalImageUri == null){
         Log.d(TAG1, "\n\nfinalImageUri is null...\n\n")
         finalImageUri = downloadImage(imagePath = imagePath,
             uri = imageUri,
-            context = context, isCallValid = isImageClicked)
-    }
+            context = context,
+            isCallValid = isImageClicked)
+        }
 
     Box(modifier = Modifier
         .size(
@@ -1246,6 +1270,8 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
         )
         .clip(CircleShape),
         contentAlignment = Alignment.Center){
+        val xxx = profileViewModel.getProfilePicture(context = context)
+
         (finalImageUri?: defaultProfileImageUri)?.let { uri ->
             DisplayProfilePicture(
                 uri = uri, navController = navController,
@@ -1270,6 +1296,7 @@ fun PhotoPickerComponent(navController: NavHostController,
                          pageSource: String =" None",
                          imageSize: Dp = 90.dp,
                          size: Dp = 120.dp, boxSize: Dp = 120.dp){
+    val context = LocalContext.current
     var selectedImageUri by rememberSaveable() {
         mutableStateOf<Uri?>(null)
     }
@@ -1281,6 +1308,7 @@ fun PhotoPickerComponent(navController: NavHostController,
         }
     )
 
+    profileViewModel.saveProfilePicture(context = context, uri = selectedImageUri.toString())
     TraditionalAccountProfilePictureComponent(
         imageUri = selectedImageUri,
         pageSource = pageSource,

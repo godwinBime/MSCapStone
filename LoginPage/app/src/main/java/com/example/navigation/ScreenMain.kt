@@ -59,8 +59,8 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password" && isAuthComplete){
         getToast(context, "Partially Active Email/Password user detected",
             Toast.LENGTH_LONG)
-//        startDestination = Routes.ChooseVerificationMethod.route
-        startDestination = Routes.Home.route
+        startDestination = Routes.ChooseVerificationMethod.route
+//        startDestination = Routes.Home.route
     }else if (!isAuthComplete && homeViewModel.isUserLoggedIn.value == true){
         homeViewModel.logOut(navController = navController,
             signUpPageViewModel = signUpPageViewModel, context = context)

@@ -463,13 +463,13 @@ class ProfileViewModel: ViewModel() {
                             Log.d(TAG, "Upload Complete... ${_uploadProgress.value}%")
                             navController.navigate(Routes.UserProfile.route)
                             onSuccess()
-                            downloadProfilePicture(imagePath = storageRef.path,
+                            /*downloadProfilePicture(imagePath = storageRef.path,
                                 isCallValid = true, onSuccess = {
                                     onSuccess()
                                 },
                                 onFailure = {
                                     onFailure(it)
-                                })
+                                })*/
                         }
                         .addOnProgressListener {taskSnapshot ->
                             val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toFloat()
@@ -500,7 +500,9 @@ class ProfileViewModel: ViewModel() {
 
     }
 
-    fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
+    fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false,
+                               context: Context,
+                               onSuccess: (Uri) -> Unit,
                                onFailure: (Exception) -> Unit){
         Log.d(TAG,
             "Is profilePictureUri empty...: ${_profilePictureUri.value == null}"
@@ -513,13 +515,17 @@ class ProfileViewModel: ViewModel() {
             updateProfileInProgress.value = true
             downloadPicture(
                 imagePath = imagePath,
-                isCallValid = isCallValid, onSuccess = onSuccess, onFailure = onFailure
-            )
+                isCallValid = isCallValid,
+                context = context,
+                onSuccess = onSuccess,
+                onFailure = onFailure)
         }
     }
 
-    private fun downloadPicture(imagePath: String?, isCallValid: Boolean = false, onSuccess: (Uri) -> Unit,
-                                       onFailure: (Exception) -> Unit){
+    private fun downloadPicture(imagePath: String?, isCallValid: Boolean = false,
+                                context: Context,
+                                onSuccess: (Uri) -> Unit,
+                                onFailure: (Exception) -> Unit){
         viewModelScope.launch {
             try {
                 if (!imagePath.isNullOrEmpty() && isCallValid) {
@@ -527,6 +533,8 @@ class ProfileViewModel: ViewModel() {
                     storageRef.downloadUrl
                         .addOnSuccessListener { uri ->
                             _profilePictureUri.value = UserProfilePictureData(uri)
+                            saveProfilePicture(context = context, uri = storageRef.path)
+//                            setProfilePictureDownloadFlag(context = context)
                             isDownloadSuccessful.value = true
                             onSuccess(uri)
                             Log.d(TAG, "Download Success...Path: ${storageRef.path}")
@@ -595,5 +603,35 @@ class ProfileViewModel: ViewModel() {
                 }
             }
         }
+    }
+
+    /**
+     * download profile picture from Firebase Firestore,
+     * save in a sharedpreference to be used across the
+     * lifetime of the application
+     */
+    fun saveProfilePicture(context: Context, uri: String){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("profilePicture", uri)
+        editor.apply()
+        Log.d(TAG, "Inside saveProfilePicture()...storing URI: $uri")
+    }
+
+    fun getProfilePicture(context: Context): String?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("profilePicture", null)
+    }
+
+    fun setProfilePictureDownloadFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isPictureDownloaded", true)
+        editor.apply()
+    }
+
+    fun isProfilePictureDownloaded(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isPictureDownloaded", false)
     }
 }
