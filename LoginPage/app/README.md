@@ -41,3 +41,10 @@ before a new OTP is resent if they click the resend button.
 When the user clicks the back button continuously and arrives the login page, 
 the user automatically gets logged out of the app. There the backstack gets emptied
 in case there are still some screens available in the navigation stack.
+
+
+
+
+References:
+Google icons created by Freepik - Flaticon:
+- https://www.flaticon.com/search?word=google
