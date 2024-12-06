@@ -101,9 +101,12 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
     }
 
     if (timerViewModel.isAuthComplete(context = context)){
-        signUpPageViewModel.resetUserData(context = context)
         timerViewModel.resetAuthFlag(context = context)
         Log.d(TAG, "isAuthComplete Login() = ${timerViewModel.isAuthComplete(context = context)}")
+    }
+
+    LaunchedEffect(Unit) {
+        signUpPageViewModel.resetUserData(context = context)
     }
 
     LaunchedEffect(showDialog) {

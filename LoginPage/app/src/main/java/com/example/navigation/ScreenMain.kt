@@ -52,18 +52,17 @@ fun ScreenMain(homeViewModel: HomeViewModel = viewModel(),
     val isAuthComplete = timerViewModel.isAuthComplete(context = context)
     Log.d(TAG, "isAuthComplete ScreenMain() = ${timerViewModel.isAuthComplete(context = context)}")
 
-
     if (homeViewModel.isUserLoggedIn.value == true && providerId == "google.com"){
         getToast(context, "Active Google user detected", Toast.LENGTH_LONG)
         startDestination = Routes.Home.route
     }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password" && isAuthComplete){
+        getToast(context, "Active Email/Password user detected",
+            Toast.LENGTH_LONG)
+        startDestination = Routes.Home.route
+    }else if (homeViewModel.isUserLoggedIn.value == true && providerId == "password" && !isAuthComplete){
         getToast(context, "Partially Active Email/Password user detected",
             Toast.LENGTH_LONG)
         startDestination = Routes.ChooseVerificationMethod.route
-//        startDestination = Routes.Home.route
-    }else if (!isAuthComplete && homeViewModel.isUserLoggedIn.value == true){
-        homeViewModel.logOut(navController = navController,
-            signUpPageViewModel = signUpPageViewModel, context = context)
     }
 
     NavHost(navController = navController, startDestination = startDestination) {

@@ -159,8 +159,8 @@ fun ScaffoldUserProfileWithTopBar(
                         NormalTextComponent(value = "Title: " + stringResource(id = R.string.admin_profile))
                         val isEnable = true
                         Log.d(TAG, "ProviderId in UserProfile.kt: email/password...")
-                        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
-                            providerId = "password", context = context)
+//                        signUpPageViewModel.fetchedUSerData(signUpPageViewModel = signUpPageViewModel,
+//                            providerId = "password", context = context)
 //                        PhotoPickerComponent(navController = navController, size = 90.dp)
                         NormalTextComponent(value = "Full Names: $fullNames ")
                         DividerTextComponent()

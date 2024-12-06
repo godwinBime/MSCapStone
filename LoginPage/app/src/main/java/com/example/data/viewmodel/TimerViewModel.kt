@@ -121,13 +121,13 @@ class TimerViewModel: ViewModel() {
         editor.putBoolean("isUserTyping", false)
         editor.putBoolean("isAuthComplete", false)
         editor.apply()
-        Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
+        /*Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
         Log.d(TAG, "[")
         Log.d(TAG, "isAuthTimeRecorded(context: Context) reset = ${isAuthTimeRecorded(context = context)}")
         Log.d(TAG, "isUserTyping(context: Context) reset = ${isUserTyping(context = context)}")
         Log.d(TAG, "isUserCreatingAccount(context: Context) reset = ${isUserCreatingAccount(context = context)}")
         Log.d(TAG, "isAuthComplete(context: Context) reset = ${isAuthComplete(context = context)}")
-        Log.d(TAG, "]")
+        Log.d(TAG, "]")*/
 
     }
 
@@ -149,7 +149,7 @@ class TimerViewModel: ViewModel() {
         val minutes = (duration / 1000) / 60
         val seconds = (duration / 1000) % 60
         val summary = if (isUserCreatingAccount) {
-            "Account Creation and Login Duration: \n$minutes minutes and $seconds seconds"
+            "Account Creation and Login Duration: \n$minutes minute(s) and $seconds seconds"
         }else{
             "Login Duration: $minutes minute(s) and $seconds seconds"
         }

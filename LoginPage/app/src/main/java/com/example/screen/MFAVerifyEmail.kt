@@ -54,6 +54,7 @@ fun MFAVerifyEmail(navController: NavHostController,
     }
 }
 
+private val TAG = SignUpPageViewModel::class.simpleName
 //@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScaffoldMFAVerifyEmail(navController: NavHostController,
@@ -69,7 +70,6 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val isEnabled = signUpPageViewModel.verificationCodeValidationsPassed.value
     var codeStatus by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    val TAG = VerifyEmailViewModel::class.simpleName
 
     LaunchedEffect(Unit) {
         if (!timerViewModel.isMfaTimerRunning()){
@@ -90,6 +90,16 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                LaunchedEffect(Unit) {
+                    if (!signUpPageViewModel.isFullNamesObtained(context = context)) {
+                        Log.d(TAG, "Inside ScaffoldMFAVerifyEmail() obtaining FullNames...")
+                        signUpPageViewModel.fetchedUSerData(
+                            signUpPageViewModel = signUpPageViewModel,
+                            providerId = providerId,
+                            context = context
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 HeadingTextComponent(value = "Enter Verification code")
 

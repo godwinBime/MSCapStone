@@ -30,6 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -92,6 +93,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
     val authStartTime = timerViewModel.getAuthStartTime(context = context)
     val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
+//    signUpPageViewModel.resetUserData(context = context)
     val authEndTime = if (!isAuthTimeRecorded) {
         val endTime = System.currentTimeMillis()
         timerViewModel.saveAuthEndTime(context = context, endTime = endTime)
@@ -104,16 +106,15 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         endTime = authEndTime, context = context)
     val authDuration = rememberSaveable { mutableStateOf("")}
 
-    LaunchedEffect(Unit) {
-        if (providerId == "password" && !signUpPageViewModel.isFullNamesObtained(context = context)) {
-//        timerViewModel.resetUserTypingFlag(context = context)
-            signUpPageViewModel.fetchedUSerData(
-                signUpPageViewModel = signUpPageViewModel,
-                providerId = "password", context = context
-            )
-            signUpPageViewModel.setFullNamesFlag(context = context)
-        }
-    }
+//    LaunchedEffect(providerId) {
+//        if (providerId == "password") {
+////        timerViewModel.resetUserTypingFlag(context = context)
+//            signUpPageViewModel.fetchedUSerData(
+//                signUpPageViewModel = signUpPageViewModel,
+//                providerId = "password", context = context
+//            )
+//        }
+//    }
 
     val fullNames = signUpPageViewModel.getFullNames(context = context)
 
@@ -125,7 +126,9 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
         }
     }
     // Authentication process is complete, set the complete flag to true
-    timerViewModel.setAuthComplete(context = context)
+    LaunchedEffect(Unit) {
+        timerViewModel.setAuthComplete(context = context)
+    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -161,6 +164,9 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                LaunchedEffect(fullNames) {
+
+                }
                 Spacer(modifier = Modifier.height(80.dp))
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)

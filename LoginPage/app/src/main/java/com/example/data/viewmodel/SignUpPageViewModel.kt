@@ -411,16 +411,19 @@ class SignUpPageViewModel: ViewModel() {
                         providerId: String?, context: Context){
         val userId = auth.currentUser?.uid
         signInSignUpInProgress.value = true
-        if (providerId == "password") {
+        if (providerId == "password" && !isFullNamesObtained(context = context)) {
             fetchUserData(signUpPageViewModel = signUpPageViewModel, providerId = providerId,
                 userId = userId) { user ->
                 saveFullNames(context = context, fullNames = user.firstName + " " + user.lastName)
                 saveUserEmail(context = context, userEmail = user.email)
                 saveUserPhoneNumber(context = context, userPhoneNumber = user.phoneNumber)
+                setFullNamesFlag(context = context)
             }
         }else if(providerId == "google.com"){
             signInSignUpInProgress.value = false
-            Log.d(TAG, "fetchedUserData Error: \nLogin through 3rd party (google.com) credentials. \nNo data provided.")
+            Log.d(TAG, "fetchedUserData Error: \nLogged-in through 3rd party (google.com) credentials. \nNo data provided.")
+        }else{
+            Log.d(TAG, "fetchedUserData Error: Unknown provider...")
         }
     }
 
@@ -453,6 +456,7 @@ class SignUpPageViewModel: ViewModel() {
         val editor = sharedPreferences.edit()
         editor.putString("fullNames", fullNames)
         editor.apply()
+        Log.d(TAG, "Saved FullNames: $fullNames")
     }
 
     fun getFullNames(context: Context): String?{
@@ -460,7 +464,7 @@ class SignUpPageViewModel: ViewModel() {
         return sharedPreferences.getString("fullNames", null)
     }
 
-    fun setFullNamesFlag(context: Context){
+    private fun setFullNamesFlag(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("isFullNamesObtained", true)
@@ -477,6 +481,7 @@ class SignUpPageViewModel: ViewModel() {
         val editor = sharedPreferences.edit()
         editor.putString("userEmail", userEmail)
         editor.apply()
+        Log.d(TAG, "Saved Email: $userEmail")
     }
 
     fun getUserEmail(context: Context): String?{
@@ -489,6 +494,7 @@ class SignUpPageViewModel: ViewModel() {
         val editor = sharedPreferences.edit()
         editor.putString("userPhoneNumber", userPhoneNumber)
         editor.apply()
+        Log.d(TAG, "Saved userPhoneNumber: $userPhoneNumber")
     }
 
     fun getUserPhoneNumber(context: Context): String?{
@@ -503,6 +509,8 @@ class SignUpPageViewModel: ViewModel() {
         editor.remove("fullNames")
         editor.remove("userPhoneNumber")
         editor.remove("userEmail")
+        editor.putBoolean("isFullNamesObtained", false)
         editor.apply()
+        Log.d(TAG, "Resetting user data...")
     }
 }
