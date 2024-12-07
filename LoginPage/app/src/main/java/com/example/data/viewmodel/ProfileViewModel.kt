@@ -185,7 +185,8 @@ class ProfileViewModel: ViewModel() {
                              context: Context,
                              navController: NavHostController){
         updateProfileInProgress.value = true
-        isPictureExistInDatabase(imagePath = imagePath, onSuccess = {}, onFailure = {})
+        isPictureExistInDatabase(imagePath = imagePath, context = context,
+            onSuccess = {}, onFailure = {})
         if (profilePictureExist.value == true) {
             deletePicture(
                 imagePath = imagePath,
@@ -440,10 +441,6 @@ class ProfileViewModel: ViewModel() {
         )
     }
 
-//    fun resetUploadProgress(){
-//        _uploadProgress.value = 0f
-//    }
-
     private fun uploadPicture(uri: Uri?, isCallValid: Boolean = false,
                              navController: NavHostController,
                              onSuccess: () -> Unit,
@@ -456,7 +453,7 @@ class ProfileViewModel: ViewModel() {
                     val uploadTask = storageRef.putFile(uri)
                     uploadTask
                         .addOnSuccessListener {
-                            uploadTask.cancel()
+//                            uploadTask.cancel()
                             _uploadStatus.value = "Upload successful"
                             isUploadSuccessful.value = true
                             Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
@@ -507,10 +504,10 @@ class ProfileViewModel: ViewModel() {
         Log.d(TAG,
             "Is profilePictureUri empty...: ${_profilePictureUri.value == null}"
         )
-        isPictureExistInDatabase(imagePath = imagePath,
+        isPictureExistInDatabase(imagePath = imagePath, context = context,
             onSuccess = onSuccess, onFailure = onFailure)
 
-        if (_profilePictureUri.value == null){
+        if (profilePictureExist.value == false){
             Log.d(TAG, "Inside downloadProfilePicture()...about to initiate download...")
             updateProfileInProgress.value = true
             downloadPicture(
@@ -519,6 +516,8 @@ class ProfileViewModel: ViewModel() {
                 context = context,
                 onSuccess = onSuccess,
                 onFailure = onFailure)
+        }else{
+            Log.d(TAG, "Call from downloadProfilePicture() ... Profile Picture already downloaded")
         }
     }
 
@@ -533,7 +532,7 @@ class ProfileViewModel: ViewModel() {
                     storageRef.downloadUrl
                         .addOnSuccessListener { uri ->
                             _profilePictureUri.value = UserProfilePictureData(uri)
-                            saveProfilePicture(context = context, uri = storageRef.path)
+//                            saveProfilePicture(context = context, uri = storageRef.path)
 //                            setProfilePictureDownloadFlag(context = context)
                             isDownloadSuccessful.value = true
                             onSuccess(uri)
@@ -563,7 +562,7 @@ class ProfileViewModel: ViewModel() {
         }
     }
 
-    fun isPictureExistInDatabase(imagePath: String?, onSuccess: (Uri) -> Unit,
+    fun isPictureExistInDatabase(imagePath: String?, context: Context, onSuccess: (Uri) -> Unit,
                                  onFailure: (Exception) -> Unit){
         if (!imagePath.isNullOrEmpty()){
             viewModelScope.launch {
@@ -577,6 +576,9 @@ class ProfileViewModel: ViewModel() {
                                 .addOnSuccessListener {uri ->
                                     updateProfileInProgress.value = false
                                     onSuccess(uri)
+                                    saveProfilePicture(context = context, uri = uri.toString())
+                                    setProfilePictureDownloadFlag(context = context)
+                                    Log.d(TAG, "URI of available image: $uri")
                                     Log.d(TAG, "Call from isPictureExistInDatabase()...Profile Picture exist...")
                                 }
                                 .addOnFailureListener{
@@ -602,6 +604,8 @@ class ProfileViewModel: ViewModel() {
                     onFailure(e)
                 }
             }
+        }else{
+            Log.d(TAG, "Call from isPictureExistInDatabase() Image download error.")
         }
     }
 
@@ -633,5 +637,14 @@ class ProfileViewModel: ViewModel() {
     fun isProfilePictureDownloaded(context: Context): Boolean{
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("isPictureDownloaded", false)
+    }
+
+    fun resetProfilePictureFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isPictureDownloaded", false)
+        editor.remove("profilePicture")
+        editor.apply()
+        Log.d(TAG, "Resetting profile picture data...")
     }
 }

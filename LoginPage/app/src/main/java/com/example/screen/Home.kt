@@ -30,7 +30,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -93,7 +92,6 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     val providerId = signUpPageViewModel.checkUserProvider(user = user)
     val authStartTime = timerViewModel.getAuthStartTime(context = context)
     val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
-//    signUpPageViewModel.resetUserData(context = context)
     val authEndTime = if (!isAuthTimeRecorded) {
         val endTime = System.currentTimeMillis()
         timerViewModel.saveAuthEndTime(context = context, endTime = endTime)

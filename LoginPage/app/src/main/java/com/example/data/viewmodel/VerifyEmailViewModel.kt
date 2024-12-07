@@ -1,5 +1,6 @@
 package com.example.data.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.data.uistate.EmailVerifyUIState
+import com.example.data.uistate.OTPCode
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -97,14 +99,14 @@ class VerifyEmailViewModel: ViewModel() {
         }
     }
 
-    private fun otpCodeUpdate(actionType: String = "None"){
+    private fun otpCodeUpdate(){
         viewModelScope.launch {
             authenticationInProgress.value = true
             updateOTPCode()
         }
     }
 
-    private fun updateOTPCode(actionType: String = "None"){
+    private fun updateOTPCode(){
         if(auth.currentUser != null) {
             viewModelScope.launch {
                 try {
@@ -146,9 +148,7 @@ class VerifyEmailViewModel: ViewModel() {
     private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None",
                                      navController: NavHostController){
         if (auth.currentUser == null){
-//            otpCodeUpdate(actionType = "ChangePasswordVerifyEmail")
             Log.d(TAG, "Password reset request initiated...")
-//            otpCode = generateVerificationCode()
             email.to = emailAddress
         }else{
             otpCodeUpdate()
@@ -251,4 +251,27 @@ class VerifyEmailViewModel: ViewModel() {
             }
         }
     }
+
+    /**
+     * Sharedpreference to save OTP code
+     */
+    /*private fun saveOTPCode(context: Context, otpCode: String){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("otpCode", otpCode)
+        editor.apply()
+    }
+
+    fun getOTPCode(context: Context): String?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("otpCode", null)
+    }
+
+    fun resetOTPCode(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("otpCode")
+        editor.apply()
+    }
+    */
 }

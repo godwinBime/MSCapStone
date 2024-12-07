@@ -12,6 +12,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile =
+                file("C:\\Users\\tardz\\.android\\capstone2024\\login_page_keystore\\login_page_keystore.jks")
+            storePassword = "@19LoginPageKeystore89"
+            keyAlias = "login_page"
+            keyPassword = "@19LoginPageAlias89"
+        }
+    }
     namespace = "com.example.loginpage"
     compileSdk = 34
 
@@ -35,6 +44,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

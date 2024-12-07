@@ -39,6 +39,7 @@ import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
@@ -60,6 +61,8 @@ import com.example.util.setFirstLaunchFlag
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.math.log
 
+private val TAG = TimerViewModel::class.simpleName
+
 @Composable
 fun Login(navController: NavHostController,
           homeViewModel: HomeViewModel,
@@ -79,9 +82,6 @@ fun Login(navController: NavHostController,
     }
 }
 
-private val TAG = TimerViewModel::class.simpleName
-
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldLoginWithTopBar(navController: NavHostController,
@@ -89,24 +89,35 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             homeViewModel: HomeViewModel = viewModel(),
                             googleSignInViewModel: GoogleSignInViewModel = hiltViewModel(),
                             scrollState: ScrollState,
+                            profileViewModel: ProfileViewModel = viewModel(),
                             signUpPageViewModel: SignUpPageViewModel = viewModel(),
                             verifyEmailViewModel: VerifyEmailViewModel = viewModel()){
     val context = LocalContext.current
     val showDialog = isFirstLaunch(context = context)
     Log.d(TAG, "Login()...isAuthTimeRecorded: ${timerViewModel.isAuthTimeRecorded(context = context)}")
 
-    if (timerViewModel.isAuthTimeRecorded(context = context)) {
-        timerViewModel.resetAuthStartTime(context = context)
-        Log.d(TAG, "...isAuthTimeRecorded still true: ${timerViewModel.isAuthTimeRecorded(context = context)}")
-    }
+    LaunchedEffect(Unit) {
+        if (timerViewModel.isAuthTimeRecorded(context = context)) {
+            timerViewModel.resetAuthStartTime(context = context)
+            Log.d(
+                TAG,
+                "...isAuthTimeRecorded still true: ${timerViewModel.isAuthTimeRecorded(context = context)}"
+            )
+        }
 
-    if (timerViewModel.isAuthComplete(context = context)){
-        timerViewModel.resetAuthFlag(context = context)
-        Log.d(TAG, "isAuthComplete Login() = ${timerViewModel.isAuthComplete(context = context)}")
+        if (timerViewModel.isAuthComplete(context = context)) {
+            timerViewModel.resetAuthFlag(context = context)
+            Log.d(
+                TAG,
+                "isAuthComplete Login() = ${timerViewModel.isAuthComplete(context = context)}"
+            )
+        }
     }
 
     LaunchedEffect(Unit) {
         signUpPageViewModel.resetUserData(context = context)
+        profileViewModel.resetProfilePictureFlag(context = context)
+
     }
 
     LaunchedEffect(showDialog) {
@@ -130,7 +141,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
     Scaffold(
         topBar = { TopAppBarBeforeLogin(
             navController = navController, stringResource(id = R.string.master_title),
-            showBackIcon = false, action = "Fill the email and password above to login.",
+            showBackIcon = false, action = stringResource(id = R.string.login_guide),
             homeViewModel = homeViewModel)},
         content = {
             Column(
@@ -159,8 +170,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             navController = navController)
                     },
                     errorStatus = signUpPageViewModel.signUpPageUIState.value.emailError,
-                    action = "Login",
-                )
+                    action = "Login")
 
                 Spacer(modifier = Modifier.height(20.dp))
                 val password = stringResource(id = R.string.password)
@@ -174,9 +184,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                             navController = navController
                         )
                     },
-                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError
-                )
-
+                    errorStatus = signUpPageViewModel.signUpPageUIState.value.passwordError)
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = signUpPageViewModel.authError.value,
@@ -202,7 +210,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
                 }
 
 //                Spacer(modifier = Modifier.height(20.dp))
-//
 //                GeneralClickableTextComponent(
 //                    value = stringResource(id = R.string.code),
 //                    navController = navController, 7)

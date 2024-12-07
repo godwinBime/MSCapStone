@@ -192,7 +192,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
     val TAG1 = TimerViewModel::class.simpleName
     val context = LocalContext.current
     val isAuthTimeRecorded = timerViewModel.isAuthTimeRecorded(context = context)
-    val isUserTyping = timerViewModel.isUserTyping(context = context)
+//    val isUserTyping = timerViewModel.isUserTyping(context = context)
     TextField(
         modifier = Modifier
             .fillMaxWidth(),
@@ -1110,7 +1110,9 @@ fun DisplayProfilePicture(
 
 @Composable
 fun DoesPictureExist(imagePath: String, profileViewModel: ProfileViewModel = viewModel()){
+    val context = LocalContext.current
     profileViewModel.isPictureExistInDatabase(imagePath = imagePath,
+        context = context,
         onSuccess = {
             profileViewModel.profilePictureExist.value = true
         },
@@ -1242,14 +1244,14 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
     val user = FirebaseAuth.getInstance().uid
     val imagePath = "/ProfilePictures/$user"
 
-    val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
 
+//    val xxx = profileViewModel.getProfilePicture(context = context)
+//    val downloadedImageUri: Uri? = Uri.parse(xxx)
+    val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
+//    Log.d(TAG1, "\n\ndownloadedImageUri : $downloadedImageUri")
     Log.d(TAG1,
         "Is profilePictureUri empty-->: ${profilePictureUri?.userProfilePictureDataImageUri == null}"
     )
-//    LaunchedEffect(Unit) {
-//        finalImageUri = (profilePictureUri?.userProfilePictureDataImageUri?: imageUri)
-//    }
 
     if (finalImageUri == null){
         Log.d(TAG1, "\n\nfinalImageUri is null...\n\n")
@@ -1257,7 +1259,9 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
             uri = imageUri,
             context = context,
             isCallValid = isImageClicked)
-        }
+        }else {
+        Log.d(TAG1, "\n\nfinalImageUri is not null...\n\n")
+    }
 
     Box(modifier = Modifier
         .size(
@@ -1270,8 +1274,12 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
         )
         .clip(CircleShape),
         contentAlignment = Alignment.Center){
-        val xxx = profileViewModel.getProfilePicture(context = context)
+//        Log.d(TAG1, "Inside TraditionalAccountProfilePictureComponent() URI: $xxx")
+//        Log.d(TAG1, "finalImageUri URI: $finalImageUri")
+//        Log.d(TAG1, "Inside TraditionalAccountProfilePictureComponent() URI: $xxx")
 
+//        finalImageUri = downloadedImageUri
+//        Log.d(TAG1, "finalImageUri URI from sharedpref...: $finalImageUri")
         (finalImageUri?: defaultProfileImageUri)?.let { uri ->
             DisplayProfilePicture(
                 uri = uri, navController = navController,
@@ -1283,6 +1291,7 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
     }
     if (imageUri != null && isImageClicked){
         Log.d(TAG1, "Update dp initiated...image clicked")
+        profileViewModel.saveProfilePicture(context = context, uri = imageUri.toString())
         UploadPicture(imageUri = imageUri, isCallValid = true,
             navController = navController, profileViewModel = profileViewModel,
             onSuccess = {}, onFailure = {})

@@ -1,5 +1,6 @@
 package com.example.data.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -21,6 +22,7 @@ class GoogleSignInViewModel @Inject constructor(
     private val repository: AuthenticationRepository): ViewModel() {
     private val _googleState = mutableStateOf(GoogleSignInState())
         val googleState: State<GoogleSignInState> = _googleState
+    private val TAG = GoogleSignInViewModel::class.simpleName
 
     fun googleSignIn(credential: AuthCredential, signUpPageViewModel: SignUpPageViewModel) = viewModelScope.launch {
             repository.googleSignIn(credential).collect{result ->
@@ -29,12 +31,15 @@ class GoogleSignInViewModel @Inject constructor(
 //                        val user = FirebaseAuth.getInstance().currentUser
 //                        signUpPageViewModel.checkUserProvider(user)
                         _googleState.value = GoogleSignInState(success = result.data)
+                        Log.d(TAG, "googleSignIn()...Success")
                     }
                     is Resource.Loading -> {
                         _googleState.value = GoogleSignInState(loading = true)
+                        Log.d(TAG, "googleSignIn()...Loading")
                     }
                     is Resource.Error -> {
                         _googleState.value = GoogleSignInState(error = result.message!!)
+                        Log.d(TAG, "googleSignIn()...Error")
                     }
                 }
         }
