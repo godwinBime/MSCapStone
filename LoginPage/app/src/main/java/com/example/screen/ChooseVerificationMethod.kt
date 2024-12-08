@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -36,9 +37,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.viewmodel.HomeViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
+import com.example.data.viewmodel.VerifyEmailViewModel
 import com.example.loginpage.R
 import com.example.loginpage.ui.component.DesignMFASpace
 import com.example.loginpage.ui.component.HeadingTextComponent
@@ -50,8 +53,8 @@ fun ChooseVerificationMethod(navController: NavHostController,
                              homeViewModel: HomeViewModel){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()){
-        ScaffoldChooseVerificationMethod(navController = navController, scrollState,
-            signUpPageViewModel, homeViewModel)
+        ScaffoldChooseVerificationMethod(navController = navController,
+            scrollState = scrollState)
     }
 }
 
@@ -59,8 +62,9 @@ fun ChooseVerificationMethod(navController: NavHostController,
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
-                                     signUpPageViewModel: SignUpPageViewModel,
-                                     homeViewModel: HomeViewModel){
+                                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                                     signUpPageViewModel: SignUpPageViewModel = viewModel(),
+                                     homeViewModel: HomeViewModel = viewModel()){
     val context = LocalContext.current
     Scaffold(
         topBar = { TopAppBarBeforeLogin(navController = navController, title = "MFA",
@@ -75,6 +79,9 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
+                LaunchedEffect(Unit) {
+                    verifyEmailViewModel.resetOTPCode(context = context)
+                }
                 HeadingTextComponent(value = "Choose Verification Method")
 
                 Spacer(modifier = Modifier.height(20.dp))

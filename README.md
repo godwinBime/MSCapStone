@@ -42,6 +42,16 @@ When the user clicks the back button continuously and arrives the login page,
 the user automatically gets logged out of the app. There the backstack gets emptied
 in case there are still some screens available in the navigation stack.
 
+- Authentication Start timer
+  The timer starts as soon as the user starts typing into the input fields.
+  If the user leaves the authentication process incomplete the timer will
+  keep counting until the user comes and complete it. It can take days, weeks
+  months, years, the timer will keep track as long as the user does not uninstall
+  and reinstall the app.
+  - the timer gets reset once the user gets to the home screen. 
+  - The timer also gets reset when the app runs and checks if the timer is set  to true
+    if it is set to true while the user is in the login screen, it gets reset again.
+
 
 
 

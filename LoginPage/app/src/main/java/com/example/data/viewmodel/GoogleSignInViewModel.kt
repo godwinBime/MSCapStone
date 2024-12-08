@@ -31,15 +31,12 @@ class GoogleSignInViewModel @Inject constructor(
 //                        val user = FirebaseAuth.getInstance().currentUser
 //                        signUpPageViewModel.checkUserProvider(user)
                         _googleState.value = GoogleSignInState(success = result.data)
-                        Log.d(TAG, "googleSignIn()...Success")
                     }
                     is Resource.Loading -> {
                         _googleState.value = GoogleSignInState(loading = true)
-                        Log.d(TAG, "googleSignIn()...Loading")
                     }
                     is Resource.Error -> {
                         _googleState.value = GoogleSignInState(error = result.message!!)
-                        Log.d(TAG, "googleSignIn()...Error")
                     }
                 }
         }

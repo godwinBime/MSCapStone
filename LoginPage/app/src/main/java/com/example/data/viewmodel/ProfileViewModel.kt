@@ -278,9 +278,9 @@ class ProfileViewModel: ViewModel() {
                         }
                         updateProfileInProgress.value = false
                     }
-                    .addOnFailureListener{
+                    .addOnFailureListener{exception ->
                         updateProfileInProgress.value = false
-                        Log.d(TAG, "Error: addOnFailureListener:-> Email and password not deleted...")
+                        Log.d(TAG, "Error: addOnFailureListener:-> Email and password not deleted cause = ${exception.localizedMessage}...")
                     }
             }else{
                 updateProfileInProgress.value = false
@@ -328,7 +328,8 @@ class ProfileViewModel: ViewModel() {
                                         }
                                         .addOnFailureListener{
                                             message = "Token expired, re-authenticate and try again."
-                                            Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed")
+                                            Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed\n" +
+                                                    "because --> $it")
                                         }
                                 }
                             }else if (auth.currentUser != null){
@@ -416,7 +417,8 @@ class ProfileViewModel: ViewModel() {
                     .addOnFailureListener{
                         updateProfileInProgress.value = false
                         message = "Token expired, re-authenticate and try again."
-                        Log.d(TAG, "In addOnFailureListener -- Google account deletion failed...")
+                        Log.d(TAG, "In addOnFailureListener -- Google account deletion failed..." +
+                                "because --> $it")
                     }
             }catch (e: Exception){
                 updateProfileInProgress.value = false
@@ -476,7 +478,7 @@ class ProfileViewModel: ViewModel() {
                         .addOnFailureListener{
                             isUploadSuccessful.value = false
                             updateProfileInProgress.value = false
-                            Log.d(TAG, "Upload Failed...")
+                            Log.d(TAG, "Upload Failed... because --> $it")
                             onFailure(it)
                         }
                 }else{
@@ -543,7 +545,7 @@ class ProfileViewModel: ViewModel() {
                             _profilePictureUri.value = UserProfilePictureData(null)
                             isDownloadSuccessful.value = false
                             updateProfileInProgress.value = false
-                            Log.d(TAG, "Call from downloadProfilePicture()...Download Failed")
+                            Log.d(TAG, "Call from downloadProfilePicture()...Download Failed because --> $it")
                             onFailure(it)
                         }
                 }else{
@@ -583,7 +585,7 @@ class ProfileViewModel: ViewModel() {
                                 }
                                 .addOnFailureListener{
                                     updateProfileInProgress.value = false
-                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Download URI error")
+                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Download URI error cause: --> $it")
                                     onFailure(it)
                                 }
                             updateProfileInProgress.value = false

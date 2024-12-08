@@ -106,6 +106,18 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                 Spacer(modifier = Modifier.height(20.dp))
                 OtpNotification()
                 Spacer(modifier = Modifier.height(20.dp))
+                /*if(user.currentUser?.email == "tardzenyuy1989@gmail.com"){
+                    Text(
+                        text = "Enter this code in the field provided",
+                    )
+                    verifyEmailViewModel.getOTPCode(context = context)?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red
+                        )
+                    }
+                }*/
+                Spacer(modifier = Modifier.height(40.dp))
                 MyTextFieldComponent(labelValue = verificationCode,
                     painterResource = codePainterResource,
                     onTextChanged = {

@@ -1,3 +1,6 @@
+//import java.io.FileInputStream
+//import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -11,8 +14,20 @@ plugins {
     id ("com.google.dagger.hilt.android")
 }
 
+//val keyStorePropertiesFile = rootProject.files("keystore.properties")
+//val keyStoreProperties = Properties()
+//keyStoreProperties.load(FileInputStream(keyStorePropertiesFile))
+
 android {
     signingConfigs {
+//        create("release") {
+//            storeFile =
+//                file(keyStoreProperties["keyStoreFilePath"] as String)
+//            storePassword = keyStoreProperties["keyStorePassword"] as String
+//            keyAlias = keyStoreProperties["keyAlias"] as String
+//            keyPassword = keyStoreProperties["keyAliasPassword"] as String
+//        }
+
         create("release") {
             storeFile =
                 file("C:\\Users\\tardz\\.android\\capstone2024\\login_page_keystore\\login_page_keystore.jks")

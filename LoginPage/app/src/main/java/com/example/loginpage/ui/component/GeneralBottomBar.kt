@@ -118,7 +118,7 @@ fun bottomNavbarContentScreen(
                 verifyEmailViewModel.sendOTPToEmail(
                     email = email,
                     navController = navController,
-                    type = "DeleteProfile")
+                    type = "DeleteProfile", context = context)
                 if (verifyEmailViewModel.isOTPSent) {
                     timerViewModel.mfaStartTimer(timerDuration = 1000)
                     Log.d(TAG, "OTPSent...Navigating to verify OTP and DeleteProfile...")

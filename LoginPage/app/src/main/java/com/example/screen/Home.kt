@@ -119,6 +119,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
         LaunchedEffect(Unit) {
             verifyEmailViewModel.resetOtpCode()
+            verifyEmailViewModel.resetOTPCode(context = context)
             timerViewModel.resetTimer()
             timerViewModel.mfaResetTimer()
         }
@@ -126,6 +127,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     // Authentication process is complete, set the complete flag to true
     LaunchedEffect(Unit) {
         timerViewModel.setAuthComplete(context = context)
+        verifyEmailViewModel.resetOTPCode(context = context)
     }
 
     Scaffold(

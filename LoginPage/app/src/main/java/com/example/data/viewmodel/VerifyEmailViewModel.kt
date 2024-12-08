@@ -99,21 +99,28 @@ class VerifyEmailViewModel: ViewModel() {
         }
     }
 
-    private fun otpCodeUpdate(){
+    private fun otpCodeUpdate(context: Context){
         viewModelScope.launch {
             authenticationInProgress.value = true
-            updateOTPCode()
+            updateOTPCode(context = context)
         }
     }
 
-    private fun updateOTPCode(){
+    private fun updateOTPCode(context: Context){
         if(auth.currentUser != null) {
+//            if (!isOTPGenerated(context = context)) {
+//                saveOTPCode(context = context, otpCode = generateVerificationCode())
+//                setOTPGeneratedFlag(context = context)
+//            }else{
+//                Log.d(TAG, "OTP code is generated")
+//            }
             viewModelScope.launch {
                 try {
+//                    val otpCodeSharedPref = getOTPCode(context = context)
                     val documentRef =
                         firestore.collection("authuser").document("qM1Zd2xkkJSGNxGp6vyT")
                     val updateData = hashMapOf<String, Any>(
-                        "otpcode" to generateVerificationCode()
+                        "otpcode" to generateVerificationCode() // otpCodeSharedPref.toString()
                     )
                     documentRef.update(updateData).await()
                     authenticationInProgress.value = false
@@ -135,24 +142,26 @@ class VerifyEmailViewModel: ViewModel() {
 
     fun sendOTPToEmail(email: EmailVerifyUIState,
                        navController: NavHostController,
-                       type: String){
+                       type: String, context: Context){
         viewModelScope.launch {
             authenticationInProgress.value = true
             sendOTPEmail(
                 email = email,
                 type = type,
-                navController = navController)
+                navController = navController,
+                context = context)
         }
     }
 
     private suspend fun sendOTPEmail(email: EmailVerifyUIState, type: String = "None",
-                                     navController: NavHostController){
+                                     navController: NavHostController, context: Context){
+//        val sharedPrefOTPCode = getOTPCode(context = context).toString()
         if (auth.currentUser == null){
             Log.d(TAG, "Password reset request initiated...")
             email.to = emailAddress
         }else{
-            otpCodeUpdate()
-            otpCode = readOTPCode().toString()
+            otpCodeUpdate(context = context)
+            otpCode = readOTPCode().toString()  // sharedPrefOTPCode
         }
         val emailData = hashMapOf(
             "to" to email.to,
@@ -165,7 +174,7 @@ class VerifyEmailViewModel: ViewModel() {
             isOTPSent = false
             verificationMessage = "Missing data, try again later."
         }else if(email.to.isNotEmpty()){
-            otpCode = readOTPCode().toString()
+            otpCode = readOTPCode().toString() /*sharedPrefOTPCode */
             firestore.collection("capstone").add(emailData)
                 .addOnSuccessListener {
                     isOTPSent = true
@@ -205,22 +214,22 @@ class VerifyEmailViewModel: ViewModel() {
     }
 
     fun verifySentOTPCode(navController: NavHostController,
-                          destination: String = "None"){
+                          destination: String = "None", context: Context){
         viewModelScope.launch {
             verifyOTPCode(navController = navController,
-                destination = destination)
+                destination = destination, context = context)
         }
     }
 
     private suspend fun verifyOTPCode(navController: NavHostController,
-                                      destination: String = "None"){
+                                      destination: String = "None", context: Context){
         authenticationInProgress.value = true
         Log.d(TAG, verificationMessage)
         if (sentOTPCode.isEmpty()){
             verificationMessage = "Please enter the verification code sent to your email"
             Log.d(TAG, verificationMessage)
         }else if (auth.currentUser != null){
-            if (sentOTPCode == readOTPCode()){
+            if (sentOTPCode == readOTPCode() /* getOTPCode(context = context) */){
                 when(destination) {
                     "VerifyAndGotoHomeScreen" -> {
                         isOTPSent = false
@@ -246,7 +255,7 @@ class VerifyEmailViewModel: ViewModel() {
                 }
             }else{
                 errorMessage = "Error! wrong OTP code entered."
-                verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code ${readOTPCode()}"
+                verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code from readOTPCode() ${readOTPCode()}"
                 Log.d(TAG, verificationMessage)
             }
         }
@@ -255,7 +264,7 @@ class VerifyEmailViewModel: ViewModel() {
     /**
      * Sharedpreference to save OTP code
      */
-    /*private fun saveOTPCode(context: Context, otpCode: String){
+    private fun saveOTPCode(context: Context, otpCode: String){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("otpCode", otpCode)
@@ -267,11 +276,24 @@ class VerifyEmailViewModel: ViewModel() {
         return sharedPreferences.getString("otpCode", null)
     }
 
+    private fun setOTPGeneratedFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("otpGenerated", true)
+        editor.apply()
+    }
+
+    private fun isOTPGenerated(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("otpGenerated", false)
+    }
+
     fun resetOTPCode(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.remove("otpCode")
+        editor.putBoolean("otpGenerated", false)
+        Log.d(TAG, "Resetting OTP data...")
         editor.apply()
     }
-    */
 }

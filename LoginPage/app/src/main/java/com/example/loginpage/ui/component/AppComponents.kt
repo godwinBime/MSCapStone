@@ -494,7 +494,7 @@ fun GeneralClickableTextComponent(value: String, navController: NavHostControlle
                                   verifyEmailViewModel.sendOTPToEmail(
                                       email = email,
                                       navController = navController,
-                                      type = type
+                                      type = type, context = context
                                   )
                                   timerViewModel.mfaStartTimer(timerDuration = 1000)
                               }
@@ -597,7 +597,8 @@ fun ButtonComponent(navController: NavHostController,
 //                    timerViewModel.mfaResetTimer()
                     Log.d(TAG, "Inside VerifyAndGotoHomeScreen statement---timer is still running")
                     verifyEmailViewModel.verifySentOTPCode(
-                        navController = navController, destination = "VerifyAndGotoHomeScreen")
+                        navController = navController, destination = "VerifyAndGotoHomeScreen",
+                        context = context)
                 }else{
                     Log.d(TAG, "Inside else() VerifyAndGotoHomeScreen statement---otp code expired...")
                     verifyEmailViewModel.resetOtpCode()
@@ -620,8 +621,7 @@ fun ButtonComponent(navController: NavHostController,
                 if(timerViewModel.isMfaTimerRunning()) {
                     verifyEmailViewModel.verifySentOTPCode(
                         navController = navController,
-                        destination = "ChangePasswordVerifyEmail"
-                    )
+                        destination = "ChangePasswordVerifyEmail", context = context)
                 }else{
                     Log.d(TAG, "Inside ButtonComponent() OTP code expired---" )
                 }
@@ -653,7 +653,8 @@ fun ButtonComponent(navController: NavHostController,
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 Log.d(TAG, "Inside DeleteProfileVerifyEmail statement---" )
                 verifyEmailViewModel.verifySentOTPCode(
-                    navController = navController, destination = "DeleteProfile")
+                    navController = navController, destination = "DeleteProfile",
+                    context = context)
             }
             12 -> {
                 onButtonClicked.invoke()
@@ -745,7 +746,7 @@ fun ChooseMFAButton(name: String, navController: NavHostController,
 //                        timerViewModel.mfaStartTimer(timerDuration = 1000)
                         Log.d(TAG, "Going to Send MFA code sent to ${auth.currentUser?.email}")
                         verifyEmailViewModel.sendOTPToEmail(email, type = "MFAVerifyEmail",
-                            navController = navController)
+                            navController = navController, context = context)
                         Log.d(TAG, "invalidateMfaTimer Trigger")
                     }
                 }
@@ -980,7 +981,7 @@ fun DrawerContentComponent(navController: NavHostController,
                             verifyEmailViewModel.sendOTPToEmail(
                                 email = email,
                                 navController = navController,
-                                type = "ChangePasswordVerifyEmail")
+                                type = "ChangePasswordVerifyEmail", context = context)
                             /*if (verifyEmailViewModel.isOTPSent) {
 //                                timerViewModel.mfaStartTimer(timerDuration = 1000)
                                 Log.d(TAG1, "Timer initiated inside DrawerContentComponent()")
