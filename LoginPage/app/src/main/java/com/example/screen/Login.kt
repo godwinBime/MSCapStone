@@ -118,7 +118,6 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
     LaunchedEffect(Unit) {
         signUpPageViewModel.resetUserData(context = context)
         profileViewModel.resetProfilePictureFlag(context = context)
-
     }
 
     LaunchedEffect(showDialog) {

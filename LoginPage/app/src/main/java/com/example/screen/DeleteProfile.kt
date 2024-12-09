@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -66,7 +67,6 @@ fun DeleteProfile(navController: NavHostController,
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
         ScaffoldDeleteProfileWithTopBar(navController = navController,
-            homeViewModel = homeViewModel,
             scrollState = scrollState)
         LoadingScreenComponent(googleSignInViewModel = googleSignInViewModel,
             signUpPageViewModel = signUpPageViewModel)
@@ -80,7 +80,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                                     scrollState: ScrollState,
                                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                     timerViewModel: TimerViewModel = viewModel(),
-                                    updateProfileViewModel: ProfileViewModel = viewModel(),
+                                    profileViewModel: ProfileViewModel = viewModel(),
                                     signUpPageViewModel: SignUpPageViewModel = viewModel()) {
 
     val context = LocalContext.current
@@ -188,7 +188,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
             }
         },*/
         topBar = {
-            HomeScreenTopAppBar(navController, title = deleteTitle, action = "DeleteProfile Screen",
+            HomeScreenTopAppBar(navController, title = deleteTitle, action = "Caution: Delete Profile.",
                 navigationIconClicked = {
                     coroutineScope.launch {
                         scaffoldState.drawerState.open()
@@ -253,8 +253,7 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     }
                 }
                 Spacer(modifier = Modifier.height(40.dp))
-                Text(text = updateProfileViewModel.message, color = Color.Red)
-                Spacer(modifier = Modifier.height(40.dp))
+
                 SubButton(
                     navController = navController,
                     value = stringResource(R.string.delete_profile),
@@ -263,7 +262,11 @@ fun ScaffoldDeleteProfileWithTopBar(navController: NavHostController,
                     originalPage = "DeleteProfile.kt",
                     userType = providerId
                 )
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(text = profileViewModel.message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(12.dp))
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     )

@@ -230,6 +230,7 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                                 startTime = startTime
                             )
                             timerViewModel.setUserTypingFlag(context = context)
+//                            timerViewModel.setUserLoginFlag(context = context)
                         }else{
                             Log.d(TAG1, "User is typing to login...")
                         }
@@ -245,8 +246,10 @@ fun MyTextFieldComponent(labelValue: String, painterResource: Painter,
                                 startTime = startTime
                             )
                             timerViewModel.setUserTypingFlag(context = context)
+//                            timerViewModel.setUserCreatingAccountFlag(context = context)
+                        }/*else if (timerViewModel.isUserTyping(context = context) && !timerViewModel.isUserCreatingAccount(context = context)){
                             timerViewModel.setUserCreatingAccountFlag(context = context)
-                        }else{
+                        }*/else{
                             Log.d(TAG1, "User is typing to create account...")
                         }
                     }
@@ -558,6 +561,7 @@ fun ButtonComponent(navController: NavHostController,
                 onButtonClicked.invoke()
             }
             1 -> {
+                timerViewModel.setUserCreatingAccountFlag(context = context)
                 onButtonClicked.invoke()
                 Log.d(TAG, "From $originalPage in ButtonComponent")
                 /*if (originalPage == "SignUp.kt") {
@@ -1292,7 +1296,7 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
     }
     if (imageUri != null && isImageClicked){
         Log.d(TAG1, "Update dp initiated...image clicked")
-        profileViewModel.saveProfilePicture(context = context, uri = imageUri.toString())
+//        profileViewModel.saveProfilePicture(context = context, uri = imageUri.toString())
         UploadPicture(imageUri = imageUri, isCallValid = true,
             navController = navController, profileViewModel = profileViewModel,
             onSuccess = {}, onFailure = {})
@@ -1318,7 +1322,7 @@ fun PhotoPickerComponent(navController: NavHostController,
         }
     )
 
-    profileViewModel.saveProfilePicture(context = context, uri = selectedImageUri.toString())
+//    profileViewModel.saveProfilePicture(context = context, uri = selectedImageUri.toString())
     TraditionalAccountProfilePictureComponent(
         imageUri = selectedImageUri,
         pageSource = pageSource,

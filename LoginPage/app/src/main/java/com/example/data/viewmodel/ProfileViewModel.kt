@@ -187,7 +187,8 @@ class ProfileViewModel: ViewModel() {
         updateProfileInProgress.value = true
         isPictureExistInDatabase(imagePath = imagePath, context = context,
             onSuccess = {}, onFailure = {})
-        if (profilePictureExist.value == true) {
+        Log.d(TAG, "Profile picture available = ${isProfilePictureAvailable(context = context)}")
+        if (isProfilePictureAvailable(context = context)) {
             deletePicture(
                 imagePath = imagePath,
                 action = action,
@@ -208,8 +209,8 @@ class ProfileViewModel: ViewModel() {
                               context: Context,
                               navController: NavHostController){
         val storageRef = storage.reference
-        val desertRef = imagePath?.let { storageRef.child(it) }
-        desertRef?.delete()
+        val deleteRef = imagePath?.let { storageRef.child(it) }
+        deleteRef?.delete()
             ?.addOnSuccessListener {
                 updateProfileInProgress.value = false
                 Log.d(TAG, "Image successfully deleted...")
@@ -280,6 +281,7 @@ class ProfileViewModel: ViewModel() {
                     }
                     .addOnFailureListener{exception ->
                         updateProfileInProgress.value = false
+                        message = exception.localizedMessage?.toString() ?: "Error: re-authenticate and complete the process"
                         Log.d(TAG, "Error: addOnFailureListener:-> Email and password not deleted cause = ${exception.localizedMessage}...")
                     }
             }else{
@@ -327,7 +329,7 @@ class ProfileViewModel: ViewModel() {
                                             updateProfileInProgress.value = false
                                         }
                                         .addOnFailureListener{
-                                            message = "Token expired, re-authenticate and try again."
+                                            message = "Error: $it"
                                             Log.d(TAG, "addOnFailureListener Call from deleteProfile(): task to delete user profile failed\n" +
                                                     "because --> $it")
                                         }
@@ -416,7 +418,7 @@ class ProfileViewModel: ViewModel() {
                     }
                     .addOnFailureListener{
                         updateProfileInProgress.value = false
-                        message = "Token expired, re-authenticate and try again."
+                        message = it.localizedMessage?.toString() ?:  "Token expired, re-authenticate and try again."
                         Log.d(TAG, "In addOnFailureListener -- Google account deletion failed..." +
                                 "because --> $it")
                     }
@@ -496,7 +498,6 @@ class ProfileViewModel: ViewModel() {
                 Log.d(TAG, "Is Upload Success...: ${isUploadSuccessful.value}")
             }
         }
-
     }
 
     fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false,
@@ -574,12 +575,13 @@ class ProfileViewModel: ViewModel() {
                     storeRef.metadata
                         .addOnSuccessListener {
                             profilePictureExist.value = true
+                            setProfilePictureExistFlag(context = context)
                             storeRef.downloadUrl
                                 .addOnSuccessListener {uri ->
                                     updateProfileInProgress.value = false
                                     onSuccess(uri)
-                                    saveProfilePicture(context = context, uri = uri.toString())
-                                    setProfilePictureDownloadFlag(context = context)
+//                                    saveProfilePicture(context = context, uri = uri)
+//                                    setProfilePictureDownloadFlag(context = context)
                                     Log.d(TAG, "URI of available image: $uri")
                                     Log.d(TAG, "Call from isPictureExistInDatabase()...Profile Picture exist...")
                                 }
@@ -616,10 +618,10 @@ class ProfileViewModel: ViewModel() {
      * save in a sharedpreference to be used across the
      * lifetime of the application
      */
-    fun saveProfilePicture(context: Context, uri: String){
+    /*fun saveProfilePicture(context: Context, uri: Uri){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("profilePicture", uri)
+        editor.putString("profilePicture", uri.toString())
         editor.apply()
         Log.d(TAG, "Inside saveProfilePicture()...storing URI: $uri")
     }
@@ -646,6 +648,27 @@ class ProfileViewModel: ViewModel() {
         val editor = sharedPreferences.edit()
         editor.putBoolean("isPictureDownloaded", false)
         editor.remove("profilePicture")
+        editor.apply()
+        Log.d(TAG, "Resetting profile picture data...")
+    }*/
+
+    private fun setProfilePictureExistFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isPictureAvailable", true)
+        editor.apply()
+    }
+
+    private fun isProfilePictureAvailable(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("isPictureAvailable", false)
+    }
+
+    fun resetProfilePictureFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isPictureAvailable", false)
+//        editor.remove("profilePicture")
         editor.apply()
         Log.d(TAG, "Resetting profile picture data...")
     }

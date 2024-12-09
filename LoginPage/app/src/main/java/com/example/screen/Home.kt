@@ -128,6 +128,7 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
     LaunchedEffect(Unit) {
         timerViewModel.setAuthComplete(context = context)
         verifyEmailViewModel.resetOTPCode(context = context)
+        timerViewModel.resetUserTypingFlag(context = context)
     }
 
     Scaffold(

@@ -37,7 +37,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 
-private val TAG = GoogleSignInViewModel::class.simpleName
+private val TAG = TimerViewModel::class.simpleName
 @Composable
 fun GoogleSignInScreen(
     signUpPageViewModel: SignUpPageViewModel = viewModel(),
@@ -65,9 +65,13 @@ fun GoogleSignInScreen(
         modifier = Modifier
             .height(60.dp),
         onClick = {
-            val startTime = System.currentTimeMillis()
-            timerViewModel.saveAuthStartTime(context = context, startTime = startTime)
-            Log.d(TAG, "startTime inside...$startTime")
+            if(!timerViewModel.isUserTyping(context = context)) {
+                val startTime = System.currentTimeMillis()
+                timerViewModel.saveAuthStartTime(context = context, startTime = startTime)
+                Log.d(TAG, "startTime inside GoogleSignInScreen()...$startTime")
+            }else{
+                Log.d(TAG, "User typing already before clicking Google button...")
+            }
             val gso = homeViewModel.googleSignInOptions()
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
             launcher.launch(
