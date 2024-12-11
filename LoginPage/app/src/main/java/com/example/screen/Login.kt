@@ -107,7 +107,7 @@ fun ScaffoldLoginWithTopBar(navController: NavHostController,
 
         if (timerViewModel.isAuthComplete(context = context)) {
             timerViewModel.resetAuthFlag(context = context)
-            verifyEmailViewModel.resetOTPCode(context = context)
+//            verifyEmailViewModel.resetOTPCode(context = context)
             Log.d(
                 TAG,
                 "isAuthComplete Login() = ${timerViewModel.isAuthComplete(context = context)}"

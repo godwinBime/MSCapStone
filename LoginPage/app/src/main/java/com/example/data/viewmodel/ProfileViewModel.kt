@@ -185,8 +185,8 @@ class ProfileViewModel: ViewModel() {
                              context: Context,
                              navController: NavHostController){
         updateProfileInProgress.value = true
-        isPictureExistInDatabase(imagePath = imagePath, context = context,
-            onSuccess = {}, onFailure = {})
+//        isPictureExistInDatabase(imagePath = imagePath, context = context,
+//            onSuccess = {}, onFailure = {})
         Log.d(TAG, "Profile picture available = ${isProfilePictureAvailable(context = context)}")
         if (isProfilePictureAvailable(context = context)) {
             deletePicture(
@@ -199,6 +199,7 @@ class ProfileViewModel: ViewModel() {
             )
         }else{
             Log.d(TAG, "Profile picture does not exist...nothing to delete")
+            updateProfileInProgress.value = false
         }
     }
 
@@ -212,6 +213,7 @@ class ProfileViewModel: ViewModel() {
         val deleteRef = imagePath?.let { storageRef.child(it) }
         deleteRef?.delete()
             ?.addOnSuccessListener {
+                resetProfilePictureFlag(context = context)
                 updateProfileInProgress.value = false
                 Log.d(TAG, "Image successfully deleted...")
                 when(action){
@@ -267,9 +269,11 @@ class ProfileViewModel: ViewModel() {
                                 signUpPageViewModel = signUpPageViewModel,
                                 context = context,
                                 navController = navController)
-                            homeViewModel.logOut(navController = navController,
-                                signUpPageViewModel = signUpPageViewModel,
-                                context = context)
+                            if (user != null){
+                                homeViewModel.logOut(navController = navController,
+                                    signUpPageViewModel = signUpPageViewModel,
+                                    context = context)
+                                }
                             navController.navigate(Routes.Login.route)
                         } else if (userType == "google.com") {
                             Log.d(TAG, "Google account user deleted, no data to delete")
@@ -363,7 +367,7 @@ class ProfileViewModel: ViewModel() {
         updateProfileInProgress.value = true
         if (providerId == "google.com"){
             viewModelScope.launch {
-                deleteGoogleUser(navController = navController, providerId = providerId,
+                deleteGoogleUser(navController = navController,
                     context = context, homeViewModel = homeViewModel,
                     signUpPageViewModel = signUpPageViewModel)
             }
@@ -392,7 +396,6 @@ class ProfileViewModel: ViewModel() {
     }*/
 
     private suspend fun deleteGoogleUser(navController: NavHostController,
-                                         providerId: String,
                                          context: Context,
                                          homeViewModel: HomeViewModel,
                                          signUpPageViewModel: SignUpPageViewModel){
@@ -433,44 +436,44 @@ class ProfileViewModel: ViewModel() {
         }
     }
 
-    fun uploadProfilePicture(uri: Uri?, isCallValid: Boolean = false,
-                             navController: NavHostController,
+    fun uploadProfilePicture(uri: Uri?,
+                             context: Context,
                              onSuccess: () -> Unit,
                              onFailure: (Exception) -> Unit){
-        updateProfileInProgress.value = true
+//        updateProfileInProgress.value = true
         uploadPicture(
-            uri = uri,
-            isCallValid = isCallValid,
-            navController = navController, onSuccess = onSuccess, onFailure = onFailure
+            uri = uri, context = context,
+            onSuccess = onSuccess, onFailure = onFailure
         )
     }
 
-    private fun uploadPicture(uri: Uri?, isCallValid: Boolean = false,
-                             navController: NavHostController,
+    private fun uploadPicture(uri: Uri?,
+                              context: Context,
                              onSuccess: () -> Unit,
                              onFailure: (Exception) -> Unit){
         viewModelScope.launch {
             try {
-                if (uri != null && auth.currentUser?.uid != null && isCallValid) {
+                if (uri != null && auth.currentUser?.uid != null) {
+                    setFileProcessingInProgressFlag(context = context)
                     val storageRef =
                         storage.reference.child("ProfilePictures/${auth.currentUser?.uid}")
                     val uploadTask = storageRef.putFile(uri)
+                    resetProfilePictureFlag(context = context)
                     uploadTask
                         .addOnSuccessListener {
+                            resetProfilePictureFlag(context = context)
+                            val imagePath = "/ProfilePictures/${auth.currentUser?.uid}"
 //                            uploadTask.cancel()
                             _uploadStatus.value = "Upload successful"
                             isUploadSuccessful.value = true
                             Log.d(TAG, "Upload Success...Path: ${storageRef.path}")
                             Log.d(TAG, "Upload Complete... ${_uploadProgress.value}%")
-                            navController.navigate(Routes.UserProfile.route)
+//                            navController.navigate(Routes.UserProfile.route)
+                            resetFileProcessingFlag(context = context)
                             onSuccess()
-                            /*downloadProfilePicture(imagePath = storageRef.path,
-                                isCallValid = true, onSuccess = {
-                                    onSuccess()
-                                },
-                                onFailure = {
-                                    onFailure(it)
-                                })*/
+                            isPictureExistInDatabase(imagePath = imagePath, context = context,
+                                onSuccess = {}, onFailure = {})
+//                            updateProfileInProgress.value = false
                         }
                         .addOnProgressListener {taskSnapshot ->
                             val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount).toFloat()
@@ -479,18 +482,18 @@ class ProfileViewModel: ViewModel() {
                         }
                         .addOnFailureListener{
                             isUploadSuccessful.value = false
-                            updateProfileInProgress.value = false
+//                            updateProfileInProgress.value = false
                             Log.d(TAG, "Upload Failed... because --> $it")
                             onFailure(it)
                         }
                 }else{
                     isUploadSuccessful.value = false
-                    updateProfileInProgress.value = false
+//                    updateProfileInProgress.value = false
                     Log.d(TAG, "Upload Failed No image provided...")
                 }
             }catch (e: Exception){
                 isUploadSuccessful.value = false
-                updateProfileInProgress.value = false
+//                updateProfileInProgress.value = false
                 Log.d(TAG, "Upload Exception: ${e.message}")
                 onFailure(e)
                 _uploadStatus.value = "Upload failed with exception: ${e.message}"
@@ -499,7 +502,7 @@ class ProfileViewModel: ViewModel() {
             }
         }
     }
-
+/*
     fun downloadProfilePicture(imagePath: String?, isCallValid: Boolean = false,
                                context: Context,
                                onSuccess: (Uri) -> Unit,
@@ -564,10 +567,12 @@ class ProfileViewModel: ViewModel() {
             }
         }
     }
+*/
 
     fun isPictureExistInDatabase(imagePath: String?, context: Context, onSuccess: (Uri) -> Unit,
                                  onFailure: (Exception) -> Unit){
-        if (!imagePath.isNullOrEmpty()){
+        if (!imagePath.isNullOrEmpty() && !isProfilePictureAvailable(context = context) &&
+            !isFileProcessingInProgress(context = context)){
             viewModelScope.launch {
                 try {
                     updateProfileInProgress.value = true
@@ -575,19 +580,20 @@ class ProfileViewModel: ViewModel() {
                     storeRef.metadata
                         .addOnSuccessListener {
                             profilePictureExist.value = true
-                            setProfilePictureExistFlag(context = context)
                             storeRef.downloadUrl
                                 .addOnSuccessListener {uri ->
                                     updateProfileInProgress.value = false
                                     onSuccess(uri)
-//                                    saveProfilePicture(context = context, uri = uri)
-//                                    setProfilePictureDownloadFlag(context = context)
+                                    saveProfilePicture(context = context, uri = uri)
+                                    setProfilePictureAvailableFlag(context = context)
+                                    setProfilePictureDownloadFlag(context = context)
+//                                    resetLocalUri(context = context)
                                     Log.d(TAG, "URI of available image: $uri")
                                     Log.d(TAG, "Call from isPictureExistInDatabase()...Profile Picture exist...")
                                 }
                                 .addOnFailureListener{
                                     updateProfileInProgress.value = false
-                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Download URI error cause: --> $it")
+                                    Log.d(TAG, "Call from isPictureExistInDatabase()...Download URI error, cause: --> $it")
                                     onFailure(it)
                                 }
                             updateProfileInProgress.value = false
@@ -609,7 +615,7 @@ class ProfileViewModel: ViewModel() {
                 }
             }
         }else{
-            Log.d(TAG, "Call from isPictureExistInDatabase() Image download error.")
+            Log.d(TAG, "Call from isPictureExistInDatabase(), please try again later.")
         }
     }
 
@@ -618,20 +624,23 @@ class ProfileViewModel: ViewModel() {
      * save in a sharedpreference to be used across the
      * lifetime of the application
      */
-    /*fun saveProfilePicture(context: Context, uri: Uri){
+    private fun saveProfilePicture(context: Context, uri: Uri?){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("profilePicture", uri.toString())
+        uri?.let {
+            editor.putString("profilePicture", it.toString())
+        }?: Log.d(TAG, "Inside saveProfilePicture() null URI detected...")
         editor.apply()
         Log.d(TAG, "Inside saveProfilePicture()...storing URI: $uri")
     }
 
-    fun getProfilePicture(context: Context): String?{
+    fun getProfilePicture(context: Context): Uri?{
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("profilePicture", null)
+        val uriString = sharedPreferences.getString("profilePicture", null)
+        return uriString?.let { Uri.parse(it) }
     }
 
-    fun setProfilePictureDownloadFlag(context: Context){
+    private fun setProfilePictureDownloadFlag(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("isPictureDownloaded", true)
@@ -643,32 +652,90 @@ class ProfileViewModel: ViewModel() {
         return sharedPreferences.getBoolean("isPictureDownloaded", false)
     }
 
-    fun resetProfilePictureFlag(context: Context){
-        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("isPictureDownloaded", false)
-        editor.remove("profilePicture")
-        editor.apply()
-        Log.d(TAG, "Resetting profile picture data...")
-    }*/
-
-    private fun setProfilePictureExistFlag(context: Context){
+    private fun setProfilePictureAvailableFlag(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("isPictureAvailable", true)
         editor.apply()
     }
 
-    private fun isProfilePictureAvailable(context: Context): Boolean{
+    fun isProfilePictureAvailable(context: Context): Boolean{
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("isPictureAvailable", false)
     }
+
+    private fun setFileProcessingInProgressFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("fileProcessing", true)
+        editor.apply()
+    }
+
+    private fun isFileProcessingInProgress(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("fileProcessing", false)
+    }
+
+    private fun resetFileProcessingFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("fileProcessing", false)
+        editor.apply()
+        Log.d(TAG, "Resetting file processing flag...")
+    }
+/*
+    fun setLocalUri(context: Context, localUri: Uri?){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        localUri?.let {
+            editor.putString("profilePicture", it.toString())
+            Log.d(TAG, "\n\nInside setLocalUri()...localUri is $it...\n\n")
+        }?: Log.d(TAG, "Inside setLocalUri() null URI detected...")
+        editor.apply()
+        editor.apply()
+    }
+
+    fun getLocalUri(context: Context): Uri?{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val localUriString = sharedPreferences.getString("localUri", null)
+        return localUriString?.let { Uri.parse(it) }
+    }
+
+    fun setLocalFileUrlFlag(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("localFileRequired", true)
+        editor.apply()
+    }
+
+
+    fun isLocalFileUrlRequired(context: Context): Boolean{
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("localFileRequired", false)
+    }
+
+//    fun resetLocalFileUrlFlag(context: Context){
+//        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.putBoolean("localFileRequired", false)
+//        editor.apply()
+//    }
+
+    private fun resetLocalUri(context: Context){
+        val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.remove("localUri")
+        editor.putBoolean("localFileRequired", false)
+        editor.apply()
+        Log.d(TAG, "Resetting resetting Local file Uri...")
+    }*/
 
     fun resetProfilePictureFlag(context: Context){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("isPictureAvailable", false)
-//        editor.remove("profilePicture")
+        editor.putBoolean("fileProcessing", false)
+        editor.remove("profilePicture")
         editor.apply()
         Log.d(TAG, "Resetting profile picture data...")
     }

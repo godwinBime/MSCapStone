@@ -69,9 +69,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserProfilePicture(navController: NavHostController,
-                homeViewModel: HomeViewModel = viewModel(),
-                signUpPageViewModel: SignUpPageViewModel = viewModel(),
-                updateProfileViewModel: ProfileViewModel = viewModel(),
                 googleSignInViewModel: GoogleSignInViewModel = hiltViewModel()){
     val scrollState = rememberScrollState()
     Box(modifier = Modifier
@@ -88,8 +85,8 @@ fun UserProfilePicture(navController: NavHostController,
 fun ScaffoldUserProfilePictureWithTopBar(
     navController: NavHostController,
     homeViewModel: HomeViewModel = viewModel(),
-    signUpPageViewModel: SignUpPageViewModel = viewModel(),scrollState: ScrollState,
-    profileViewModel: ProfileViewModel = viewModel()) {
+    signUpPageViewModel: SignUpPageViewModel = viewModel(),
+    scrollState: ScrollState) {
     val userProfile = stringResource(id = R.string.profile_picture)
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
@@ -144,7 +141,6 @@ fun ScaffoldUserProfilePictureWithTopBar(
                 NormalTextComponent(value = stringResource(id = R.string.choose_profile_picture))
                 Spacer(modifier = Modifier.height(40.dp))
                 PhotoPickerComponent(navController = navController,
-                    isImageClicked = true,
                     pageSource = "UserProfilePicture",
                     imageSize = 350.dp,
                     boxSize = 350.dp)

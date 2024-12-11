@@ -253,6 +253,7 @@ class VerifyEmailViewModel: ViewModel() {
                         navController.navigate(Routes.DeleteProfile.route)
                     }
                 }
+//                resetOTPCode(context = context)
             }else{
                 errorMessage = "Error! wrong OTP code entered."
                 verificationMessage = "Error: Verification code ($sentOTPCode) is incorrect...\nExpected code from readOTPCode() ${readOTPCode()}"
@@ -264,7 +265,7 @@ class VerifyEmailViewModel: ViewModel() {
     /**
      * Sharedpreference to save OTP code
      */
-    private fun saveOTPCode(context: Context, otpCode: String){
+    /*private fun saveOTPCode(context: Context, otpCode: String){
         val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("otpCode", otpCode)
@@ -296,4 +297,5 @@ class VerifyEmailViewModel: ViewModel() {
         Log.d(TAG, "Resetting OTP data...")
         editor.apply()
     }
+    */
 }

@@ -122,13 +122,6 @@ class TimerViewModel: ViewModel() {
         editor.putBoolean("isAuthComplete", false)
         editor.apply()
         Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
-        /*Log.d(TAG, "inside resetTimeRecordingFlag()...resetting all flags")
-        Log.d(TAG, "[")
-        Log.d(TAG, "isAuthTimeRecorded(context: Context) reset = ${isAuthTimeRecorded(context = context)}")
-        Log.d(TAG, "isUserTyping(context: Context) reset = ${isUserTyping(context = context)}")
-        Log.d(TAG, "isUserCreatingAccount(context: Context) reset = ${isUserCreatingAccount(context = context)}")
-        Log.d(TAG, "isAuthComplete(context: Context) reset = ${isAuthComplete(context = context)}")
-        Log.d(TAG, "]")*/
     }
 
     fun setUserCreatingAccountFlag(context: Context){
@@ -157,13 +150,10 @@ class TimerViewModel: ViewModel() {
 
     fun calculateAuthDuration(startTime: Long, endTime: Long, context: Context): String{
         val isUserCreatingAccount = isUserCreatingAccount(context = context)
-//        val isUserLoggingIn = isUserLoggingIn(context = context)
         val duration = endTime - startTime
         val minutes = (duration / 1000) / 60
         val seconds = (duration / 1000) % 60
-        val summary = /*if (isUserCreatingAccount && isUserLoggingIn) {
-            "Account Creation and Login Duration: \n$minutes minute(s) and $seconds seconds"
-        }else */if (isUserCreatingAccount){
+        val summary = if (isUserCreatingAccount){
             "Account Creation and Login Duration: \n$minutes minute(s) and $seconds seconds"
         }else{
             "Login Duration: $minutes minute(s) and $seconds seconds"

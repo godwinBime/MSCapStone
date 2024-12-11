@@ -29,7 +29,7 @@ the app is provided which then lets the user change the password.
 
 - OTP Code Expiry
 Whenever a OTP is sent to the user's email, 
-the users has 30 seconds to input it before ir expires.
+the users has 60 seconds to input it before ir expires.
 The user is provided with a OTP resend code button each time the code expires.
 
 - OTP Code Resend
@@ -52,7 +52,11 @@ in case there are still some screens available in the navigation stack.
   - The timer also gets reset when the app runs and checks if the timer is set  to true
     if it is set to true while the user is in the login screen, it gets reset again.
 
-
+- HANDLING STATES
+  - Sharepreferences is being used to handle the states, such as if a user is logged-in,
+    logged-out, returning active user, if the authentication process is complete.
+    These state handlers work work with Viewmodels to make sure data persists across screens
+    and mainly when a reconfiguration occurs through out the life cycle of the application.
 
 
 References:

@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
@@ -61,6 +62,7 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
                            homeViewModel: HomeViewModel = viewModel(),
                            signUpPageViewModel: SignUpPageViewModel = viewModel(),
                            verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
+                           profileViewModel: ProfileViewModel = viewModel(),
                            timerViewModel: TimerViewModel = viewModel()){
     val verificationCode = stringResource(id = R.string.code)
     val verify = stringResource(id = R.string.verify)
@@ -70,6 +72,12 @@ fun ScaffoldMFAVerifyEmail(navController: NavHostController,
     val isEnabled = signUpPageViewModel.verificationCodeValidationsPassed.value
     var codeStatus by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+
+    if(!profileViewModel.isProfilePictureAvailable(context = context)){
+        val imagePath = "/ProfilePictures/${FirebaseAuth.getInstance().uid}"
+        profileViewModel.isPictureExistInDatabase(imagePath = imagePath, context = context,
+            onSuccess = {}, onFailure = {})
+    }
 
     LaunchedEffect(Unit) {
         if (!timerViewModel.isMfaTimerRunning()){

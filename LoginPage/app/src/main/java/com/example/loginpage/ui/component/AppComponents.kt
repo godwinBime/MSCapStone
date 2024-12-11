@@ -103,6 +103,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.data.local.entities.navigationItemList
 import com.example.data.uievents.SignUpPageUIEvent
 import com.example.data.uistate.EmailVerifyUIState
@@ -949,7 +951,6 @@ fun DrawerContentComponent(navController: NavHostController,
                 value = fullNames?.substringBefore(" "),
                 user = auth.currentUser,
                 provider = "password",
-                context = context,
                 navController = navController)
         }
         "google.com" -> {
@@ -957,7 +958,7 @@ fun DrawerContentComponent(navController: NavHostController,
                 value = auth.currentUser?.displayName?.substringBefore(" "),
                 user = auth.currentUser,
                 provider = "google.com",
-                context = context, navController = navController)
+                navController = navController)
         }
     }
     NavigationDrawerBody(navigationDrawerItems = navigationItemList,
@@ -1089,15 +1090,23 @@ fun ChangeProfilePictureIcon(iconSize: Dp = 45.dp, onClick:() -> Unit){
 @Composable
 fun DisplayProfilePicture(
     uri: Uri, navController: NavHostController,
+    profileViewModel: ProfileViewModel = viewModel(),
+    context: Context,
     imageSize: Dp, pageSource: String, onClick: () -> Unit){
     Image(
-//                painter = painter,
-        painter = rememberAsyncImagePainter(uri),
+//        painter = rememberAsyncImagePainter(uri),
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(LocalContext.current).data(uri).apply(block = fun ImageRequest.Builder.() {
+                crossfade(true)
+            }).build()
+        ),
         contentDescription = "Profile Picture",
         modifier = if (pageSource == "HomeScreenDrawerHeader"){
             Modifier
-//                    .clickable { showDialog = pageSource == "HomeScreenDrawerHeader" }
-                .clickable { navController.navigate(Routes.UserProfilePicture.route)}
+                .clickable {
+//                    profileViewModel.setLocalFileUrlFlag(context = context)
+                    navController.navigate(Routes.UserProfilePicture.route)
+                }
                 .border(width = 2.dp, color = Color.Gray,
                     shape = RoundedCornerShape(size = 90.dp))
                 .size(size = imageSize)
@@ -1125,7 +1134,7 @@ fun DoesPictureExist(imagePath: String, profileViewModel: ProfileViewModel = vie
             profileViewModel.profilePictureExist.value = false
         })
 }
-
+/*
 @Composable
 fun downloadImage(imagePath: String,
                   uri: Uri?,
@@ -1193,26 +1202,23 @@ fun downloadImage(imagePath: String,
         }
     }
     return downloadedImageUri
-}
+}*/
 
 @Composable
-fun UploadPicture(imageUri: Uri?, isCallValid: Boolean, navController: NavHostController,
-                  profileViewModel: ProfileViewModel = viewModel(),
+fun UploadPicture(imageUri: Uri?, profileViewModel: ProfileViewModel = viewModel(),
                   onSuccess: () -> Unit, onFailure: () -> Unit){
     val context = LocalContext.current
     LaunchedEffect(imageUri) {
         if (imageUri != null) {
             profileViewModel.uploadProfilePicture(uri = imageUri,
-                isCallValid = isCallValid, navController = navController,
-                onSuccess = {
+                context = context,  onSuccess = {
                     onSuccess()
                     /*Toast.makeText(
                         context,
                         "Image Uploaded successfully...${profileViewModel.uploadProgress.value}%",
                         Toast.LENGTH_LONG
                     ).show()*/
-                },
-                onFailure = {
+                }, onFailure = {
                     onFailure()
                     /*Toast.makeText(
                         context,
@@ -1220,7 +1226,6 @@ fun UploadPicture(imageUri: Uri?, isCallValid: Boolean, navController: NavHostCo
                         Toast.LENGTH_LONG
                     ).show()*/
                 })
-
         }else{
             Toast.makeText(
                 context,
@@ -1238,10 +1243,8 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
                                                       imageSize: Dp = 90.dp,
                                                       size: Dp = 12.dp,
                                                       boxSize: Dp = 120.dp,
-                                                      isImageClicked: Boolean = false,
                                                       profileViewModel: ProfileViewModel = viewModel(),
                                                       onClick: () -> Unit){
-    val TAG1 = ProfileViewModel::class.simpleName
     val context = LocalContext.current
     var finalImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     val defaultProfileImageUri: Uri? =
@@ -1249,16 +1252,9 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
     val user = FirebaseAuth.getInstance().uid
     val imagePath = "/ProfilePictures/$user"
 
+    val downloadedImageUri: Uri? = profileViewModel.getProfilePicture(context = context)
 
-//    val xxx = profileViewModel.getProfilePicture(context = context)
-//    val downloadedImageUri: Uri? = Uri.parse(xxx)
-    val profilePictureUri by profileViewModel.profilePictureUri.observeAsState()
-//    Log.d(TAG1, "\n\ndownloadedImageUri : $downloadedImageUri")
-    Log.d(TAG1,
-        "Is profilePictureUri empty-->: ${profilePictureUri?.userProfilePictureDataImageUri == null}"
-    )
-
-    if (finalImageUri == null){
+    /*if (finalImageUri == null){
         Log.d(TAG1, "\n\nfinalImageUri is null...\n\n")
         finalImageUri = downloadImage(imagePath = imagePath,
             uri = imageUri,
@@ -1266,6 +1262,11 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
             isCallValid = isImageClicked)
         }else {
         Log.d(TAG1, "\n\nfinalImageUri is not null...\n\n")
+    }*/
+
+    if (!profileViewModel.isProfilePictureAvailable(context = context) &&
+        !profileViewModel.isProfilePictureDownloaded(context = context)) {
+        DoesPictureExist(imagePath = imagePath, profileViewModel = profileViewModel)
     }
 
     Box(modifier = Modifier
@@ -1279,42 +1280,34 @@ private fun TraditionalAccountProfilePictureComponent(imageUri: Uri?,
         )
         .clip(CircleShape),
         contentAlignment = Alignment.Center){
-//        Log.d(TAG1, "Inside TraditionalAccountProfilePictureComponent() URI: $xxx")
-//        Log.d(TAG1, "finalImageUri URI: $finalImageUri")
-//        Log.d(TAG1, "Inside TraditionalAccountProfilePictureComponent() URI: $xxx")
-
-//        finalImageUri = downloadedImageUri
-//        Log.d(TAG1, "finalImageUri URI from sharedpref...: $finalImageUri")
+        finalImageUri = imageUri ?: downloadedImageUri
         (finalImageUri?: defaultProfileImageUri)?.let { uri ->
             DisplayProfilePicture(
                 uri = uri, navController = navController,
+                context = context,
                 imageSize = imageSize, pageSource = pageSource
             ) {
                 onClick.invoke()
             }
         }
     }
-    if (imageUri != null && isImageClicked){
-        Log.d(TAG1, "Update dp initiated...image clicked")
-//        profileViewModel.saveProfilePicture(context = context, uri = imageUri.toString())
-        UploadPicture(imageUri = imageUri, isCallValid = true,
-            navController = navController, profileViewModel = profileViewModel,
+    if (imageUri != null){
+        UploadPicture(imageUri = imageUri,
+            profileViewModel = profileViewModel,
             onSuccess = {}, onFailure = {})
     }
 }
 
 @Composable
 fun PhotoPickerComponent(navController: NavHostController,
-                         isImageClicked: Boolean = false,
-                         profileViewModel: ProfileViewModel = viewModel(),
                          pageSource: String =" None",
                          imageSize: Dp = 90.dp,
+                         profileViewModel: ProfileViewModel = viewModel(),
                          size: Dp = 120.dp, boxSize: Dp = 120.dp){
     val context = LocalContext.current
     var selectedImageUri by rememberSaveable() {
         mutableStateOf<Uri?>(null)
     }
-
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
@@ -1322,20 +1315,20 @@ fun PhotoPickerComponent(navController: NavHostController,
         }
     )
 
-//    profileViewModel.saveProfilePicture(context = context, uri = selectedImageUri.toString())
     TraditionalAccountProfilePictureComponent(
         imageUri = selectedImageUri,
         pageSource = pageSource,
         navController = navController,
-        isImageClicked = pageSource == "UserProfilePicture",
         imageSize = imageSize,
-        size = size, boxSize = boxSize) {
+        size = size, boxSize = boxSize
+    ) {
         photoPickerLauncher.launch(
             PickVisualMediaRequest(
                 ActivityResultContracts.PickVisualMedia.ImageOnly
             )
         )
     }
+
     if (pageSource == "UserProfilePicture"){
         ProfilePictureButtonComponent(navController = navController){
             photoPickerLauncher.launch(

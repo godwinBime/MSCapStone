@@ -47,13 +47,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.local.entities.NavigationItem
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
 import com.example.loginpage.R
 import com.example.navigation.Routes
 import com.google.firebase.auth.FirebaseUser
 
-private val TAG = HomeViewModel::class.simpleName
+private val TAG = ProfileViewModel::class.simpleName
 @Composable
 fun CustomTopAppBar(navController: NavHostController,
                     title: String, showBackIcon: Boolean,
@@ -270,7 +271,7 @@ fun HomeScreenTopAppBar(navController: NavHostController, title: String,
 
 @Composable
 fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String,
-                           context: Context, navController: NavHostController){
+                           navController: NavHostController){
     Box(modifier = Modifier
         .background(Color.LightGray)
         .fillMaxWidth()
@@ -289,14 +290,10 @@ fun HomeScreenDrawerHeader(value: String?, user: FirebaseUser?, provider: String
             )
             when(provider){
                 "google.com" -> {
-//                    PhotoPickerComponent(navController = navController,
-//                        isImageClicked = false,
-//                        pageSource = "HomeScreenDrawerHeader", size = 70.dp)
                     GoogleAccountProfilePictureComponent(user = user, size = 70.dp)
                 }
                 "password" -> {
                     PhotoPickerComponent(navController = navController,
-                        isImageClicked = false,
                         pageSource = "HomeScreenDrawerHeader", size = 80.dp)
                 }
             }
@@ -334,7 +331,7 @@ fun NavigationItemRow(item: NavigationItem,
 
 @Composable
 fun NavigationDrawerText(title: String, textUnit: TextUnit){
-    val shadowOffset = Offset(4f, 6f)
+//    val shadowOffset = Offset(4f, 6f)
     Text(text = title,
         style = TextStyle(
             color = Color.Black,

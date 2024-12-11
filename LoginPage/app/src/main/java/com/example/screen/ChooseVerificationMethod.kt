@@ -62,7 +62,6 @@ fun ChooseVerificationMethod(navController: NavHostController,
 @Composable
 fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                                      scrollState: ScrollState,
-                                     verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                      signUpPageViewModel: SignUpPageViewModel = viewModel(),
                                      homeViewModel: HomeViewModel = viewModel()){
     val context = LocalContext.current
@@ -79,9 +78,9 @@ fun ScaffoldChooseVerificationMethod(navController: NavHostController,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                LaunchedEffect(Unit) {
-                    verifyEmailViewModel.resetOTPCode(context = context)
-                }
+//                LaunchedEffect(Unit) {
+//                    verifyEmailViewModel.resetOTPCode(context = context)
+//                }
                 HeadingTextComponent(value = "Choose Verification Method")
 
                 Spacer(modifier = Modifier.height(20.dp))

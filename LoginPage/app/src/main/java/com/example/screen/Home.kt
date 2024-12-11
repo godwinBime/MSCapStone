@@ -49,6 +49,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.data.viewmodel.GoogleSignInViewModel
 import com.example.data.viewmodel.HomeViewModel
+import com.example.data.viewmodel.ProfileViewModel
 import com.example.data.viewmodel.SignUpPageViewModel
 import com.example.data.viewmodel.TimerViewModel
 import com.example.data.viewmodel.VerifyEmailViewModel
@@ -81,6 +82,7 @@ fun Home(navController: NavHostController,
 fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                                  homeViewModel: HomeViewModel = viewModel(),
                                  scrollState: ScrollState,
+                                 profileViewModel: ProfileViewModel = viewModel(),
                                  verifyEmailViewModel: VerifyEmailViewModel = viewModel(),
                                  timerViewModel: TimerViewModel = viewModel(),
                                  signUpPageViewModel: SignUpPageViewModel = viewModel()){
@@ -116,19 +118,25 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
 
     val fullNames = signUpPageViewModel.getFullNames(context = context)
 
+    if(!profileViewModel.isProfilePictureAvailable(context = context)){
+        val imagePath = "/ProfilePictures/${FirebaseAuth.getInstance().uid}"
+        profileViewModel.isPictureExistInDatabase(imagePath = imagePath, context = context,
+            onSuccess = {}, onFailure = {})
+    }
+
     if (timerViewModel.isTimerFinished() || timerViewModel.isMfaCounterFinished()){
         LaunchedEffect(Unit) {
             verifyEmailViewModel.resetOtpCode()
-            verifyEmailViewModel.resetOTPCode(context = context)
             timerViewModel.resetTimer()
             timerViewModel.mfaResetTimer()
         }
     }
     // Authentication process is complete, set the complete flag to true
     LaunchedEffect(Unit) {
-        timerViewModel.setAuthComplete(context = context)
-        verifyEmailViewModel.resetOTPCode(context = context)
-        timerViewModel.resetUserTypingFlag(context = context)
+        if (!timerViewModel.isAuthComplete(context = context)) {
+            timerViewModel.setAuthComplete(context = context)
+            timerViewModel.resetUserTypingFlag(context = context)
+        }
     }
 
     Scaffold(
@@ -165,9 +173,9 @@ fun ScaffoldHomeScreenWithTopBar(navController: NavHostController,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                LaunchedEffect(fullNames) {
-
-                }
+//                LaunchedEffect(fullNames) {
+//                    profileViewModel.resetProfilePictureFlag(context = context)
+//                }
                 Spacer(modifier = Modifier.height(80.dp))
                 if (providerId == "password") {
 //                    PhotoPickerComponent(navController = navController)
