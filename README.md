@@ -1,7 +1,7 @@
 Multi-factor authentication is the backbone of this mobile application.
 Users are encouraged to practice securing their mobile devices by following authentication best practices. Using Google authentication as a login alternative can be beneficial to both developers and users.
 
-========================= ATTENTION CRITICAL CONFIGURATIONS REQUIRED===========================        
+========== ATTENTION CRITICAL CONFIGURATIONS REQUIRED ==========        
 BEFORE THIS APP RUNS, COMPLETE THE FOLLOWING CONFIGURATIONS
 - Create a firebase account and connect the app there,
 - Download the "google-services.json" and follow the instructions on where to place it in Android Studio.
@@ -20,19 +20,19 @@ web client ID, Needed in google sign in component file
   labelled "Web SDK configuration -> Web client ID"
 
 
-============================================Firebase pricing plans========================    
+====== Firebase pricing plans =============    
    -> Blaze plan    
 
-===================Build services required to store user data============    
+======= Build services required to store user data ==========    
 - Firebase Authentication       
 - Storage    
 - Firestore Database   
 
 
-======= Sending emails using Firestore and Firebase Extensions =================    
+======= Sending emails using Firestore and Firebase Extensions ==========    
 - Follow  this blog post to configure OTP email configuration:    
 https://invertase.io/blog/send-email-extension      
-======== END OF REQUIRED CRITICAL CONFIGURATIONS=================    
+======= END OF REQUIRED CRITICAL CONFIGURATIONS ========    
      
 
 NOTE:     
