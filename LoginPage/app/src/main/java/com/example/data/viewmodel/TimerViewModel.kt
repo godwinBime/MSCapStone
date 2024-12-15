@@ -154,9 +154,9 @@ class TimerViewModel: ViewModel() {
         val minutes = (duration / 1000) / 60
         val seconds = (duration / 1000) % 60
         val summary = if (isUserCreatingAccount){
-            "Account Creation and Login Duration: \n$minutes minute(s) and $seconds seconds"
+            "Account Creation and Login Duration: \n$minutes minute(s) and $seconds second(s)"
         }else{
-            "Login Duration: $minutes minute(s) and $seconds seconds"
+            "Login Duration: $minutes minute(s) and $seconds second(s)"
         }
         return summary
     }

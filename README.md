@@ -1,6 +1,23 @@
 Multi-factor authentication is the backbone of this mobile application.
 Users are encouraged to practice securing their mobile devices by following authentication best practices. Using Google authentication as a login alternative can be beneficial to both developers and users.
 
+========================= ATTENTION===================================
+BEFORE THIS APP RUNS, COMPLETE THE FOLLOWING CONFIGURATIONS
+- Create a firebase account and connect the app there,
+- Download the "google-services.json" and follow the instructions on where the place it in Android Studio.
+
+
+=====================NEXT==========================
+GOTO "LoginPage/app/src/main/java/com/example/data/local/entities/Constant.kt"
+object Constant {
+    const val SERVERCLIENT = "Web SDK configuration -> Web client ID"
+}
+web client ID, Needed in google sign in component file
+ - You can get this from your Firebase sign-in method tab under Google as your provider
+  labelled "Web SDK configuration -> Web client ID"
+
+
+==================================================
 NOTE:
 If you login using your Google credentials, you cannot only make changes to your profile 
 from your main Google account.

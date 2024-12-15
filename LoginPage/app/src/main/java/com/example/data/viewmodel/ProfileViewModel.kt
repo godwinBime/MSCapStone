@@ -209,29 +209,36 @@ class ProfileViewModel: ViewModel() {
                               signUpPageViewModel: SignUpPageViewModel,
                               context: Context,
                               navController: NavHostController){
-        val storageRef = storage.reference
-        val deleteRef = imagePath?.let { storageRef.child(it) }
-        deleteRef?.delete()
-            ?.addOnSuccessListener {
-                resetProfilePictureFlag(context = context)
-                updateProfileInProgress.value = false
-                Log.d(TAG, "Image successfully deleted...")
-                when(action){
-                    "DeleteAccount" -> {
-                        homeViewModel.logOut(navController = navController,
-                            signUpPageViewModel = signUpPageViewModel,
-                            context = context)
-                        navController.navigate(Routes.Login.route)
-                    }
-                    "DefaultProfilePicture" -> {
-                        navController.navigate(Routes.UserProfile.route)
+        try {
+            val storageRef = storage.reference
+            val deleteRef = imagePath?.let { storageRef.child(it) }
+            deleteRef?.delete()
+                ?.addOnSuccessListener {
+                    resetProfilePictureFlag(context = context)
+                    updateProfileInProgress.value = false
+                    Log.d(TAG, "Image successfully deleted...")
+                    when (action) {
+                        "DeleteAccount" -> {
+                            homeViewModel.logOut(
+                                navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context
+                            )
+                            navController.navigate(Routes.Login.route)
+                        }
+
+                        "DefaultProfilePicture" -> {
+                            navController.navigate(Routes.UserProfile.route)
+                        }
                     }
                 }
-            }
-            ?.addOnFailureListener{
-                updateProfileInProgress.value = false
-                Log.d(TAG, "Image not deleted...")
-            }
+                ?.addOnFailureListener {
+                    updateProfileInProgress.value = false
+                    Log.d(TAG, "Image not deleted...")
+                }
+        }catch (e: Exception){
+
+        }
     }
 
     fun deleteCurrentProfile(navController: NavHostController,
@@ -269,12 +276,10 @@ class ProfileViewModel: ViewModel() {
                                 signUpPageViewModel = signUpPageViewModel,
                                 context = context,
                                 navController = navController)
-                            if (user != null){
-                                homeViewModel.logOut(navController = navController,
-                                    signUpPageViewModel = signUpPageViewModel,
-                                    context = context)
-                                }
                             navController.navigate(Routes.Login.route)
+                            homeViewModel.logOut(navController = navController,
+                                signUpPageViewModel = signUpPageViewModel,
+                                context = context)
                         } else if (userType == "google.com") {
                             Log.d(TAG, "Google account user deleted, no data to delete")
                             navController.navigate(Routes.Login.route)
@@ -455,10 +460,10 @@ class ProfileViewModel: ViewModel() {
             try {
                 if (uri != null && auth.currentUser?.uid != null) {
                     setFileProcessingInProgressFlag(context = context)
+                    resetProfilePictureFlag(context = context)
                     val storageRef =
                         storage.reference.child("ProfilePictures/${auth.currentUser?.uid}")
                     val uploadTask = storageRef.putFile(uri)
-                    resetProfilePictureFlag(context = context)
                     uploadTask
                         .addOnSuccessListener {
                             resetProfilePictureFlag(context = context)
