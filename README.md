@@ -7,7 +7,7 @@ BEFORE THIS APP RUNS, COMPLETE THE FOLLOWING CONFIGURATIONS
 - Download the "google-services.json" and follow the instructions on where to place it in Android Studio.
 
 
-===============NEXT====================
+===============NEXT====================        
 GOTO "LoginPage/app/src/main/java/com/example/data/local/entities/Constant.kt"     
 
 object Constant {
@@ -20,7 +20,7 @@ web client ID, Needed in google sign in component file
   labelled "Web SDK configuration -> Web client ID"
 
 
-============================================
+============================================     
 NOTE:
 If you login using your Google credentials, you cannot only make changes to your profile 
 from your main Google account.
@@ -36,33 +36,33 @@ When the app starts, it checks if there is an existing session:
 - If there is no active session, the user then choose to login with email and password and follow
   MFA procedure or login using their Google credentials or create a new account.
 
-- PASSWORD RESET WHEN PASSWORD IS FORGOTTEN
+- PASSWORD RESET WHEN PASSWORD IS FORGOTTEN   
 When the user clicks the "forgot password" button, the user is asked to provide the email address 
 they used in creating an account with, if there is an account associated with this email, 
 a password reset link is sent to them which they can click on an a password reset page will 
 then open. Then the user will be prompted to enter a new password, once it is registered, 
 the user can then use it as the new password.
-- PASSWORD RESET WHEN LOGGED-IN
+- PASSWORD RESET WHEN LOGGED-IN    
 When a user is authenticated, if the user wants to change the password, 
 the user gets verified one more time, then a password reset option within 
 the app is provided which then lets the user change the password.
 
-- OTP Code Expiry
+- OTP Code Expiry   
 Whenever a OTP is sent to the user's email, 
 the users has 60 seconds to input it before ir expires.
 The user is provided with a OTP resend code button each time the code expires.
 
-- OTP Code Resend
+- OTP Code Resend     
 The current OTP code has to expire before a new one is sent.
 The user gets a counter on the screen telling them how much time is left
 before a new OTP is resent if they click the resend button.
 
-- NOTE
+- NOTE    
 When the user clicks the back button continuously and arrives the login page, 
 the user automatically gets logged out of the app. There the backstack gets emptied
 in case there are still some screens available in the navigation stack.
 
-- Authentication Start timer
+- Authentication Start timer     
   The timer starts as soon as the user starts typing into the input fields.
   If the user leaves the authentication process incomplete the timer will
   keep counting until the user comes and complete it. It can take days, weeks
@@ -71,14 +71,14 @@ in case there are still some screens available in the navigation stack.
   - the timer gets reset once the user gets to the home screen. 
   - The timer also gets reset when the app runs and checks if the timer is set  to true
     if it is set to true while the user is in the login screen, it gets reset again.
-
-- HANDLING STATES
+     
+- HANDLING STATES      
   - Sharepreferences is being used to handle the states, such as if a user is logged-in,
     logged-out, returning active user, if the authentication process is complete.
     These state handlers work work with Viewmodels to make sure data persists across screens
     and mainly when a reconfiguration occurs through out the life cycle of the application.
 
 
-References:
+References:     
 Google icons created by Freepik - Flaticon:
 - https://www.flaticon.com/search?word=google
