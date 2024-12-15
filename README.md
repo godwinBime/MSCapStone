@@ -21,7 +21,7 @@ web client ID, Needed in google sign in component file
 
 
 ============================================     
-NOTE:
+NOTE:     
 If you login using your Google credentials, you cannot only make changes to your profile 
 from your main Google account.
 
