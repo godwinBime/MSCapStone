@@ -101,6 +101,7 @@ in case there are still some screens available in the navigation stack.
     These state handlers work work with Viewmodels to make sure data persists across screens
     and mainly when a reconfiguration occurs through out the life cycle of the application.
 
+![login_comparison](https://github.com/user-attachments/assets/f6d4d1a4-5840-47bc-a7c6-8830ab155f79)
 
 References:     
 Google icons created by Freepik - Flaticon:
