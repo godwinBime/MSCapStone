@@ -1,6 +1,11 @@
 Multi-factor authentication is the backbone of this mobile application.
 Users are encouraged to practice securing their mobile devices by following authentication best practices. Using Google authentication as a login alternative can be beneficial to both developers and users.
 
+
+============== .apk file url=========================    
+https://github.com/godwinBime/MSCapStone/actions/runs/12199330451        
+=====================================================    
+
 ========== ATTENTION CRITICAL CONFIGURATIONS REQUIRED ==========        
 BEFORE THIS APP RUNS, COMPLETE THE FOLLOWING CONFIGURATIONS
 - Create a firebase account and connect the app there,
